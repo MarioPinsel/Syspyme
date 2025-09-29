@@ -19,3 +19,14 @@ export const registerValidation = [
         .isLength({ min: 8 }).withMessage('La contraseña debe tener mínimo 8 caracteres')
         .matches(/[A-Z]/).withMessage('La contraseña debe incluir al menos una mayúscula')
 ];
+
+export const loginValidation = [
+
+    body('email')
+        .isEmail().withMessage('E-mail no válido')
+        .normalizeEmail(),
+
+    body('password')
+        .isLength({ min: 8 }).withMessage('La contraseña debe tener mínimo 8 caracteres')
+        .matches(/[A-Z]/).withMessage('La contraseña debe incluir al menos una mayúscula')
+];
