@@ -5,7 +5,7 @@
   "description": "Software contable",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon src/index.js"
   },
   "author": "Mario Pinto, Fabian Baron, Esteban Guzman, Santiago Ramirez",
   "license": "ISC",
