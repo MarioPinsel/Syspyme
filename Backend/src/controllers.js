@@ -1,4 +1,4 @@
-import { pool } from '../config/db/pool.js'
+import { pool } from './config/db.js'
 import slug from 'slug'
 import { hashPassword, checkPassword } from './utils/auth.js';
 
