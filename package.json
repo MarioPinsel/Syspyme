@@ -1,19 +1,18 @@
 {
   "name": "syspyme",
+  "type": "module",
   "version": "1.0.0",
-  "description": "Software contabel",
+  "description": "Software contable",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MarioPinsel/Syspyme.git"
+    "dev": "nodemon index.js"
   },
   "author": "Mario Pinto, Fabian Baron, Esteban Guzman, Santiago Ramirez",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/MarioPinsel/Syspyme/issues"
+  "dependencies": {
+    "express": "^5.1.0"
   },
-  "homepage": "https://github.com/MarioPinsel/Syspyme#readme"
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
 }
