@@ -5,7 +5,7 @@
   "description": "Software contable",
   "main": "index.js",
   "scripts": {
-    "dev": "docker-compose up -d && nodemon src/index.js"
+    "dev": "docker compose up -d && nodemon src/index.js"
   },
   "author": "Mario Pinto, Fabian Baron, Esteban Guzman, Santiago Ramirez",
   "license": "ISC",

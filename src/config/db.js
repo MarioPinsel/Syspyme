@@ -1,10 +1,10 @@
 import pg, { Result } from 'pg';
 
 export const pool = new pg.Pool({
-    user: `${POSTGRES_USER}`,
+    user: "Monitor",
     host: "localhost",
-    password: `${POSTGRES_PASSWORD}`,
-    database: `${POSTGRES_NAME}`,
+    password: "Doremifa",
+    database: "SyspymeDB",
     port: "5432"
 
 })
