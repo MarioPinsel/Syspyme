@@ -1,6 +1,6 @@
-import { pool } from './config/db.js'
+import { pool } from '../config/db.js'
 import slug from 'slug'
-import { hashPassword, checkPassword } from './utils/auth.js';
+import { hashPassword, checkPassword } from '../utils/auth.js';
 
 export const createAccount = async (req, res) => {
     const { email, password, handle, name } = req.body;
