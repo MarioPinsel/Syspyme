@@ -4,7 +4,6 @@ import RegisterView from './views/RegisterView'
 import AuthLayout from './layouts/AuthLayout'
 
 export default function Router() {
-
   return (
     <BrowserRouter>
       <Routes>

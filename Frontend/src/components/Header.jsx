@@ -4,9 +4,9 @@ export default function Header() {
 
     return (
         <>
-            <header>
-
+            <header className="header">
+                <h1>SysPyme</h1>
             </header>
         </>
-    )
+    );
 }
