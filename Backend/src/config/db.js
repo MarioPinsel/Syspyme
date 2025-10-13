@@ -1,13 +1,13 @@
 import pg, { Result } from 'pg';
 
 export const pool = new pg.Pool({
-    user: "Monitor",
-    host: "localhost",
-    password: "Doremifa",
-    database: "SyspymeDB",
-    port: 5432
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT
+});
 
-})
 
 pool.query('SELECT NOW()').then(Result => {
     console.log(Result)
