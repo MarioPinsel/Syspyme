@@ -1,11 +1,102 @@
-header {
-    background-color: #282c34;
-    min-height: 10vh;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    font-size: calc(10px + 2vmin);
-    color: white;
-    padding: 0 20px;
+
+:root {
+  --color-fondo-header: #2B75D2;
+  --color-texto: #ffffff;
+  --color-hover: #dce8ff;
+
+
+  --sombra-header: 0 2px 6px rgba(0, 0, 0, 0.2);
+
+
+  --alto-header: 67px;
+  --tamaño-logo: 56px;
+  --espaciado-general: 20px;
+
+ 
+  --fuente-principal: 'Titillium Web', sans-serif;
 }
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.barranav {
+  background-color: var(--color-fondo-header);
+  min-height: var(--alto-header);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--color-texto);
+  padding: 0 var(--espaciado-general);
+  font-family: var(--fuente-principal);
+  box-shadow: var(--sombra-header);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo img {
+  height: var(--tamaño-logo);
+  width: auto;
+  display: block;
+}
+
+
+.sep {
+  width: 2px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 2px;
+}
+
+
+.navegacion {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.navegacion a {
+  color: var(--color-texto);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0.4px;
+  padding: 6px 4px;
+  transition: color 0.2s, opacity 0.2s;
+}
+
+.navegacion a:hover {
+  color: var(--color-hover);
+  opacity: 0.9;
+}
+
+
+.iconos {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.iconos svg {
+  color: var(--color-texto);
+  font-size: 20px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.iconos svg:hover {
+  color: var(--color-hover);
+}
+
+
+
