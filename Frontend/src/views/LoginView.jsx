@@ -1,3 +1,4 @@
+
 import './LoginView.css';
 
 
@@ -24,6 +25,7 @@ function LoginView() {
       </div>
     </div>
   );
+
 }
 
 export default LoginView;
