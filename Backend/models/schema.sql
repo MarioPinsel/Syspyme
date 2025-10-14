@@ -1,3 +1,13 @@
+CREATE TABLE temp_users (
+  id SERIAL PRIMARY KEY,
+  handle VARCHAR(20) NOT NULL,
+  name VARCHAR(50) NOT NULL,
+  email VARCHAR(50) UNIQUE NOT NULL,
+  password VARCHAR(100) NOT NULL,
+  verification_code VARCHAR(6) NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   handle VARCHAR(20) NOT NULL,
