@@ -3,7 +3,7 @@ import { hashPassword, checkPassword } from '../utils/hashUtils.js';
 import { sendVerificationEmail } from '../utils/mailUtils.js';
 import { findUserByEmail, findUserByHandle, createUser } from '../repositories/userRepository.js';
 import { findTempUserByEmail, createTempUser, deleteTempUser, verifyTempUser } from '../repositories/tempUserRepository.js';
-
+// hola
 export const registerUser = async ({ email, password, handle, name }) => {
     const existingUser = await findUserByEmail(email);
     if (existingUser.rowCount > 0) throw new Error('EMAIL_EXISTS');
