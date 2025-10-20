@@ -1,4 +1,4 @@
-import './Header.css';
+import '../styles/Header.css';
 import { FaUser, FaRightToBracket } from "react-icons/fa6";
 
 export default function Header() {
@@ -10,7 +10,7 @@ export default function Header() {
                     <div className="logo">
                         <img src="/Logo S.png" alt="Logo S" />
                     </div>
-                    <div className="sep"/>
+                    <div className="sep" />
                     <nav className="navegacion">
                         <a href="#">INICIO</a>
                         <a href="#">PLANES</a>
