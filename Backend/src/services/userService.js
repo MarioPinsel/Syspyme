@@ -11,7 +11,7 @@ import {
 } from '../repositories/empresa/companyRepository.js';
 
 const generateCode = () => Math.floor(100000 + Math.random() * 900000);
-const CODE_EXPIRATION_MINUTES = 1;
+const CODE_EXPIRATION_MINUTES = 10;
 
 export const registerEmpresa = async ({ nombre, nit, correo, password }) => {
     if ((await findEmpresaByCorreo(correo)).rowCount) throw new Error('EMPRESA_ALREADY_EXISTS');
