@@ -63,3 +63,22 @@ button {
 button:hover {
   background-color: var(--color-boton-hover);
 }
+
+.register-redirect {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 14px;
+  color: #000000;
+  font-family: var(--fuente-principal);
+}
+
+.register-link {
+  color: #4da3ff;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+.register-link:hover {
+  color: var(--color-boton-hover);
+}
