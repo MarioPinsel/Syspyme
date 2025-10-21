@@ -1,6 +1,5 @@
-import { Outlet } from 'react-router-dom';
-import '../styles/LoginView.css';
-
+import { Outlet, Link } from "react-router-dom";
+import "../styles/LoginView.css";
 
 function LoginView() {
   return (
@@ -17,14 +16,21 @@ function LoginView() {
 
             <button type="submit">Continuar</button>
           </form>
+
+          <p className="register-redirect">
+            ¿No tienes una cuenta?{" "}
+            <Link to="/auth/register" className="register-link">
+              Regístrate aquí
+            </Link>
+          </p>
         </div>
       </div>
       <Outlet />
     </>
   );
-
 }
 
 export default LoginView;
+
 
 
