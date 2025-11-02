@@ -40,5 +40,8 @@ export const deleteTempEmpresa = async (correo) => {
   return await pool.query(query, [correo]);
 };
 
-
+export const updateTempEmpresaCodigo = async (correo, newCode, newCreatedAt) => {
+  const query = `UPDATE temp_Empresas SET codigo_verificacion = $1, created_at = $2 WHERE correo = $3`;
+  return await pool.query(query, [newCode, newCreatedAt, correo])
+}
 

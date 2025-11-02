@@ -1,4 +1,10 @@
-import { registerEmpresa, registerUsuario, verifyAccount, loginUsuario, verifyLoginUsuario } from '../services/userService.js';
+import {
+    registerEmpresa,
+    registerUsuario,
+    verifyAccount,
+    loginUsuario,
+    verifyLoginUsuario
+} from '../services/userService.js';
 
 export const createCompany = async (req, res) => {
     try {
@@ -26,11 +32,11 @@ export const createAccount = async (req, res) => {
 
 export const verifyAccountController = async (req, res) => {
     try {
-        const { token, codigo } = req.body;
-        const result = await verifyAccount({ token, codigo });
-        res.status(200).json({ message: 'Cuenta verificada', token: result });
+        const { codigo } = req.body;
+        const { correo, tipo } = req.user;
+        const result = await verifyAccount({ correo, tipo, codigo });
+        res.status(200).json(result);
     } catch (error) {
-        if (error.message === 'CODE_EXPIRED') return res.status(400).json({ error: 'Código expirado.' });
         if (error.message === 'INVALID_CODE') return res.status(400).json({ error: 'Código inválido.' });
         console.error(error);
         res.status(500).json({ error: 'Error interno del servidor.' });
@@ -52,11 +58,11 @@ export const login = async (req, res) => {
 
 export const verifyLogin = async (req, res) => {
     try {
-        const { token, codigo } = req.body;
-        const result = await verifyLoginUsuario({ token, codigo });
+        const { codigo } = req.body;
+        const { correo } = req.user;
+        const result = await verifyLoginUsuario({ correo, codigo });
         res.status(200).json(result);
     } catch (error) {
-        if (error.message === 'CODE_EXPIRED') return res.status(400).json({ error: 'Código expirado.' });
         if (error.message === 'INVALID_CODE') return res.status(400).json({ error: 'Código inválido.' });
         console.error(error);
         res.status(500).json({ error: 'Error interno del servidor.' });

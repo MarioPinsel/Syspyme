@@ -37,5 +37,27 @@ CREATE TABLE usuarios (
   codigo_fecha TIMESTAMP,
   created_at TIMESTAMP DEFAULT NOW()
 );
+CREATE TABLE producto (
+    id SERIAL PRIMARY KEY,
+    tipo_Producto VARCHAR(100) NOT NULL,
+    descripción VARCHAR(100) NOT NULL,
+    precio_Unitario INT NOT NULL,
+    cantidad INT
+);
 
+CREATE TABLE inventario(
+    id SERIAL PRIMARY KEY,
+    código VARCHAR (15),
+    id_producto INT,
+    fecha_Ingreso TIMESTAMP DEFAULT NOW (),
+    estado VARCHAR (1),
+  FOREIGN KEY (id_producto) REFERENCES producto(id)
+);
+
+CREATE TABLE vendido(
+    id SERIAL PRIMARY KEY,
+  id_producto INT,
+    fecha_Venta TIMESTAMP DEFAULT NOW (),
+  FOREIGN KEY (id_Producto) REFERENCES producto(id)
+);
 
