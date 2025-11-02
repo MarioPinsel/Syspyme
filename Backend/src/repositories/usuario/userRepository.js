@@ -40,3 +40,9 @@ export const updateUsuarioCodigo = async (correo, code, fecha) => {
   );
 };
 
+export const updateTempUsuarioCodigo = async (correo, code, fecha) => {
+  return await pool.query(
+    'UPDATE temp_Usuarios SET codigo_verificacion = $1, codigo_fecha = $2 WHERE correo = $3',
+    [code, fecha, correo]
+  );
+};
