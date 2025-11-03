@@ -2,22 +2,22 @@
   --color-fondo-header: #2B75D2;
   --color-texto: #ffffff;
   --color-hover: #dce8ff;
-
-
   --sombra-header: 0 2px 6px rgba(0, 0, 0, 0.2);
-
-
   --alto-header: 67px;
   --tamaño-logo: 56px;
   --espaciado-general: 20px;
-
- 
   --fuente-principal: 'Titillium Web', sans-serif;
 }
 
-* {
+html, body {
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 .barranav {
@@ -36,7 +36,6 @@
   z-index: 1000;
 }
 
-
 .left {
   display: flex;
   align-items: center;
@@ -47,8 +46,9 @@
   height: var(--tamaño-logo);
   width: auto;
   display: block;
+  user-select: none;
+  -webkit-user-drag: none;
 }
-
 
 .sep {
   width: 2px;
@@ -56,7 +56,6 @@
   background-color: rgba(255, 255, 255, 0.95);
   border-radius: 2px;
 }
-
 
 .navegacion {
   display: flex;
@@ -79,7 +78,6 @@
   opacity: 0.9;
 }
 
-
 .iconos {
   display: flex;
   align-items: center;
@@ -97,5 +95,52 @@
   color: var(--color-hover);
 }
 
+/* ==== RESPONSIVE ==== */
+@media (max-width: 900px) {
+  .barranav {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px var(--espaciado-general);
+  }
+
+  .left {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .sep {
+    display: none;
+  }
+
+  .navegacion {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .navegacion a {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 600px) {
+  .logo img {
+    height: 48px;
+  }
+
+  .navegacion a {
+    font-size: 13px;
+  }
+
+  .iconos {
+    gap: 10px;
+  }
+
+  .iconos svg {
+    font-size: 18px;
+  }
+}
 
 
