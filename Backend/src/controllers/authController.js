@@ -4,7 +4,7 @@ import {
     verifyAccount,
     loginUsuario,
     verifyLoginUsuario
-} from '../services/userService.js';
+} from '../services/authService.js';
 
 export const createCompany = async (req, res) => {
     try {
