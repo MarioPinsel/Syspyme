@@ -1,11 +1,13 @@
 import express from 'express';
-import router from './routes/router.js';
+import authRouter from './routes/authRouter.js';
+import inventoryRouter from './routes/inventoryRouter.js'
 import './config/db.js';
 
 const app = express();
 
 app.use(express.json());
 
-app.use('/', router)
+app.use('/auth', authRouter)
+app.use('/inventory', inventoryRouter)
 
 export default app;

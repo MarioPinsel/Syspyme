@@ -5,11 +5,11 @@ import {
     createTempUsuario, findTempUsuarioByCorreo, deleteTempUsuario,
     createUsuario, findUsuarioByCorreo, updateUsuarioCodigo,
     findUsuarioByCorreoOHandle, updateTempUsuarioCodigo
-} from '../repositories/usuario/userRepository.js';
+} from '../repositories/user/userRepository.js';
 import {
     createTempEmpresa, findTempEmpresaByCorreo, deleteTempEmpresa,
     createEmpresa, findEmpresaByCorreo, findEmpresaByNombre, updateTempEmpresaCodigo
-} from '../repositories/empresa/companyRepository.js';
+} from '../repositories/enterprise/companyRepository.js';
 
 const generateCode = () => Math.floor(100000 + Math.random() * 900000);
 const CODE_EXPIRATION_MINUTES = 15;
@@ -76,7 +76,7 @@ export const verifyAccount = async ({ correo, tipo, codigo }) => {
         const result = await createEmpresa({ nombre: temp.nombre, nit: temp.nit, correo, password: temp.password });
         await deleteTempEmpresa(correo);
         const empresaId = result.rows[0].id;
-        const finalToken = generateToken({ correo, tipo, id: empresaId, isAdmin: true, verified: true }, '1h');
+        const finalToken = generateToken({ correo, tipo, id: empresaId, isAdmin: true }, '1h');
         return { message: 'Registro exitoso', token: finalToken };
     } else {
         const result = await createUsuario({
@@ -89,7 +89,7 @@ export const verifyAccount = async ({ correo, tipo, codigo }) => {
         await deleteTempUsuario(correo);
         const userId = result.rows[0].id;
         const isAdmin = userId === 1;
-        const finalToken = generateToken({ correo, tipo, id: userId, isAdmin, verified: true }, '1h');
+        const finalToken = generateToken({ correo, tipo, id: userId, isAdmin }, '1h');
         return { message: 'Registro exitoso', token: finalToken };
     }
 };
