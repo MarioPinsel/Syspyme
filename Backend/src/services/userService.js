@@ -10,6 +10,7 @@ import {
     createTempEmpresa, findTempEmpresaByCorreo, deleteTempEmpresa,
     createEmpresa, findEmpresaByCorreo, findEmpresaByNombre, updateTempEmpresaCodigo
 } from '../repositories/empresa/companyRepository.js';
+import { createDataBase} from '../config/createDataBase.js';
 
 const generateCode = () => Math.floor(100000 + Math.random() * 900000);
 const CODE_EXPIRATION_MINUTES = 15;
@@ -74,10 +75,11 @@ export const verifyAccount = async ({ correo, tipo, codigo }) => {
 
     if (isEmpresa) {
         const result = await createEmpresa({ nombre: temp.nombre, nit: temp.nit, correo, password: temp.password });
-        await deleteTempEmpresa(correo);
+        await deleteTempEmpresa(correo);        
         const empresaId = result.rows[0].id;
         const finalToken = generateToken({ correo, tipo, id: empresaId, isAdmin: true, verified: true }, '1h');
-        return { message: 'Registro exitoso', token: finalToken };
+        await createDataBase(temp.nombre); // CONEXION CON AZURE
+        return { message: 'Registro exitoso', token: finalToken };        
     } else {
         const result = await createUsuario({
             nombre: temp.nombre,

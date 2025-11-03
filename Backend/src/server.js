@@ -1,6 +1,6 @@
 import express from 'express';
 import router from './routes/router.js';
-import './config/db.js';
+import './config/conectionCore.js';
 
 const app = express();
 

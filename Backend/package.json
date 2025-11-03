@@ -10,6 +10,10 @@
   "author": "Mario Pinto, Fabian Baron, Esteban Guzman, Santiago Ramirez",
   "license": "ISC",
   "dependencies": {
+    "@azure/arm-postgresql-flexible": "^8.0.0",
+    "@azure/identity": "^4.13.0",
+    "@azure/identity-vscode": "^2.0.0",
+    "@azure/keyvault-secrets": "^4.10.0",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",

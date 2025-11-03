@@ -1,4 +1,4 @@
-import { pool } from '../../config/db.js';
+import { pool } from '../../config/conectionCore.js';
 
 export const findUsuarioByCorreo = async (correo) => {
   return await pool.query('SELECT * FROM usuarios WHERE correo = $1', [correo]);
