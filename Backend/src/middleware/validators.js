@@ -1,4 +1,4 @@
-import { body } from 'express-validator';
+import { body, query } from 'express-validator';
 
 const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 
@@ -76,7 +76,7 @@ export const updateProductValidation = [
 ];
 
 export const getProductValidation = [
-    body('id')
+    query('id')
         .notEmpty().withMessage('El ID del producto es obligatorio')
         .isInt({ gt: 0 }).withMessage('El ID debe ser un número entero positivo')
 ];
