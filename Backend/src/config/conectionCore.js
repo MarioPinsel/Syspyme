@@ -10,10 +10,10 @@ export const pool = new pg.Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-/*try {
+try {
   const schema = await fs.readFile('./models/schema.sql', 'utf8');
   await pool.query(schema);
   console.log('Esquema aplicado correctamente');
 } catch (err) {
   console.error('Error al aplicar esquema:', err.message);
-}*/
+}

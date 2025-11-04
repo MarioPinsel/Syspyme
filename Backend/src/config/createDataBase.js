@@ -1,19 +1,14 @@
 import { DefaultAzureCredential } from "@azure/identity";
 import { PostgreSQLManagementFlexibleServerClient } from "@azure/arm-postgresql-flexible";
+import {createConection, createSecret} from "./secretManagment.js";
 
 const credential = new DefaultAzureCredential();
 const client = new PostgreSQLManagementFlexibleServerClient(credential, process.env.SUSCRIPTION_ID);
 
 export const createDataBase = async (DBname) => {
     createDB(DBname);
-
-    /*try {
-        const schema = await fs.readFile('./models/schema-companies.sql', 'utf8');
-        await pool.query(schema);
-        console.log('Esquema aplicado correctamente');
-    } catch (err) {
-        console.error('Error al aplicar esquema:', err.message);
-    } REQUIERE TENER EL SECRETO PARA LA CONEXION DINAMICA*/
+    createConection(credential);
+    createSecret(DBname);
 };
 
 async function createDB(DBname) {

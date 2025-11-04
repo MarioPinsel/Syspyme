@@ -10,7 +10,7 @@ import {
     createTempEmpresa, findTempEmpresaByCorreo, deleteTempEmpresa,
     createEmpresa, findEmpresaByCorreo, findEmpresaByNombre, updateTempEmpresaCodigo
 } from '../repositories/empresa/companyRepository.js';
-import { createDataBase} from '../config/createDataBase.js';
+import {createDataBase} from '../config/createDataBase.js';
 
 const generateCode = () => Math.floor(100000 + Math.random() * 900000);
 const CODE_EXPIRATION_MINUTES = 15;
