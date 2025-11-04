@@ -1,9 +1,30 @@
 import { pool } from '../../config/db.js';
 
+export const findProductByTypeAndCode = async (code, type, description = {}) => {
+    return await pool.query(
+        'SELECT * FROM productos WHERE codigo = $1 AND tipo_producto = $2 AND descripcion = $3::jsonb',
+        [code, type, JSON.stringify(description)]
+    );
+};
+
 export const findProductByType = async (type, description = {}) => {
     return await pool.query(
-        'SELECT * FROM productos WHERE tipo_producto = $1 AND descripcion @> $2::jsonb',
+        'SELECT * FROM productos WHERE tipo_producto = $1 AND descripcion = $2::jsonb',
         [type, JSON.stringify(description)]
+    );
+};
+
+export const findProductByCode = async (code) => {
+    return await pool.query(
+        'SELECT * FROM productos WHERE codigo = $1',
+        [code]
+    );
+};
+
+export const findProductFromInventory = async (code) => {
+    return await pool.query(
+        `SELECT * FROM inventario WHERE id_producto = $1 AND estado = '1'`,
+        [code]
     );
 };
 

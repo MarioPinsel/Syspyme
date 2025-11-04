@@ -3,29 +3,37 @@ import {
     addProductQuantity,
     createProduct,
     deleteFromInventory,
-    findProductByType,
+    findProductByTypeAndCode,
     findProductById,
     updateProductById,
-    updateQuantity
+    updateQuantity,
+    findProductByCode,
+    findProductByType,
+    findProductFromInventory
 } from "../repositories/inventory/inventoryRepository.js";
 
 export const addProductService = async ({ type, description, unitPrice, quantity, code }) => {
-    const exists = await findProductByType(type, description);
+    const exists = await findProductByCode(code);
 
     let productId;
 
     if (exists.rowCount > 0) {
-        const existingCode = exists.rows[0];
-        if (existingCode.codigo !== code) {
+        const existingProduct = exists.rows[0];
+        if ((await findProductByTypeAndCode(code, type, description)).rowCount === 0) {
             throw new Error('CODE_ERROR');
-        }
-        if (existingCode.tipo_Producto !== type) {
-            throw new Error('TYPE_ERROR');
         }
 
         productId = existingProduct.id;
         await addProductQuantity({ productId, quantity });
     } else {
+        const search = await findProductByType(type, description)
+        if (search.rowCount > 0) {
+            const existingProduct = search.rows[0]
+            if (existingProduct.code !== code) {
+                throw new Error('TYPE_ERROR');
+            }
+        }
+
         const result = await createProduct({ type, description, unitPrice, quantity, code });
         productId = result.rows[0].id;
     }
@@ -35,7 +43,8 @@ export const addProductService = async ({ type, description, unitPrice, quantity
     }
 
     return { message: 'Producto agregado correctamente', productId };
-};
+
+}
 
 export const updateProductService = async ({ id, unitPrice, quantity, code }) => {
     const productResult = await findProductById(id);
@@ -80,8 +89,12 @@ export const getProductService = async ({ id }) => {
 };
 
 export const deleteProductService = async ({ id }) => {
-    const result = await findProductById(id);
-    if (result.rowCount === 0) throw new Error('Producto no encontrado');
+
+    const search = await findProductById(id);
+    if (search.rowCount === 0) throw new Error('NOT_FOUND');
+    const result = await findProductFromInventory(id);
+    if (result.rowCount === 0) throw new Error('NOT_FOUND_INVENTORY');
+
 
     await deleteFromInventory(id, null, true);
     await updateQuantity(id, 0);
