@@ -95,6 +95,14 @@ button:hover {
   color: var(--color-boton-hover);
 }
 
+
+.error-message {
+  color: red;
+  font-family: var(--fuente-principal);
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
 @media (max-width: 768px) {
   .login-container {
     align-items: flex-start;

@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import Header from '../components/Header.jsx';
 import Footer from '../components/Footer.jsx';
+import { Toaster } from 'sonner'
 
 export default function AuthLayout() {
     return (
@@ -10,6 +11,7 @@ export default function AuthLayout() {
                 <Outlet />
             </main>
             <Footer />
+            <Toaster position="bottom-left" />
         </>
     );
 }

@@ -1,42 +1,97 @@
-import { Outlet, Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { isAxiosError } from "axios";
+import api from "../config/axios";
 import "../styles/LoginView.css";
+export default function LoginView() {
+  const initialValues = {
+    empresa: "",
+    empresaPassword: "",
+    usuario: "",
+    password: "",
+  };
 
-function LoginView() {
+  const { register, handleSubmit, formState: { errors }, } = useForm({ defaultValues: initialValues, });
+
+  const handleLogin = async (formData) => {
+    try {
+      const { data } = await api.post('http://localhost:4000/auth/login', formData);
+      toast.success(data.message);
+    } catch (error) {
+      if (isAxiosError(error) && error.response) {
+        toast.error(error.response.data.error)
+      }
+    }
+  }
+
   return (
-    <>
-      <div className="login-container">
-        <div className="login-box">
-          <h2>Iniciar Sesión</h2>
-          <form>
-            <label>Nombre de la empresa</label>
-            <input type="text" placeholder="Ingresa el nombre de la empresa" />
+    <div className="login-container">
+      <div className="login-box">
+        <h2>Iniciar Sesión</h2>
 
-            <label>Contraseña de la empresa</label>
-            <input type="password" placeholder="Ingresa la Contraseña de la empresa" />
-           <label>Nombre del usuario/Correo</label>
-            <input type="text" placeholder="Ingresa tu Usuario ó correo" />
+        <form onSubmit={handleSubmit(handleLogin)}>
 
-            <label>Contraseña</label>
-            <input type="password" placeholder="Ingresa tu Contraseña" />
-            <button type="submit">Continuar</button>
-           
+          <label>Nombre de la Empresa</label>
+          <input
+            type="text"
+            {...register("empresa", {
+              required: "El nombre de la empresa es obligatorio",
+            })}
+            placeholder="empresa de ejemplo S.A.S"
+          />
+          {errors.empresa && (
+            <p className="error-message">{errors.empresa.message}</p>
+          )}
 
-          </form>
 
-          <p className="register-redirect">
-            ¿No tienes una cuenta?{" "}
-            <Link to="/auth/register" className="register-link">
-              Regístrate aquí
-            </Link>
-          </p>
-        </div>
+          <label>Contraseña de la Empresa</label>
+          <input
+            type="password"
+            {...register("empresaPassword", {
+              required: "La contraseña de la empresa es obligatoria",
+            })}
+            placeholder="********"
+          />
+          {errors.empresaPassword && (
+            <p className="error-message">{errors.empresaPassword.message}</p>
+          )}
+
+
+          <label>Usuario</label>
+          <input
+            type="text"
+            {...register("usuario", {
+              required: "El nombre de usuario es obligatorio",
+            })}
+            placeholder="usuario123"
+          />
+          {errors.usuario && (
+            <p className="error-message">{errors.usuario.message}</p>
+          )}
+
+
+          <label>Contraseña del Usuario</label>
+          <input
+            type="password"
+            {...register("password", {
+              required: "La contraseña del usuario es obligatoria",
+            })}
+            placeholder="********"
+          />
+          {errors.password && (
+            <p className="error-message">{errors.password.message}</p>
+          )}
+
+          <button type="submit">Continuar</button>
+        </form>
+
+        <p className="register-redirect">
+          ¿No tienes una cuenta?{" "}
+          <a href="/auth/register" className="register-link">
+            Regístrate aquí
+          </a>
+        </p>
       </div>
-      <Outlet />
-    </>
+    </div>
   );
 }
-
-export default LoginView;
-
-
-
