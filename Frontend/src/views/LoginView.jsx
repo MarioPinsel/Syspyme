@@ -1,10 +1,8 @@
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { isAxiosError } from "axios";
 import api from "../config/axios";
 import "../styles/LoginView.css";
-import { FaChampagneGlasses } from "react-icons/fa6";
-
 export default function LoginView() {
   const initialValues = {
     empresa: "",
@@ -16,20 +14,15 @@ export default function LoginView() {
   const { register, handleSubmit, formState: { errors }, } = useForm({ defaultValues: initialValues, });
 
   const handleLogin = async (formData) => {
-    console.log('Axios baseURL =', api.defaults.baseURL);
-    console.log('Posting to', `${api.defaults.baseURL}/auth/login`, 'payload=', formData);
     try {
       const { data } = await api.post('http://localhost:4000/auth/login', formData);
-      toast.success("Inicio de sesión exitoso");
+      toast.success(data.message);
     } catch (error) {
-      console.error('login error', error?.response ?? error);
       if (isAxiosError(error) && error.response) {
-        toast.error(error.response.data.error);
-      } else {
-        toast.error("Ocurrió un error al iniciar sesión");
+        toast.error(error.response.data.error)
       }
     }
-  };
+  }
 
   return (
     <div className="login-container">

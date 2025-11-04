@@ -7,13 +7,14 @@ export const pool = new pg.Pool({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     port: process.env.DB_PORT,
-    ssl: { rejectUnauthorized: false }
+    ssl: {rejectUnauthorized: false}
 });
+
 
 try {
     const schema = await fs.readFile('./models/schema.sql', 'utf8');
     await pool.query(schema);
     console.log('Esquema aplicado correctamente');
-} catch (err) {
+  } catch (err) {
     console.error('Error al aplicar esquema:', err.message);
-}
+  }
