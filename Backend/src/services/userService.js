@@ -78,7 +78,7 @@ export const verifyAccount = async ({ correo, tipo, codigo }) => {
         await deleteTempEmpresa(correo);        
         const empresaId = result.rows[0].id;
         const finalToken = generateToken({ correo, tipo, id: empresaId, isAdmin: true, verified: true }, '1h');
-        await createDataBase(temp.nombre); // CONEXION CON AZURE
+        await createDataBase(temp.nombre); 
         return { message: 'Registro exitoso', token: finalToken };        
     } else {
         const result = await createUsuario({
