@@ -4,7 +4,7 @@ import { hashPassword, checkPassword } from '../utils/hashUtils.js';
 import {
     createTempUsuario, findTempUsuarioByCorreo, deleteTempUsuario,
     createUsuario, findUsuarioByCorreo, updateUsuarioCodigo,
-    findUsuarioByCorreoOHandle, updateTempUsuarioCodigo
+    findUsuarioByCorreoOHandle, updateTempUsuarioCodigo,createPool
 } from '../repositories/usuario/userRepository.js';
 import {
     createTempEmpresa, findTempEmpresaByCorreo, deleteTempEmpresa,
@@ -32,7 +32,7 @@ const isExpired = (created_at) => {
 export const registerEmpresa = async ({ nombre, nit, correo, password }) => {
     if ((await findEmpresaByCorreo(correo)).rowCount) throw new Error('EMPRESA_ALREADY_EXISTS');
     if ((await findTempEmpresaByCorreo(correo)).rowCount) throw new Error('PENDING_VERIFICATION');
-
+   
     const hashed = await hashPassword(password);
     const code = generateCode();
 
@@ -44,9 +44,10 @@ export const registerEmpresa = async ({ nombre, nit, correo, password }) => {
 };
 
 export const registerUsuario = async ({ nombre, correo, handle, password, empresaId }) => {
+    await createPool('On3 for ALL'); //CONEXION PARA EL POOL
     if ((await findUsuarioByCorreo(correo)).rowCount) throw new Error('USUARIO_ALREADY_EXISTS');
     if ((await findTempUsuarioByCorreo(correo)).rowCount) throw new Error('PENDING_VERIFICATION');
-
+        
     const hashed = await hashPassword(password);
     const code = generateCode();
 
@@ -78,7 +79,7 @@ export const verifyAccount = async ({ correo, tipo, codigo }) => {
         await deleteTempEmpresa(correo);        
         const empresaId = result.rows[0].id;
         const finalToken = generateToken({ correo, tipo, id: empresaId, isAdmin: true, verified: true }, '1h');
-        await createDataBase(temp.nombre); 
+        await createDataBase(temp.nombre);//Creacion empresa
         return { message: 'Registro exitoso', token: finalToken };        
     } else {
         const result = await createUsuario({
