@@ -4,6 +4,7 @@ import pg, { Result } from 'pg';
 
 let client = null;
 const url = `https://${process.env.AZURE_KEYVAULT}.vault.azure.net`;
+const pools = [];
 
 export async function createConection(credential) {
     try {
@@ -28,16 +29,21 @@ export async function createSecret(company) {
 }
 
 export async function getPool(company) {
+    if (pools[company]) {
+        return pools[company];
+    }
+    return await createPool(company);
+}
+
+export const createPool = async (company) => {
     const secret = normalizeName(company);
-    const lastSecret = await client.getSecret(`db-${secret}-conn`);
-    console.log(`Latest version of the secret ${secret}:`, lastSecret);
+    const lastSecret = await client.getSecret(`db-${secret}-conn`);    
     let secretInfo;
     try {
         secretInfo = JSON.parse(lastSecret.value);
     } catch (err) {
         throw new Error('Error al obtener el valor del secreto', err.message)
     }
-
     const pool = new pg.Pool({
         user: process.env.DB_USER,
         host: secretInfo.host,
@@ -46,6 +52,7 @@ export async function getPool(company) {
         port: process.env.DBPORT,
         ssl: { rejectUnauthorized: false }
     });
+    pools[company] = pool;
     return pool;
 }
 
@@ -60,10 +67,9 @@ export async function supplyDataBase(pool) {
 }
 function normalizeName(originalName) {
     return originalName
-        .trim()
-        .toLowerCase()
+        .trim()        
         .replace(/\s+/g, "")
         .replace(/_/g, "-")
-        .replace(/[^a-z0-9_]/g, "")
+        .replace(/[^a-zA-Z0-9_]/g, "")
         .slice(0, 63);
 }
