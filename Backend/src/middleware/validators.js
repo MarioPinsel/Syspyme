@@ -27,7 +27,7 @@ export const loginValidation = [
     body('password').notEmpty().withMessage('Contraseña de usuario obligatoria')
 ];
 
-export const addProductValidation = [
+export const createProductValidation = [
     body('type')
         .notEmpty().withMessage('El tipo es obligatorio')
         .isString().withMessage('El tipo debe ser un texto'),
@@ -47,6 +47,19 @@ export const addProductValidation = [
     body('code')
         .notEmpty().withMessage('El codigo es obligatoria')
         .isAlphanumeric().withMessage('El código debe ser alfanumérico')
+];
+
+export const addProductValidation = [
+
+    body('code')
+        .notEmpty().withMessage('El codigo es obligatoria')
+        .isAlphanumeric().withMessage('El código debe ser alfanumérico'),
+
+    body('quantity')
+        .notEmpty().withMessage('La cantidad es obligatoria')
+        .isInt({ gt: 0 }).withMessage('La cantidad debe ser un número entero positivo')
+
+
 ];
 
 export const updateProductValidation = [

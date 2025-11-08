@@ -6,12 +6,15 @@ export const authToken = (req, res, next) => {
         if (!token) return res.status(401).json({ error: 'Token no proporcionado.' });
 
         const decoded = verifyToken(token);
+
         req.user = decoded;
         next();
-    } catch {
+    } catch (err) {
+        console.log("Verification error:", err);
         res.status(401).json({ error: 'Token inválido o expirado.' });
     }
 };
+
 
 export const isAdmin = (req, res, next) => {
     const { tipo, isAdmin } = req.user || {};

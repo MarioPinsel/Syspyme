@@ -1,12 +1,5 @@
 import { pool } from '../../config/db.js';
 
-export const findProductByTypeAndCode = async (code, type, description = {}) => {
-    return await pool.query(
-        'SELECT * FROM productos WHERE codigo = $1 AND tipo_producto = $2 AND descripcion = $3::jsonb',
-        [code, type, JSON.stringify(description)]
-    );
-};
-
 export const findProductByType = async (type, description = {}) => {
     return await pool.query(
         'SELECT * FROM productos WHERE tipo_producto = $1 AND descripcion = $2::jsonb',
@@ -21,10 +14,27 @@ export const findProductByCode = async (code) => {
     );
 };
 
-export const findProductFromInventory = async (code) => {
+export const findProductByIdOrCode = async (value) => {
+    const isNumeric = /^\d+$/.test(value);
+
+    if (isNumeric) {
+        return await pool.query('SELECT * FROM productos WHERE id = $1', [Number(value)]);
+    } else {
+        return await pool.query('SELECT * FROM productos WHERE codigo = $1', [value]);
+    }
+};
+
+export const findProductFromInventory = async (productId) => {
     return await pool.query(
-        `SELECT * FROM inventario WHERE id_producto = $1 AND estado = '1'`,
-        [code]
+        `SELECT * FROM inventario WHERE id_producto = $1`,
+        [productId]
+    );
+};
+
+export const findInventoryById = async (id) => {
+    return await pool.query(
+        `SELECT * FROM inventario WHERE id = $1`,
+        [id]
     );
 };
 
@@ -35,24 +45,41 @@ export const findProductById = async (id) => {
     );
 };
 
-export const createProduct = async ({ type, description, unitPrice, quantity, code }) => {
+export const findAllProducts = async () => {
+    return await pool.query(`
+    SELECT
+      p.id AS product_id,
+      p.codigo AS product_code,
+      p.tipo_producto,
+      p.descripcion,
+      p.precio_unitario,
+      i.id AS inventory_id,
+      i.cantidad AS cantidad,
+      i.fecha_ingreso AS inventory_created_at
+    FROM productos p
+    JOIN inventario i ON p.id = i.id_producto
+  `);
+};
+
+
+export const createProduct = async ({ type, description, unitPrice, code }) => {
     return await pool.query(
-        'INSERT INTO productos (tipo_producto, descripcion, precio_unitario, cantidad, codigo) VALUES ($1, $2, $3, $4, $5) RETURNING id',
-        [type, description, unitPrice, quantity, code]
+        'INSERT INTO productos (tipo_producto, descripcion, precio_unitario, codigo) VALUES ($1, $2, $3, $4) RETURNING *',
+        [type, description, unitPrice, code]
     );
 };
 
-export const addProductQuantity = async ({ productId, quantity }) => {
+export const addProductInInventory = async ({ product_id, quantity }) => {
     return await pool.query(
-        'UPDATE productos SET cantidad = cantidad + $1 WHERE id = $2',
-        [quantity, productId]
+        'INSERT INTO inventario (id_producto, cantidad) VALUES ($1, $2)',
+        [product_id, quantity]
     );
 };
 
-export const addProductInInventory = async ({ product_id, state }) => {
+export const updateInventoryQuantity = async (id, quantity) => {
     return await pool.query(
-        'INSERT INTO inventario (id_producto, estado) VALUES ($1, $2)',
-        [product_id, state]
+        `UPDATE inventario SET cantidad = $1 WHERE id = $2`,
+        [quantity, id]
     );
 };
 
@@ -66,29 +93,10 @@ export const updateProductById = async (id, fields) => {
     return await pool.query(query, [id, ...values]);
 };
 
-export const deleteFromInventory = async (productId, limit = null, all = false) => {
-    if (all) {
-        return await pool.query(
-            `DELETE FROM inventario WHERE id_producto = $1 AND estado = '1'`,
-            [productId]
-        );
-    }
-
+export const deleteFromInventory = async (productId) => {
     return await pool.query(
-        `DELETE FROM inventario
-         WHERE id IN (
-             SELECT id FROM inventario
-             WHERE id_producto = $1 AND estado = '1'
-             ORDER BY fecha_ingreso ASC
-             LIMIT $2
-         )`,
-        [productId, limit]
+        `DELETE FROM inventario WHERE id_producto = $1`,
+        [productId]
     );
 };
 
-export const updateQuantity = async (id, quantity) => {
-    return await pool.query(
-        'UPDATE productos SET cantidad = $1 WHERE id = $2',
-        [quantity, id]
-    );
-};
