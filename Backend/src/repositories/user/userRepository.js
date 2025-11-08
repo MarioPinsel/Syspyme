@@ -1,4 +1,10 @@
-import { pool } from '../../config/db.js';
+import { getPool } from '../../config/secretManagment.js';
+
+let pool;
+
+export const createPool = async (company) => {
+  pool = await getPool(company);
+};
 
 export const findUsuarioByCorreo = async (correo) => {
   return await pool.query('SELECT * FROM usuarios WHERE correo = $1', [correo]);

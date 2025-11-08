@@ -22,3 +22,8 @@ export const isAdmin = (req, res, next) => {
     return res.status(403).json({ error: 'Solo una empresa o administrador puede realizar esta acción.' });
 };
 
+export const verified = (req, res, next) => {
+    const { verified } = req.user || {};
+    if (verified === true) return next();
+    return res.status(403).json({ error: 'Registrate o inicia sesión' });
+};
