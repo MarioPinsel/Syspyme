@@ -20,9 +20,10 @@ export const createCompany = async (req, res) => {
 
 export const createAccount = async (req, res) => {
     try {
+        const pool = req.pool;
         const { empresaNombre } = req.user;
         const { nombre, correo, handle, password } = req.body;
-        const result = await registerUsuario({ empresaNombre, nombre, correo, handle, password });
+        const result = await registerUsuario({ pool, empresaNombre, nombre, correo, handle, password });
         res.status(201).json(result);
     } catch (error) {
         if (error.message === 'USUARIO_ALREADY_EXISTS') return res.status(409).json({ error: 'El correo ya está registrado.' });
@@ -34,9 +35,10 @@ export const createAccount = async (req, res) => {
 
 export const verifyAccountController = async (req, res) => {
     try {
+        const pool = req.pool;
         const { codigo } = req.body;
         const { empresaNombre, correo, tipo } = req.user;
-        const result = await verifyAccount({ empresaNombre, correo, tipo, codigo });
+        const result = await verifyAccount({ pool, empresaNombre, correo, tipo, codigo });
         res.status(200).json(result);
     } catch (error) {
         if (error.message === 'INVALID_CODE') return res.status(400).json({ error: 'Código inválido.' });
@@ -60,9 +62,10 @@ export const login = async (req, res) => {
 
 export const verifyLogin = async (req, res) => {
     try {
+        const pool = req.pool;
         const { codigo } = req.body;
         const { correo, empresaNombre } = req.user;
-        const result = await verifyLoginUsuario({ empresaNombre, correo, codigo });
+        const result = await verifyLoginUsuario({ pool, empresaNombre, correo, codigo });
         res.status(200).json(result);
     } catch (error) {
         if (error.message === 'INVALID_CODE') return res.status(400).json({ error: 'Código inválido.' });

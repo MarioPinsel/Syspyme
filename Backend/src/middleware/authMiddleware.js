@@ -1,4 +1,5 @@
 import { verifyToken } from '../utils/tokenUtils.js';
+import { getPool } from '../../config/secretManagment.js';
 
 export const authToken = (req, res, next) => {
     try {
@@ -8,6 +9,7 @@ export const authToken = (req, res, next) => {
         const decoded = verifyToken(token);
 
         req.user = decoded;
+        req.pool = getPool(decoded.empresaNombre);
         next();
     } catch (err) {
         console.log("Verification error:", err);

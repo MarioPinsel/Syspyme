@@ -2,7 +2,8 @@ import { createProductService, addProductService, updateProductService, getProdu
 
 export const createProductController = async (req, res) => {
     try {
-        const result = await createProductService(req.body);
+        const pool = req.pool;
+        const result = await createProductService(pool, req.body);
 
         if (!result.success) {
             return res.status(409).json(result);
@@ -15,10 +16,10 @@ export const createProductController = async (req, res) => {
     }
 };
 
-
 export const addProductController = async (req, res) => {
     try {
-        const result = await addProductService(req.body)
+        const pool = req.pool;
+        const result = await addProductService(pool, req.body)
         res.status(201).json(result)
     } catch (error) {
         if (error.message === 'EMPTY') return res.status(409).json({ error: 'No existe ese producto con ese id o con ese codigo' });
@@ -29,7 +30,8 @@ export const addProductController = async (req, res) => {
 
 export const updateProductController = async (req, res) => {
     try {
-        const result = await updateProductService(req.body);
+        const pool = req.pool;
+        const result = await updateProductService(pool, req.body);
 
         if (result.success === false) {
             return res.status(409).json(result);
@@ -46,7 +48,8 @@ export const updateProductController = async (req, res) => {
 
 export const getProductsController = async (req, res) => {
     try {
-        const result = await getProductsService(req.query)
+        const pool = req.pool;
+        const result = await getProductsService(pool, req.query)
         if (result.success === false) {
             return res.status(409).json(result);
         }
@@ -59,7 +62,8 @@ export const getProductsController = async (req, res) => {
 
 export const deleteProductController = async (req, res) => {
     try {
-        const result = await deleteProductService(req.body)
+        const pool = req.pool;
+        const result = await deleteProductService(pool, req.body)
         res.status(200).json(result)
     } catch (error) {
         if (error.message === 'NOT_FOUND_INVENTORY') return res.status(404).json({ error: 'No hay productos en el inventario pa eliminar.' });
