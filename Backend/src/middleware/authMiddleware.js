@@ -7,16 +7,16 @@ export const authToken = async (req, res, next) => {
         if (!token) return res.status(401).json({ error: 'Token no proporcionado.' });
 
         const decoded = verifyToken(token);
-        
-        req.user = decoded;
-        console.log('textoDECODEDD',decoded);
-        console.log('texto',decoded.created);
-        if(decoded.created === true){   
-            console.log('Llego',decoded.created ) ;       
-            req.pool = await getPool(decoded.empresaNombre);
-            console.log('WAWAWAWWAWAWAWWA',req.pool ) ;
 
-        }                
+        req.user = decoded;
+        console.log('textoDECODEDD', decoded);
+        console.log('texto', decoded.created);
+        if (decoded.created === true) {
+            console.log('Llego', decoded.created);
+            req.pool = await getPool(decoded.empresaNombre);
+            console.log('WAWAWAWWAWAWAWWA', req.pool);
+
+        }
         next();
     } catch (err) {
         console.log("Verification error:", err);
@@ -26,13 +26,9 @@ export const authToken = async (req, res, next) => {
 
 
 export const isAdmin = (req, res, next) => {
-    const { tipo, isAdmin } = req.user || {};
-    if (tipo === 'empresa' || isAdmin) return next();
+    const { isAdmin } = req.user || {};
+    if (isAdmin) return next();
     return res.status(403).json({ error: 'Solo una empresa o administrador puede realizar esta acción.' });
 };
 
-export const verified = (req, res, next) => {
-    const { verified } = req.user || {};
-    if (verified === true) return next();
-    return res.status(403).json({ error: 'Registrate o inicia sesión' });
-};
+
