@@ -11,7 +11,7 @@ import {
     createEmpresa, findEmpresaByCorreo, findEmpresaByNombre, updateTempEmpresaCodigo
 } from '../repositories/enterprise/companyRepository.js';
 import { createDataBase } from '../config/createDataBase.js';
-import {getPool} from '../config/secretManagment.js'
+import { getPool } from '../config/secretManagment.js'
 
 const generateCode = () => Math.floor(100000 + Math.random() * 900000);
 const CODE_EXPIRATION_MINUTES = 15;
@@ -64,7 +64,7 @@ export const registerUsuario = async ({ pool, empresaNombre, nombre, correo, han
 
     await sendVerificationEmail(correo, code);
 
-    const token = generateToken({ correo, tipo: 'usuario', empresaNombre, created: true}, '15m');
+    const token = generateToken({ correo, tipo: 'usuario', empresaNombre, created: true }, '15m');
     return { message: 'Código de verificación enviado al correo.', token };
 };
 
@@ -90,7 +90,7 @@ export const verifyAccount = async ({ pool, empresaNombre, correo, tipo, codigo 
         await deleteTempEmpresa(correo);
 
         const empresaNombre = result.rows[0].nombre;
-        const finalToken = generateToken({isAdmin: true, created: true, correo, tipo, empresaNombre }, '1h');
+        const finalToken = generateToken({ isAdmin: true, created: true, correo, empresaNombre }, '1h');
         await createDataBase(empresaNombre);
         return { message: 'Registro exitoso', token: finalToken };
     } else {
@@ -106,7 +106,7 @@ export const verifyAccount = async ({ pool, empresaNombre, correo, tipo, codigo 
         const userId = result.rows[0].id;
         const isAdmin = userId === 1;
 
-        const finalToken = generateToken({ correo, tipo, isAdmin, created: true, empresaNombre }, '1h');
+        const finalToken = generateToken({ correo, isAdmin, created: true, empresaNombre }, '1h');
         return { message: 'Registro exitoso', token: finalToken };
     }
 };
@@ -131,7 +131,7 @@ export const loginUsuario = async ({ empresa, empresaPassword, usuario, password
     await updateUsuarioCodigo(pool, usuarioData.correo, code, new Date());
     await sendVerificationEmail(usuarioData.correo, code);
 
-    const token = generateToken({ correo: usuarioData.correo, empresaNombre: empresa, created:true }, '15m');
+    const token = generateToken({ correo: usuarioData.correo, empresaNombre: empresa, created: true }, '15m');
     return { message: 'Código de inicio de sesión enviado al correo.', token };
 };
 
@@ -148,7 +148,7 @@ export const verifyLoginUsuario = async ({ pool, empresaNombre, correo, codigo }
         throw new Error('INVALID_CODE');
 
     const isAdmin = usuarioData.id === 1;
-    const finalToken = generateToken({ correo, id: usuarioData.id, isAdmin, created: true, empresaNombre }, '1h');
+    const finalToken = generateToken({ correo, isAdmin, created: true, empresaNombre }, '1h');
 
     return { message: 'Login exitoso', token: finalToken };
 };

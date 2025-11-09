@@ -1,4 +1,4 @@
-//import { createCustomerService, getCustomersService, updateCustomerService } from '../services/customersService.js'
+import { createCustomerService, getCustomersService, updateCustomerService } from '../services/customersService.js'
 
 export const createCustomerController = async (req, res) => {
     try {

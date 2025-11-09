@@ -33,8 +33,8 @@ export const createProductValidation = [
         .isString().withMessage('El tipo debe ser un texto'),
 
     body('description')
-        .notEmpty().withMessage('Los atributos son obligatorios')
-        .isObject().withMessage('Los atributos deben ser un objeto JSON'),
+        .notEmpty().withMessage('La descripción son obligatorios')
+        .isObject().withMessage('La descripción deben ser un objeto JSON'),
 
     body('unitPrice')
         .notEmpty().withMessage('El precio unitario es obligatorio')
@@ -155,3 +155,31 @@ export const updateCustomerValidation = [
         .isLength({ max: 50 }).withMessage("El correo no puede tener más de 50 caracteres.")
 ];
 
+export const createSaleValidation = [
+
+    body("document")
+        .notEmpty().withMessage("El documento es obligatorio.")
+        .isInt({ min: 1000000, max: 9999999999 }).withMessage("El documento debe ser un número entero válido de 7 a 10 dígitos (cédula colombiana)."),
+
+    body("paymentMethod")
+        .notEmpty().withMessage("El método de pago es obligatorio.")
+        .isIn(["EFECTIVO", "TRANSFERENCIA", "TARJETA"])
+        .withMessage("El método de pago no es válido."),
+
+    body("items")
+        .isArray({ min: 1 }).withMessage("Debe enviar al menos un item en la venta."),
+
+    body("items.*.productId")
+        .notEmpty().withMessage("El productId es obligatorio.")
+        .isInt({ min: 1 }).withMessage("El productId debe ser entero válido."),
+
+    body("items.*.quantity")
+        .notEmpty().withMessage("La cantidad es obligatoria.")
+        .isInt({ min: 1 }).withMessage("La cantidad debe ser mayor a 0.")
+];
+
+export const deleteSaleValidation = [
+    body('id')
+        .notEmpty().withMessage('El ID de la factura es obligatorio')
+        .isInt({ gt: 0 }).withMessage('El ID debe ser un número entero positivo')
+]
