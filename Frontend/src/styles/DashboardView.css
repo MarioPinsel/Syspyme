@@ -1,0 +1,146 @@
+:root {
+  --color-primario: #225EA8;
+  --color-acento: #28E0DE;
+  --color-fondo: #ffffff;
+  --fuente-principal: 'Titillium Web', sans-serif;
+  --fuente-secundaria: 'Inter', sans-serif;
+}
+
+.dashboard-container {
+  min-height: 100vh;
+  background-color: var(--color-fondo);
+  padding: 2rem 4rem;
+  font-family: var(--fuente-secundaria);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.dashboard-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.dashboard-header .highlight {
+  color: var(--color-acento);
+}
+
+.dashboard-main {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+
+.dashboard-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 200px);
+  gap: 1rem;
+}
+
+.action-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: var(--fuente-principal);
+}
+
+.action-card:hover {
+  background-color: #f5f7fa;
+  transform: translateY(-2px);
+}
+
+.action-card p {
+  margin-top: 0.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+
+.dashboard-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.stat-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  width: 220px;
+}
+
+.stat-title {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 0.3rem;
+}
+
+.stat-card h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #000;
+}
+
+
+.dashboard-activity {
+  margin-top: 3rem;
+}
+
+.dashboard-activity h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.activity-list {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.activity-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #ddd;
+  font-family: var(--fuente-principal);
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.date {
+  color: #555;
+  font-size: 14px;
+}
+
+
+
+@media (max-width: 900px) {
+  .dashboard-main {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .dashboard-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .dashboard-stats {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .stat-card {
+    width: 160px;
+  }
+}

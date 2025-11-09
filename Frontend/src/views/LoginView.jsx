@@ -57,11 +57,11 @@ export default function LoginView() {
           )}
 
 
-          <label>Usuario</label>
+          <label>Usuario o Email</label>
           <input
             type="text"
             {...register("usuario", {
-              required: "El nombre de usuario es obligatorio",
+              required: "El nombre de usuario ó el Email es obligatorio",
             })}
             placeholder="usuario123"
           />
@@ -86,9 +86,9 @@ export default function LoginView() {
         </form>
 
         <p className="register-redirect">
-          ¿No tienes una cuenta?{" "}
+          ¿No has registrado tu empresa?{" "}
           <a href="/auth/register" className="register-link">
-            Regístrate aquí
+            Regístrala aquí
           </a>
         </p>
       </div>

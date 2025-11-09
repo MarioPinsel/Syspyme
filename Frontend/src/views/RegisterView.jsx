@@ -5,25 +5,25 @@ export default function RegisterView() {
   return (
     <div className="register-container">
       <div className="register-box">
-        <h2>Crea tu cuenta</h2>
+        <h2>Registra tu empresa</h2>
         <form>
-          <label>Usuario</label>
-          <input type="text" placeholder="Ingresa tu Usuario" />
-
           <label>Nombre</label>
-          <input type="text" placeholder="Ingresa tu Nombre" />
+          <input type="text" placeholder="Ingresa el nombre de la empresa" />
 
-          <label>Email</label>
-          <input type="text" placeholder="Ingresa tu Email" />
+          <label>NIT</label>
+          <input type="text" placeholder="Ingresa el NIT de la empresa" />
+
+          <label>Correo</label>
+          <input type="text" placeholder="Ingresa el Email" />
 
           <label>Contraseña</label>
-          <input type="password" placeholder="Ingresa tu Contraseña" />
+          <input type="password" placeholder="Ingresa la Contraseña" />
 
           <button type="submit">Registrarse</button>
         </form>
 
         <p className="login-redirect">
-          ¿Ya tienes una cuenta?{" "}
+          ¿Tu empresa ya está registrada?{" "}
           <Link to="/auth/login" className="login-link">
             Inicia sesión
           </Link>
