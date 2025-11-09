@@ -13,5 +13,6 @@ app.use(cors(corsConfig))
 
 app.use('/auth', authRouter)
 app.use('/inventory', inventoryRouter)
+app.use('/customers', customersRouter)
 
 export default app;
