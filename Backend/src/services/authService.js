@@ -41,7 +41,7 @@ export const registerEmpresa = async ({ nombre, nit, correo, password }) => {
     await createTempEmpresa({ nombre, nit, correo, password: hashed, code, created_at: new Date() });
     await sendVerificationEmail(correo, code);
 
-    const token = generateToken({ correo, tipo: 'empresa' }, '15m');
+    const token = generateToken({ correo, tipo: 'empresa', empresaNombre: nombre }, '15m');
     return { message: 'Código de verificación enviado al correo.', token };
 };
 
@@ -90,8 +90,7 @@ export const verifyAccount = async ({ pool, empresaNombre, correo, tipo, codigo 
 
         const empresaNombre = result.rows[0].nombre;
         const finalToken = generateToken({ correo, tipo, empresaNombre, isAdmin: true, verified: true }, '1h');
-
-        await createDataBase(temp.nombre);
+        await createDataBase(empresaNombre);
         return { message: 'Registro exitoso', token: finalToken };
     } else {
         const result = await createUsuario(pool, {
