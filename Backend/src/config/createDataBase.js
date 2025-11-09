@@ -37,6 +37,6 @@ function normalizeName(originalName) {
         .trim()
         .toLowerCase()
         .replace(/\s+/g, "")
-        .replace(/[^a-zA-Z0-9]/g, "")
+        .replace(/[^a-z0-9]/g, "")
         .slice(0, 63);
 }

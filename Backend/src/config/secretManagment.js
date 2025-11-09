@@ -49,7 +49,7 @@ export const createPool = async (company) => {
         host: secretInfo.host,
         password: process.env.DB_PASSWORD,
         database: secretInfo.name,
-        port: process.env.DBPORT,
+        port: process.env.DB_PORT,
         ssl: { rejectUnauthorized: false }
     });
     pools[company] = pool;
@@ -67,9 +67,9 @@ export async function supplyDataBase(pool) {
 }
 function normalizeName(originalName) {
     return originalName
-        .trim()        
+        .trim()
+        .toLowerCase()
         .replace(/\s+/g, "")
-        .replace(/_/g, "-")
-        .replace(/[^a-zA-Z0-9_]/g, "")
+        .replace(/[^a-z0-9]/g, "")
         .slice(0, 63);
 }

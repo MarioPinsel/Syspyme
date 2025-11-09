@@ -6,7 +6,6 @@ import customersRouter from './routes/customersRouter.js';
 import './config/conectionCore.js';
 import { corsConfig } from './config/cors.js';
 
-
 const app = express();
 
 app.use(express.json());
