@@ -1,102 +1,92 @@
 import {
-    addProductInInventory,
-    createProduct,
-    deleteFromInventory,
-    findProductByIdOrCode,
-    updateProductById,
-    findProductByCode,
     findProductByType,
+    findProductByCode,
+    findProductByIdOrCode,
     findProductFromInventory,
     findAllProducts,
+    findInventoryById,
+    createProduct,
+    addProductInInventory,
     updateInventoryQuantity,
-    findInventoryById
+    updateProductById,
+    deleteFromInventory
 } from "../repositories/inventory/inventoryRepository.js";
 
-export const createProductService = async ({ type, description, unitPrice, quantity, code }) => {
-    const exists = await findProductByCode(code);
+
+export const createProductService = async (pool, { type, description, unitPrice, quantity, code }) => {
+
+    const exists = await findProductByCode(pool, code);
 
     if (exists.rowCount > 0) {
-        const existingProduct = exists.rows[0]
         return {
             success: false,
             message: `El código ${code} ya está asociado a otro producto.`,
-            data: existingProduct
+            data: exists.rows[0]
         };
     }
 
-    const search = await findProductByType(type, description)
+    const search = await findProductByType(pool, type, description);
     if (search.rowCount > 0) {
-        const existingProduct = search.rows[0]
-        if (existingProduct.code !== code) {
+        const existing = search.rows[0];
+        if (existing.code !== code) {
             return {
                 success: false,
                 message: `Ya existe un producto con este tipo y descripción, pero con otro código.`,
-                data: existingProduct
+                data: existing
             };
         }
     }
 
-    const result = await createProduct({ type, description, unitPrice, code });
+    const result = await createProduct(pool, { type, description, unitPrice, code });
     const productId = result.rows[0].id;
 
-    await addProductInInventory({ product_id: productId, quantity });
+    await addProductInInventory(pool, { product_id: productId, quantity });
 
     return {
         success: true,
-        message: 'Producto creado correctamente',
+        message: "Producto creado correctamente",
         data: result.rows[0]
     };
+};
 
-}
 
-export const addProductService = async ({ code, quantity }) => {
-    const exists = await findProductByIdOrCode(code);
-    if (exists.rowCount === 0) throw new Error('EMPTY');
+export const addProductService = async (pool, { code, quantity }) => {
+    const exists = await findProductByIdOrCode(pool, code);
+    if (exists.rowCount === 0) throw new Error("EMPTY");
 
     const productId = exists.rows[0].id;
 
-    await addProductInInventory({ product_id: productId, quantity });
+    await addProductInInventory(pool, { product_id: productId, quantity });
 
-    return { message: 'Productos agregado correctamente' };
-}
+    return { message: "Producto agregado correctamente" };
+};
 
-export const updateProductService = async ({
-    id,               // id del inventario, siempre
-    unitPrice,
-    code,
-    type,
-    description,
-    quantity
+
+export const updateProductService = async (pool, {
+    id, unitPrice, code, type, description, quantity
 }) => {
 
-    // 1. Buscar la fila del inventario
-    const invResult = await findInventoryById(id);
+    const invRes = await findInventoryById(pool, id);
 
-    if (invResult.rowCount === 0) {
+    if (invRes.rowCount === 0) {
         return { success: false, message: "No existe un registro de inventario con ese ID." };
     }
 
-    const inventoryRow = invResult.rows[0];
-    const productId = inventoryRow.id_producto;
+    const row = invRes.rows[0];
+    const productId = row.id_producto;
 
-    // 2. Actualizar SOLO la cantidad de ese inventario
     if (quantity !== undefined) {
-        const currentQty = inventoryRow.cantidad;
-
-        if (currentQty === quantity) {
+        if (row.cantidad === quantity) {
             return {
                 success: false,
                 message: "La cantidad es la misma, no se realizaron cambios.",
-                inventory: inventoryRow
+                inventory: row
             };
         }
-
-        await updateInventoryQuantity(id, quantity);
+        await updateInventoryQuantity(pool, id, quantity);
     }
 
-    // 3. Si llegan campos del producto, actualizarlos
     const fields = {};
-
     if (unitPrice !== undefined) fields.precio_unitario = unitPrice;
     if (code !== undefined) fields.codigo = code;
     if (type !== undefined) fields.tipo_producto = type;
@@ -105,8 +95,8 @@ export const updateProductService = async ({
     let updatedProduct = null;
 
     if (Object.keys(fields).length > 0) {
-        const productResult = await updateProductById(productId, fields);
-        updatedProduct = productResult.rows[0];
+        const productRes = await updateProductById(pool, productId, fields);
+        updatedProduct = productRes.rows[0];
     }
 
     return {
@@ -117,14 +107,12 @@ export const updateProductService = async ({
     };
 };
 
-export const getProductsService = async () => {
-    const result = await findAllProducts();
+
+export const getProductsService = async (pool) => {
+    const result = await findAllProducts(pool);
 
     if (result.rowCount === 0) {
-        return {
-            success: false,
-            message: "No hay productos actualmente",
-        };
+        return { success: false, message: "No hay productos actualmente" };
     }
 
     return result.rows.map(row => ({
@@ -141,15 +129,17 @@ export const getProductsService = async () => {
     }));
 };
 
-export const deleteProductService = async ({ id }) => {
 
-    const exists = await findProductByIdOrCode(id);
-    if (exists.rowCount === 0) throw new Error('NOT_FOUND');
+export const deleteProductService = async (pool, { id }) => {
+    const exists = await findProductByIdOrCode(pool, id);
+    if (exists.rowCount === 0) throw new Error("NOT_FOUND");
+
     const productId = exists.rows[0].id;
-    const result = await findProductFromInventory(productId);
-    if (result.rowCount === 0) throw new Error('NOT_FOUND_INVENTORY');
 
-    await deleteFromInventory(productId);
+    const inv = await findProductFromInventory(pool, productId);
+    if (inv.rowCount === 0) throw new Error("NOT_FOUND_INVENTORY");
 
-    return { message: 'Producto eliminado correctamente (inventario vaciado).' };
+    await deleteFromInventory(pool, productId);
+
+    return { message: "Producto eliminado correctamente (inventario vaciado)." };
 };

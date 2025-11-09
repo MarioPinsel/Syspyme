@@ -1,4 +1,4 @@
-import { pool } from '../../config/db.js';
+import { pool } from '../../config/conectionCore.js';
 
 export const createEmpresa = async ({ nombre, nit, correo, password }) => {
   const query = `
