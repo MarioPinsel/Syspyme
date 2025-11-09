@@ -11,6 +11,7 @@ import {
     createEmpresa, findEmpresaByCorreo, findEmpresaByNombre, updateTempEmpresaCodigo
 } from '../repositories/enterprise/companyRepository.js';
 import { createDataBase } from '../config/createDataBase.js';
+import {getPool} from '../config/secretManagment.js'
 
 const generateCode = () => Math.floor(100000 + Math.random() * 900000);
 const CODE_EXPIRATION_MINUTES = 15;
@@ -127,7 +128,7 @@ export const loginUsuario = async ({ empresa, empresaPassword, usuario, password
     if (!validUser) throw new Error('INVALID_USER_CREDENTIALS');
 
     const code = generateCode();
-    await updateUsuarioCodigo(pool, empresaData.pool, usuarioData.correo, code, new Date());
+    await updateUsuarioCodigo(pool, usuarioData.correo, code, new Date());
     await sendVerificationEmail(usuarioData.correo, code);
 
     const token = generateToken({ correo: usuarioData.correo, empresaNombre: empresa, created:true }, '15m');

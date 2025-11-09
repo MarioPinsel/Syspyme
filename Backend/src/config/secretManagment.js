@@ -65,6 +65,7 @@ export async function supplyDataBase(pool) {
         console.error('Error al aplicar esquema:', err.message);
     }
 }
+
 function normalizeName(originalName) {
     return originalName
         .trim()
