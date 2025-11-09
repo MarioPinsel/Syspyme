@@ -3,13 +3,13 @@ import { PostgreSQLManagementFlexibleServerClient } from "@azure/arm-postgresql-
 import { createConection, createSecret, getPool, supplyDataBase } from "./secretManagment.js";
 
 const credential = new DefaultAzureCredential();
-const client = new PostgreSQLManagementFlexibleServerClient(credential, process.env.SUSCRIPTION_ID);
+const client = new PostgreSQLManagementFlexibleServerClient(credential, process.env.SUBSCRIPTION_ID);
 
 export async function createDataBase(company) {
-    await createDB(company);
     await createConection(credential);
+    await createDB(company);
+    
     await createSecret(company);
-
     const pool = await getPool(company);
     await supplyDataBase(pool);
 };
@@ -23,10 +23,10 @@ async function createDB(company) {
         tags: {
             nombre: dbName,
             entorno: "desarrollo"
-        }
-    };
+        }        
+    };    
     try {
-        await client.databases.beginCreateAndWait(process.env.AZURE_GROUP_RESOURCES, process.env.AZURESERVER, dbName, params);
+        await client.databases.beginCreateAndWait(process.env.AZURE_GROUP_RESOURCES, process.env.AZURE_SERVER, dbName, params);
     } catch (err) {
         console.log('Error al crear la Base de Datos:', err.message);
     }
