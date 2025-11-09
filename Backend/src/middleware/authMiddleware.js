@@ -1,17 +1,22 @@
 import { verifyToken } from '../utils/tokenUtils.js';
 import { getPool } from '../config/secretManagment.js';
 
-export const authToken = (req, res, next) => {
+export const authToken = async (req, res, next) => {
     try {
         const token = req.headers.authorization?.split(' ')[1];
         if (!token) return res.status(401).json({ error: 'Token no proporcionado.' });
 
         const decoded = verifyToken(token);
-
+        
         req.user = decoded;
-        if(decoded.tipo !== 'empresa')        {
-            req.pool = getPool(decoded.empresaNombre);
-        }        
+        console.log('textoDECODEDD',decoded);
+        console.log('texto',decoded.created);
+        if(decoded.created === true){   
+            console.log('Llego',decoded.created ) ;       
+            req.pool = await getPool(decoded.empresaNombre);
+            console.log('WAWAWAWWAWAWAWWA',req.pool ) ;
+
+        }                
         next();
     } catch (err) {
         console.log("Verification error:", err);

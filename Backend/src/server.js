@@ -4,7 +4,7 @@ import authRouter from './routes/authRouter.js';
 import inventoryRouter from './routes/inventoryRouter.js'
 import './config/conectionCore.js';
 import { corsConfig } from './config/cors.js';
-
+//import {customersRouter} from './routes/customersRouter.js'
 const app = express();
 
 app.use(express.json());
@@ -13,6 +13,6 @@ app.use(cors(corsConfig))
 
 app.use('/auth', authRouter)
 app.use('/inventory', inventoryRouter)
-app.use('/customers', customersRouter)
+//app.use('/customers', customersRouter)
 
 export default app;
