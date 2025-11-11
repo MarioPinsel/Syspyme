@@ -1,8 +1,8 @@
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { isAxiosError } from "axios";
-import api from "../config/axios";
-import "../styles/LoginView.css";
+import api from "../../config/axios";
+import "../../styles/LoginView.css";
 export default function LoginView() {
   const initialValues = {
     empresa: "",
@@ -15,7 +15,7 @@ export default function LoginView() {
 
   const handleLogin = async (formData) => {
     try {
-      const { data } = await api.post('http://localhost:4000/auth/login', formData);
+      const { data } = await api.post('/auth/login', formData);
       toast.success(data.message);
     } catch (error) {
       if (isAxiosError(error) && error.response) {

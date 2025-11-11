@@ -1,4 +1,4 @@
-import "../styles/Header.css";
+import "../styles/Layouts/Header.css";
 import { FaUser, FaRightToBracket } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
