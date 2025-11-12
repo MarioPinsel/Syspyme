@@ -1,24 +1,33 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
-import LoginView from './views/LoginView'
-import RegisterView from './views/RegisterView'
-import CompanyRegisterView from './views/CompanyRegisterVIew'
+import LoginView from './views/Auth/LoginView'
+import RegisterView from './views/Auth/RegisterView.jsx'
+import RegisterVerify from './views/Auth/RegisterVerify.jsx'
+import CompanyRegisterView from './views/CompanyRegisterView'
 import AuthLayout from './layouts/AuthLayout'
 import Homepage from './views/Homepage'
-import LoginVerification from './views/LoginVerification.jsx'
-import DashboardView from './views/DashboardView.jsx'
+import LoginVerify from './views/Auth/LoginVerify.jsx'
+import Inventory from "./views/Inventory.jsx"
 
 export default function Router() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<AuthLayout />}>
-          <Route index element={<Homepage />} />
-          <Route path="/auth/login" element={<LoginView />} />
-          <Route path="/auth/register" element={<RegisterView />} />
-          <Route path="/auth/company-register" element={<CompanyRegisterView />} />
-          <Route path="/auth/verify" element={<LoginVerification />} />
-          <Route path="/auth/dashboard" element={<DashboardView />} />
+          <Route index={true} element={<Homepage />} />
         </Route>
+
+        <Route path="/auth" element={<AuthLayout />}>
+          <Route path="login" element={<LoginView />} />
+          <Route path="register" element={<RegisterView />} />
+          <Route path="company-register" element={<CompanyRegisterView />} />
+          <Route path="loginVerify" element={<LoginVerify />} />
+          <Route path="registerVerify" element={<RegisterVerify />} />
+        </Route>
+
+        <Route path="/inventory" element={<AuthLayout />}>
+          <Route path="info" element={<Inventory />} />
+        </Route>
+
       </Routes>
     </BrowserRouter>
   )
