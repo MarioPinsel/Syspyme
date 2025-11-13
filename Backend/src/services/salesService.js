@@ -1,15 +1,15 @@
-import { createReceipt, createDetailReceipt, addXMLAndCUFEToReceipt } from '../repositories/salesRepository.js'
-import { findCustomerByDocument } from '../repositories/customersRepository.js'
+import { createReceipt, createDetailReceipt, addXMLAndCUFEToReceipt } from '../repositories/sale/salesRepository.js'
+import { findCustomerByDocument } from '../repositories/customer/customersRepository.js'
 import { findUsuarioByCorreo } from '../repositories/user/userRepository.js'
 import { getTotalStockByProductId, findProductByCode, getInventoryByProductId, updateInventoryQuantity, deleteFromInventory } from '../repositories/inventory/inventoryRepository.js'
 import { getFirmaDigital } from '../utils/firmaDigital.js'
-import { generarCUFE } from '../utils/cufe.js';
-import { findEmpresaByNombre } from '../repositories/company/companyRepository.js';
+import { generarCUFE } from '../utils/cufeUtils.js';
+import { findEmpresaByNombre } from '../repositories/enterprise/companyRepository.js';
 import { sendFacturaEmail } from '../utils/sendFacturaEmail.js';
 
 const iva = 0.19;
 
-export const createSaleService = async (pool, correo, empresaNombre, document, items, paymentMethod, paymentType, creditTerm) => {
+export const createSaleService = async (pool, correo, empresaNombre, {document, items, paymentMethod, paymentType, creditTerm}) => {
 
     const clienteRes = await findCustomerByDocument(pool, document);
     if (clienteRes.rowCount === 0) {
@@ -20,7 +20,7 @@ export const createSaleService = async (pool, correo, empresaNombre, document, i
     const userRes = await findUsuarioByCorreo(pool, correo);
     const usuario = userRes.rows[0];
 
-    const empresaRes = await findEmpresaByNombre(pool, empresaNombre);
+    const empresaRes = await findEmpresaByNombre(empresaNombre);
     const empresa = empresaRes.rows[0];
 
     let subTotal = 0;
@@ -119,4 +119,9 @@ export const createSaleService = async (pool, correo, empresaNombre, document, i
 
     return { success: true, message: "Venta creada exitosamente.", receiptId }
 
+}
+export const getSalesService = async () => {
+}
+
+export const deleteSaleService = async () => {
 }

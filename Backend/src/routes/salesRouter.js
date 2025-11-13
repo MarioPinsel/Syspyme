@@ -1,5 +1,5 @@
 import Router from 'express';
-import { createSaleController, getSalesController, deleteSaleController } from '../controllers/salesControllers.js'
+import { createSaleController, getSalesController, deleteSaleController } from '../controllers/salesController.js'
 import { authToken } from '../middleware/authMiddleware.js';
 import { createSaleValidation, deleteSaleValidation } from '../middleware/validators.js'
 import { validate } from '../middleware/validation.js'

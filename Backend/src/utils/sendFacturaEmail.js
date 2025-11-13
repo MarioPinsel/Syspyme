@@ -27,7 +27,7 @@ export async function sendFacturaEmail(xmlString, clienteEmail) {
     const mailOptions = {
         from: `"SysPyME" <${process.env.EMAIL_USER}>`,
         to: clienteEmail,
-        subject: "🧾 Factura Electrónica - SysPyME",
+        subject: "Factura Electrónica - SysPyME",
         html: `
       <p>Estimado cliente,</p>
       <p>Adjuntamos su <b>Factura Electrónica</b> en formato PDF y XML.</p>

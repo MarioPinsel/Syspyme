@@ -155,8 +155,6 @@ export const updateCustomerValidation = [
         .isLength({ max: 50 }).withMessage("El correo no puede tener más de 50 caracteres.")
 ];
 
-import { body } from "express-validator";
-
 export const createSaleValidation = [
     body("document")
         .notEmpty().withMessage("El documento es obligatorio.")
@@ -169,7 +167,7 @@ export const createSaleValidation = [
         .notEmpty().withMessage('El codigo es obligatoria')
         .isAlphanumeric().withMessage('El código debe ser alfanumérico'),
 
-    body("items.*.cantidad")
+    body("items.*.quantity")
         .notEmpty().withMessage("La cantidad es obligatoria.")
         .isInt({ min: 1 }).withMessage("La cantidad debe ser un entero mayor a 0."),
 
