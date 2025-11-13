@@ -29,6 +29,7 @@ export async function createSecret(company) {
 }
 
 export async function getPool(company) {
+    console.log(pools);
     if (pools[company]) {
         return pools[company];
     }

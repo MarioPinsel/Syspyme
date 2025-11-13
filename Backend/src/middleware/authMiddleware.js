@@ -9,12 +9,9 @@ export const authToken = async (req, res, next) => {
         const decoded = verifyToken(token);
 
         req.user = decoded;
-        console.log('textoDECODEDD', decoded);
-        console.log('texto', decoded.created);
-        if (decoded.created === true) {
-            console.log('Llego', decoded.created);
+        console.log(decoded)
+        if (decoded.created === true) {            
             req.pool = await getPool(decoded.empresaNombre);
-            console.log('WAWAWAWWAWAWAWWA', req.pool);
 
         }
         next();

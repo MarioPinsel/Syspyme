@@ -22,8 +22,8 @@ CREATE TABLE IF NOT EXISTS usuarios (
 CREATE TABLE IF NOT EXISTS clientes (
   id SERIAL PRIMARY KEY,
   nombre VARCHAR(100) NOT NULL,
-  documento INT UNIQUE NOT NULL,
-  telefono INT,
+  documento VARCHAR(10) UNIQUE NOT NULL,
+  telefono VARCHAR(10),
   correo VARCHAR(50)
 );
 

@@ -1,4 +1,4 @@
-import { findCustomerByDocument, createCustomer, findAllCustomers, findCustomerById, updateCustomer } from "../repositories/customersRepository.js";
+import { findCustomerByDocument, createCustomer, findAllCustomers, findCustomerById, updateCustomer } from "../repositories/customer/customersRepository.js";
 
 export const createCustomerService = async (pool, { name, document, phone, email }) => {
 
