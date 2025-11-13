@@ -102,11 +102,13 @@ export const createCustomerValidation = [
 
     body("document")
         .notEmpty().withMessage("El documento es obligatorio.")
-        .isInt({ min: 1000000, max: 9999999999 }).withMessage("El documento debe ser un número entero válido de 7 a 10 dígitos (cédula colombiana)."),
+        .isLength({ max: 10 }).matches(/^\d+$/).withMessage("El documento debe contener solo números.")
+        .withMessage("El documento debe ser un número entero válido de 7 a 10 dígitos (cédula colombiana)."),
 
     body("phone")
-        .notEmpty().withMessage("El teléfono es obligatorio.")
-        .matches(/^(3\d{9}|2\d{6})$/).withMessage("El teléfono debe ser un número válido en Bogotá (fijo 7 dígitos o móvil 10 dígitos, empieza con 3)."),
+        .notEmpty().withMessage("El teléfono es obligatorio.").isLength({ max: 10 })
+        .matches(/^\d+$/).withMessage("El teléfono debe contener solo números.")
+        .withMessage("El teléfono debe ser un número válido en Bogotá (fijo 7 dígitos o móvil 10 dígitos, empieza con 3)."),
 
     body("email")
         .notEmpty().withMessage("El correo es obligatorio.")
@@ -122,8 +124,8 @@ export const updateCustomerValidation = [
 
     // Al menos un campo opcional debe enviarse
     body().custom(body => {
-        const { nombre, documento, telefono, correo } = body;
-        if (nombre === undefined && documento === undefined && telefono === undefined && correo === undefined) {
+        const { name, document, phone, email } = body;
+        if (name === undefined && document === undefined && phone === undefined && email === undefined) {
             throw new Error("Debe enviar al menos un campo a actualizar (nombre, documento, telefono o correo).");
         }
         return true;
@@ -139,14 +141,15 @@ export const updateCustomerValidation = [
     // Documento opcional (cédula colombiana)
     body("document")
         .optional()
-        .isInt({ min: 1000000, max: 9999999999 })
-        .withMessage("El documento debe ser un número válido de 7 a 10 dígitos (cédula colombiana)."),
+        .isLength({ max: 10 }).matches(/^\d+$/).withMessage("El documento debe contener solo números.")
+        .withMessage("El documento debe ser un número entero válido de 7 a 10 dígitos (cédula colombiana)."),
 
     // Teléfono opcional (Bogotá: fijo 7 dígitos o móvil 10 dígitos)
     body("phone")
         .optional()
-        .matches(/^(3\d{9}|2\d{6})$/)
-        .withMessage("El teléfono debe ser un número válido en Bogotá (fijo 7 dígitos o móvil 10 dígitos)."),
+        .isLength({ max: 10 })
+        .matches(/^\d+$/).withMessage("El teléfono debe contener solo números.")
+        .withMessage("El teléfono debe ser un número válido en Bogotá (fijo 7 dígitos o móvil 10 dígitos, empieza con 3)."),
 
     // Correo opcional
     body("email")
