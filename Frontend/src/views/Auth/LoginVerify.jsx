@@ -1,6 +1,46 @@
-import '../../styles/Layouts/Verify.css';
+import { useState } from "react";
+import Cookies from "js-cookie";
+import axios from "axios";
+import "../../styles/Layouts/Verify.css";
 
 export default function VerificationCode() {
+  const [code, setCode] = useState(Array(6).fill(""));
+
+  const handleChange = (value, index) => {
+    if (value.length > 1) return;
+    const newCode = [...code];
+    newCode[index] = value;
+    setCode(newCode);
+  };
+
+  const handleVerify = async (e) => {
+    e.preventDefault();
+
+    const fullCode = code.join("");
+    const token = Cookies.get("token");
+
+    console.log("Código ingresado:", fullCode);
+    console.log("Token obtenido:", token);
+
+    if (!token) {
+      console.error("No se encontró el token");
+      return;
+    }
+
+    try {
+      const { data } = await axios.post("/auth/loginVerify", { code: fullCode },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("Respuesta del backend:", data);
+    } catch (error) {
+      console.error("Error en la verificación:", error);
+    }
+  };
 
   return (
     <div className="verification-container">
@@ -10,29 +50,24 @@ export default function VerificationCode() {
           Revisa en la bandeja de tu correo electrónico por el código de verificación.
         </p>
 
-        <form >
+        <form onSubmit={handleVerify}>
           <label>Código de Verificación</label>
 
           <div className="verification-code">
-            {[...Array(6)].map((_, index) => (
+            {code.map((digit, index) => (
               <input
                 key={index}
                 type="text"
                 maxLength="1"
                 className="code-input"
+                value={digit}
+                onChange={(e) => handleChange(e.target.value, index)}
               />
             ))}
           </div>
 
           <button type="submit">Verificar</button>
         </form>
-
-        <p className="register-redirect">
-          ¿No recibiste el código?{" "}
-          <a href="#" className="register-link">
-            Reenviar código
-          </a>
-        </p>
       </div>
     </div>
   );

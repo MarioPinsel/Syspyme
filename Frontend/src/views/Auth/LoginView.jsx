@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { isAxiosError } from "axios";
+import Cookies from "js-cookie";
 import api from "../../config/axios";
 import "../../styles/LoginView.css";
 export default function LoginView() {
@@ -16,6 +17,17 @@ export default function LoginView() {
   const handleLogin = async (formData) => {
     try {
       const { data } = await api.post('/auth/login', formData);
+      const token = data.token;
+
+      const expiration = new Date(new Date().getTime() + 15 * 60 * 1000);
+
+      Cookies.set("token", token, {
+        expires: expiration,
+        path: "/auth",
+        secure: true,
+        sameSite: "lax"
+      });
+
       toast.success(data.message);
     } catch (error) {
       if (isAxiosError(error) && error.response) {
