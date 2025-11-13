@@ -89,3 +89,22 @@ export const deleteFromInventory = (pool, productId) => {
         [productId]
     );
 };
+
+export const getTotalStockByProductId = (pool, productId) => {
+    return pool.query(
+        `SELECT COALESCE(SUM(cantidad), 0) AS total_stock
+         FROM inventario
+         WHERE id_producto = $1`,
+        [productId]
+    );
+};
+
+export const getInventoryByProductId = (pool, productId) => {
+    return pool.query(
+        `SELECT id, cantidad
+         FROM inventario
+         WHERE id_producto = $1
+         ORDER BY fecha_ingreso ASC`,
+        [productId]
+    );
+}
