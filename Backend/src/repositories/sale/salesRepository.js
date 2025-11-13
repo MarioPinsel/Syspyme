@@ -1,7 +1,7 @@
-export const createReceipt = (pool, clienteId, usuarioId, paymentMethod, paymentType, plazoFinal, subTotal, impuestos, totalConIva, cufe, firma_digital, factura_xml) => {
+export const createReceipt = (pool, clienteId, usuarioId, paymentMethod, paymentType, plazoFinal, subTotal, impuestos, totalConIva, cufe, firma_digital) => {
   return pool.query(
-    "INSERT INTO facturas (cliente_id, usuario_id, forma_pago, medio_pago, plazo_credito,sub_total,impuestos, precio_total, cufe, firma_digital, factura_xml) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *",
-    [clienteId, usuarioId, paymentMethod, paymentType, plazoFinal, subTotal, impuestos, totalConIva, cufe, firma_digital, factura_xml]
+    "INSERT INTO facturas (cliente_id, usuario_id, forma_pago, medio_pago, plazo_credito,sub_total,impuestos, precio_total, cufe, firma_digital) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *",
+    [clienteId, usuarioId, paymentMethod, paymentType, plazoFinal, subTotal, impuestos, totalConIva, cufe, firma_digital]
   );
 }
 

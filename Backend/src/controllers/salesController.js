@@ -4,6 +4,7 @@ export const createSaleController = async (req, res) => {
     try {
         const pool = req.pool;
         const { correo, empresaNombre } = req.user;
+        console.log(req.body);
         const result = await createSaleService(pool, correo, empresaNombre, req.body);
 
         if (!result.success) {

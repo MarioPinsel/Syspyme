@@ -6,6 +6,7 @@ import { getFirmaDigital } from '../utils/firmaDigital.js'
 import { generarCUFE } from '../utils/cufeUtils.js';
 import { findEmpresaByNombre } from '../repositories/enterprise/companyRepository.js';
 import { sendFacturaEmail } from '../utils/sendFacturaEmail.js';
+import {generarXMLFactura} from '../utils/generatexml.js'
 
 const iva = 0.19;
 
@@ -50,11 +51,11 @@ export const createSaleService = async (pool, correo, empresaNombre, {document, 
 
         const subtotal = producto.precio_unitario * item.quantity;
         subTotal += subtotal;
-
+        const descripcionArray = Object.values(producto.descripcion);
         detalles.push({
             producto_id: producto.id,
-            tipo_producto: producto.nombre,
-            descripcion: { detalle: producto.descripcion },
+            tipo_producto: producto.tipo_producto,
+            descripcion: `${descripcionArray[0]} ${descripcionArray[0]}.` ,
             unidades: item.quantity,
             valor_unitario: producto.precio_unitario,
             total: subtotal
@@ -67,7 +68,7 @@ export const createSaleService = async (pool, correo, empresaNombre, {document, 
     const plazoFinal = paymentType.toLowerCase() === "contado" ? 0 : creditTerm;
     const firma_digital = getFirmaDigital();
 
-    const receipt = await createReceipt(pool, cliente.id, usuario.id, paymentMethod, paymentType, subTotal, impuestos, plazoFinal, totalConIva, 'aun_nocufe', firma_digital, 'aun_noxml');
+    const receipt = await createReceipt(pool, cliente.id, usuario.id, paymentMethod, paymentType, subTotal, impuestos, plazoFinal, totalConIva, 'aun_nocufe', firma_digital);
     const receiptId = receipt.rows[0].id;
 
     for (const d of detalles) {
@@ -76,7 +77,7 @@ export const createSaleService = async (pool, correo, empresaNombre, {document, 
             receiptId,
             d.producto_id,
             d.tipo_producto,
-            d.descripcion,
+            JSON.stringify(d.descripcion),
             d.unidades,
             d.valor_unitario,
             d.total
@@ -105,7 +106,7 @@ export const createSaleService = async (pool, correo, empresaNombre, {document, 
         receiptId,
         empresa,
         cliente,
-        usuario,
+        vendedor: usuario,
         detalles,
         subTotal,
         impuestos,

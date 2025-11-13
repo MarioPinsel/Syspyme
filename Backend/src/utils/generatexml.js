@@ -13,6 +13,7 @@ export function generarXMLFactura({
     cufe,
     firma_digital
 }) {
+    console.log(vendedor)
     const fecha = new Date().toISOString().split('T')[0];
     const hora = new Date().toISOString().split('T')[1].substring(0, 8);
 
@@ -47,10 +48,10 @@ export function generarXMLFactura({
 
         // Impuestos
         .ele('cac:TaxTotal')
-        .ele('cbc:TaxAmount', { currencyID: 'COP' }).txt(impuestos.toFixed(2)).up()
+        .ele('cbc:TaxAmount', { currencyID: 'COP' }).txt(Number(impuestos).toFixed(2)).up()
         .ele('cac:TaxSubtotal')
-        .ele('cbc:TaxableAmount', { currencyID: 'COP' }).txt(subTotal.toFixed(2)).up()
-        .ele('cbc:TaxAmount', { currencyID: 'COP' }).txt(impuestos.toFixed(2)).up()
+        .ele('cbc:TaxableAmount', { currencyID: 'COP' }).txt(Number(subTotal).toFixed(2)).up()
+        .ele('cbc:TaxAmount', { currencyID: 'COP' }).txt(Number(impuestos).toFixed(2)).up()
         .ele('cac:TaxCategory')
         .ele('cac:TaxScheme')
         .ele('cbc:ID').txt('01').up()
@@ -62,12 +63,11 @@ export function generarXMLFactura({
 
         // Totales
         .ele('cac:LegalMonetaryTotal')
-        .ele('cbc:LineExtensionAmount', { currencyID: 'COP' }).txt(subTotal.toFixed(2)).up()
-        .ele('cbc:TaxExclusiveAmount', { currencyID: 'COP' }).txt(subTotal.toFixed(2)).up()
-        .ele('cbc:TaxInclusiveAmount', { currencyID: 'COP' }).txt(totalConIva.toFixed(2)).up()
-        .ele('cbc:PayableAmount', { currencyID: 'COP' }).txt(totalConIva.toFixed(2)).up()
+        .ele('cbc:LineExtensionAmount', { currencyID: 'COP' }).txt(Number(subTotal).toFixed(2)).up()
+        .ele('cbc:TaxExclusiveAmount', { currencyID: 'COP' }).txt(Number(subTotal).toFixed(2)).up()
+        .ele('cbc:TaxInclusiveAmount', { currencyID: 'COP' }).txt(Number(totalConIva).toFixed(2)).up()
+        .ele('cbc:PayableAmount', { currencyID: 'COP' }).txt(Number(totalConIva).toFixed(2)).up()
         .up();
-
     // 🔸 Detalles (líneas de productos)
     for (const d of detalles) {
         xml.ele('cac:InvoiceLine')
@@ -82,7 +82,7 @@ export function generarXMLFactura({
             .up()
             .up()
             .ele('cac:Price')
-            .ele('cbc:PriceAmount', { currencyID: 'COP' }).txt(d.valor_unitario.toFixed(2)).up()
+            .ele('cbc:PriceAmount', { currencyID: 'COP' }).txt(d.valor_unitario).up()
             .up()
             .up();
     }

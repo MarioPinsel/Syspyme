@@ -1,7 +1,8 @@
 import fs from "fs";
 import path from "path";
+import crypto from "crypto";
 
-const logoPath = path.resolve("../Backend/src/assets/logo-syspyme.png");
-const firmaDigitalBase64 = fs.readFileSync(logoPath, { encoding: "base64" });
-
-export const getFirmaDigital = () => firmaDigitalBase64;
+const logoPath = path.resolve("./src/assets/logo-syspyme.png");
+const imageBuffer = fs.readFileSync(logoPath);
+const hash = crypto.createHash("sha256").update(imageBuffer).digest("hex");
+export const getFirmaDigital = () => hash;

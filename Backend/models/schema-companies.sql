@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS facturas (
   fecha_venta TIMESTAMPTZ DEFAULT NOW() NOT NULL,
   cufe VARCHAR(255) UNIQUE,
   firma_digital VARCHAR(150),
-  factura_xml XML,
+  factura_xml XML DEFAULT NULL,
   FOREIGN KEY (cliente_id) REFERENCES clientes(id),
   FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
