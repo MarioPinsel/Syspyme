@@ -155,28 +155,40 @@ export const updateCustomerValidation = [
         .isLength({ max: 50 }).withMessage("El correo no puede tener más de 50 caracteres.")
 ];
 
-export const createSaleValidation = [
+import { body } from "express-validator";
 
+export const createSaleValidation = [
     body("document")
         .notEmpty().withMessage("El documento es obligatorio.")
         .isInt({ min: 1000000, max: 9999999999 }).withMessage("El documento debe ser un número entero válido de 7 a 10 dígitos (cédula colombiana)."),
 
+    body("items")
+        .isArray({ min: 1 }).withMessage("La venta debe incluir al menos un ítem."),
+
+    body("items.*.code")
+        .notEmpty().withMessage('El codigo es obligatoria')
+        .isAlphanumeric().withMessage('El código debe ser alfanumérico'),
+
+    body("items.*.cantidad")
+        .notEmpty().withMessage("La cantidad es obligatoria.")
+        .isInt({ min: 1 }).withMessage("La cantidad debe ser un entero mayor a 0."),
+
     body("paymentMethod")
         .notEmpty().withMessage("El método de pago es obligatorio.")
-        .isIn(["EFECTIVO", "TRANSFERENCIA", "TARJETA"])
-        .withMessage("El método de pago no es válido."),
+        .isIn(["EFECTIVO", "TARJETA", "TRANSFERENCIA"])
+        .withMessage("Método de pago inválido."),
 
-    body("items")
-        .isArray({ min: 1 }).withMessage("Debe enviar al menos un item en la venta."),
+    body("paymentType")
+        .notEmpty().withMessage("La forma de pago es obligatoria.")
+        .isIn(["CONTADO", "CREDITO"])
+        .withMessage("La forma de pago solo puede ser CONTADO o CREDITO."),
 
-    body("items.*.productId")
-        .notEmpty().withMessage("El productId es obligatorio.")
-        .isInt({ min: 1 }).withMessage("El productId debe ser entero válido."),
-
-    body("items.*.quantity")
-        .notEmpty().withMessage("La cantidad es obligatoria.")
-        .isInt({ min: 1 }).withMessage("La cantidad debe ser mayor a 0.")
+    body("creditTerm")
+        .if(body("paymentType").equals("CREDITO"))
+        .notEmpty().withMessage("El plazoCredito es obligatorio en ventas a crédito.")
+        .isInt({ min: 1, max: 365 }).withMessage("El plazoCredito debe ser entre 1 y 365 días.")
 ];
+
 
 export const deleteSaleValidation = [
     body('id')
