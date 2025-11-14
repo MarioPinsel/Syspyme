@@ -19,7 +19,7 @@ export default function Router() {
         <Route path="/auth" element={<AuthLayout />}>
           <Route path="login" element={<LoginView />} />
           <Route path="register" element={<RegisterView />} />
-          <Route path="company-register" element={<CompanyRegisterView />} />
+          <Route path="companyRegister" element={<CompanyRegisterView />} />
           <Route path="loginVerify" element={<LoginVerify />} />
           <Route path="registerVerify" element={<RegisterVerify />} />
         </Route>
@@ -27,6 +27,7 @@ export default function Router() {
         <Route path="/inventory" element={<AuthLayout />}>
           <Route path="info" element={<Inventory />} />
         </Route>
+
 
       </Routes>
     </BrowserRouter>

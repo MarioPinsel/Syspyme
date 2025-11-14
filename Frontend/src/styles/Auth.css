@@ -8,7 +8,8 @@
   --fuente-secundaria: 'Inter', sans-serif;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   height: 100%;
@@ -17,7 +18,7 @@ html, body {
   scroll-behavior: smooth;
 }
 
-.register-container {
+.auth-container {
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -26,7 +27,7 @@ html, body {
   overflow: hidden;
 }
 
-.register-box {
+.auth-box {
   background-color: var(--color-cuadro);
   padding: 2rem;
   border-radius: 15px;
@@ -35,7 +36,7 @@ html, body {
   max-width: 90%;
 }
 
-.register-box h2 {
+.auth-box h2 {
   text-align: center;
   margin-bottom: 1.5rem;
   font-family: var(--fuente-secundaria);
@@ -76,47 +77,28 @@ button:hover {
   background-color: var(--color-boton-hover);
 }
 
-.login-redirect {
+.auth-redirect {
   text-align: center;
-  font-family: var(--fuente-principal);
   margin-top: 15px;
   font-size: 14px;
   color: #000000;
+  font-family: var(--fuente-principal);
 }
 
-.login-link {
+.auth-link {
   color: #4da3ff;
   text-decoration: none;
   font-weight: bold;
   transition: color 0.3s;
 }
 
-.login-link:hover {
+.auth-link:hover {
   color: var(--color-boton-hover);
 }
 
-@media (max-width: 768px) {
-  .register-container {
-    align-items: flex-start;
-    padding-top: 10vh;
-  }
-
-  .register-box {
-    width: 90%;
-    padding: 1.5rem;
-    box-shadow: none;
-    border-radius: 10px;
-  }
-
-  h2 {
-    font-size: 1.4rem;
-  }
-
-  input, button {
-    font-size: 1rem;
-  }
-
-  .login-redirect {
-    font-size: 13px;
-  }
+.error-message {
+  color: red;
+  font-family: var(--fuente-principal);
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
 }

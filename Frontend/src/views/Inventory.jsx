@@ -25,8 +25,8 @@ export default function Inventory() {
         queryFn: getProducts,
     });
 
-    // if (isLoading) return <p>Cargando productos...</p>;
-    // if (isError) return <p>Error: {error.message}</p>;
+    if (isLoading) return <p>Cargando productos...</p>;
+    if (isError) return <p>Error: {error.message}</p>;
 
     const filteredItems = items.filter(
         (item) =>
