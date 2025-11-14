@@ -105,8 +105,8 @@ export default function LoginView() {
 
         <p className="auth-redirect">
           ¿No has registrado tu empresa?{" "}
-          <Link to="/auth/register" className="auth-link">
-            Regístrate aquí
+          <Link to="/auth/companyRegister" className="auth-link">
+            Regístrala acá
           </Link>
         </p>
       </div>

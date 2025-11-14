@@ -22,17 +22,28 @@ export default function RegisterView() {
 
   const handleRegister = async (formData) => {
     try {
-      const { data } = await api.post("/auth/registerUser", formData);
-      const token = data.token;
+      const token = Cookies.get("token")
 
-      const expiration = new Date(new Date().getTime() + 15 * 60 * 1000);
+      const { data } = await api.post(
+        "/auth/registerUser",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const newToken = data?.token;
 
-      Cookies.set("token", token, {
-        expires: expiration,
-        path: "/auth",
-        secure: true,
-        sameSite: "lax",
-      });
+
+      if (newToken) {
+        Cookies.set("token", newToken, {
+          expires: 1 / 96,
+          path: "/auth",
+          secure: true,
+          sameSite: "lax",
+        });
+      }
 
       toast.success(data.message);
       navigate("/auth/registerVerify");
@@ -99,13 +110,6 @@ export default function RegisterView() {
 
           <button type="submit">Registrar</button>
         </form>
-
-        <p className="auth-redirect">
-          ¿Ya tienes una cuenta?{" "}
-          <Link to="/auth/login" className="auth-link">
-            Inicia sesión aquí
-          </Link>
-        </p>
       </div>
     </div>
   );

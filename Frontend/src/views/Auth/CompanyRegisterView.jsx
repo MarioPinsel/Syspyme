@@ -2,9 +2,9 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { isAxiosError } from "axios";
 import Cookies from "js-cookie";
-import api from "../config/axios.js"
+import api from "../../config/axios.js"
 import { useNavigate, Link } from "react-router-dom";
-import "../styles/Auth.css";
+import "../../styles/Auth.css";
 
 export default function CompanyRegisterView() {
   const navigate = useNavigate();
@@ -16,28 +16,22 @@ export default function CompanyRegisterView() {
     password: "",
   };
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({ defaultValues: initialValues });
+  const { register, handleSubmit, formState: { errors }, } = useForm({ defaultValues: initialValues });
 
   const handleRegister = async (formData) => {
     try {
       const { data } = await api.post("/auth/registerEmpresa", formData);
       const token = data.token;
 
-      const expiration = new Date(new Date().getTime() + 15 * 60 * 1000);
-
       Cookies.set("token", token, {
-        expires: expiration,
+        expires: 1 / 96,
         path: "/auth",
         secure: true,
         sameSite: "lax",
       });
 
       toast.success(data.message);
-      navigate("/auth/verify");
+      navigate("/auth/companyRegisterVerify");
     } catch (error) {
       if (isAxiosError(error) && error.response) {
         toast.error(error.response.data.error);
@@ -105,7 +99,7 @@ export default function CompanyRegisterView() {
         </form>
 
         <p className="auth-redirect">
-          ¿Ya tienes una cuenta?{" "}
+          ¿Tu empresa ya está registrada?{" "}
           <Link to="/auth/login" className="auth-link">
             Inicia sesión aquí
           </Link>
