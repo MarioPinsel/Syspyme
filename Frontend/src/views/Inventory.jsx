@@ -3,11 +3,22 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { isAxiosError } from "axios";
 import api from "../config/axios.js";
+import Cookies from "js-cookie"
 import "../styles/InventoryForm.css";
+
+
 
 const getProducts = async () => {
     try {
-        const { data } = await api.get('/inventory/getProducts');
+        const token = Cookies.get("token");
+        const { data } = await api.get('/inventory/getProducts',
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
         console.log(data)
         return data;
     } catch (error) {
@@ -25,8 +36,8 @@ export default function Inventory() {
         queryFn: getProducts,
     });
 
-    // if (isLoading) return <p>Cargando productos...</p>;
-    // if (isError) return <p>Error: {error.message}</p>;
+    if (isLoading) return <p>Cargando productos...</p>;
+    if (isError) return <p>Error: {error.message}</p>;
 
     const filteredItems = items.filter(
         (item) =>

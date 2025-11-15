@@ -11,6 +11,12 @@ export const findProductByCode = (pool, code) => {
         [code]
     );
 };
+export const findProductByCodeExcept = (pool, code, idToExclude) => {
+    return pool.query(
+        "SELECT * FROM productos WHERE codigo = $1 AND id <> $2",
+        [code, idToExclude]
+    );
+};
 
 export const findProductByIdOrCode = (pool, value) => {
     const isNumeric = /^\d+$/.test(value);
@@ -89,3 +95,22 @@ export const deleteFromInventory = (pool, productId) => {
         [productId]
     );
 };
+
+export const getTotalStockByProductId = (pool, productId) => {
+    return pool.query(
+        `SELECT COALESCE(SUM(cantidad), 0) AS total_stock
+         FROM inventario
+         WHERE id_producto = $1`,
+        [productId]
+    );
+};
+
+export const getInventoryByProductId = (pool, productId) => {
+    return pool.query(
+        `SELECT id, cantidad
+         FROM inventario
+         WHERE id_producto = $1
+         ORDER BY fecha_ingreso ASC`,
+        [productId]
+    );
+}

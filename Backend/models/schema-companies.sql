@@ -22,8 +22,8 @@ CREATE TABLE IF NOT EXISTS usuarios (
 CREATE TABLE IF NOT EXISTS clientes (
   id SERIAL PRIMARY KEY,
   nombre VARCHAR(100) NOT NULL,
-  documento INT UNIQUE NOT NULL,
-  telefono INT,
+  documento VARCHAR(10) UNIQUE NOT NULL,
+  telefono VARCHAR(10),
   correo VARCHAR(50)
 );
 
@@ -47,10 +47,16 @@ CREATE TABLE IF NOT EXISTS facturas (
   id SERIAL PRIMARY KEY,
   cliente_id INT NOT NULL,
   usuario_id INT NOT NULL,
-  precio_total NUMERIC(10) NOT NULL,
-  fecha_Venta TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+  forma_pago VARCHAR(20) NOT NULL,
+  medio_pago VARCHAR(20) NOT NULL,
+  plazo_credito INT,
+  sub_total INT NOT NULL,
+  impuestos INT NOT NULL,
+  precio_total INT NOT NULL,
+  fecha_venta TIMESTAMPTZ DEFAULT NOW() NOT NULL,
   cufe VARCHAR(255) UNIQUE,
-  factura_XML xml,
+  firma_digital VARCHAR(150),
+  factura_xml XML DEFAULT NULL,
   FOREIGN KEY (cliente_id) REFERENCES clientes(id),
   FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
@@ -59,10 +65,11 @@ CREATE TABLE IF NOT EXISTS detalles_factura (
   id SERIAL PRIMARY KEY,
   factura_id INT NOT NULL,
   producto_id INT NOT NULL,
-  tipo VARCHAR(100) NOT NULL,
+  tipo_producto VARCHAR(100) NOT NULL,
   descripcion JSONB NOT NULL,
   unidades INT NOT NULL,
-  total NUMERIC(15),
+  valor_unitario INT NOT NULL,
+  total INT NOT NULL,
   FOREIGN KEY (factura_id) REFERENCES facturas(id),
   FOREIGN KEY (producto_id) REFERENCES productos(id)
 );

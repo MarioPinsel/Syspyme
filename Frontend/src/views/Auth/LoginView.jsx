@@ -1,9 +1,14 @@
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { isAxiosError } from "axios";
+import Cookies from "js-cookie";
 import api from "../../config/axios";
-import "../../styles/LoginView.css";
+import { useNavigate, Link } from "react-router-dom";
+import "../../styles/Auth.css";
+
 export default function LoginView() {
+  const navigate = useNavigate();
+
   const initialValues = {
     empresa: "",
     empresaPassword: "",
@@ -13,10 +18,23 @@ export default function LoginView() {
 
   const { register, handleSubmit, formState: { errors }, } = useForm({ defaultValues: initialValues, });
 
+
   const handleLogin = async (formData) => {
     try {
       const { data } = await api.post('/auth/login', formData);
+      const token = data.token;
+
+      const expiration = new Date(new Date().getTime() + 15 * 60 * 1000);
+
+      Cookies.set("token", token, {
+        expires: expiration,
+        path: "/auth",
+        secure: true,
+        sameSite: "lax"
+      });
+
       toast.success(data.message);
+      navigate("/auth/loginVerify");
     } catch (error) {
       if (isAxiosError(error) && error.response) {
         toast.error(error.response.data.error)
@@ -25,8 +43,8 @@ export default function LoginView() {
   }
 
   return (
-    <div className="login-container">
-      <div className="login-box">
+    <div className="auth-container">
+      <div className="auth-box">
         <h2>Iniciar Sesión</h2>
 
         <form onSubmit={handleSubmit(handleLogin)}>
@@ -37,7 +55,7 @@ export default function LoginView() {
             {...register("empresa", {
               required: "El nombre de la empresa es obligatorio",
             })}
-            placeholder="empresa de ejemplo S.A.S"
+            placeholder="Empresa de ejemplo S.A.S"
           />
           {errors.empresa && (
             <p className="error-message">{errors.empresa.message}</p>
@@ -85,11 +103,11 @@ export default function LoginView() {
           <button type="submit">Continuar</button>
         </form>
 
-        <p className="register-redirect">
+        <p className="auth-redirect">
           ¿No has registrado tu empresa?{" "}
-          <a href="/auth/register" className="register-link">
-            Regístrala aquí
-          </a>
+          <Link to="/auth/companyRegister" className="auth-link">
+            Regístrala acá
+          </Link>
         </p>
       </div>
     </div>

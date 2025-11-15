@@ -68,9 +68,15 @@ export const updateProductValidation = [
         .isInt({ gt: 0 }).withMessage('El ID debe ser un número entero positivo'),
 
     body().custom(body => {
-        const { unitPrice, quantity, code } = body;
-        if (unitPrice === undefined && quantity === undefined && code === undefined) {
-            throw new Error('Debe enviar al menos un campo a actualizar (unitPrice, quantity o code)');
+        const { unitPrice, quantity, code, type, description } = body;
+        if (
+            unitPrice === undefined &&
+            quantity === undefined &&
+            code === undefined &&
+            type === undefined &&
+            description === undefined
+        ) {
+            throw new Error('Debe enviar al menos un campo a actualizar');
         }
         return true;
     }),
@@ -85,8 +91,17 @@ export const updateProductValidation = [
 
     body('code')
         .optional()
-        .isAlphanumeric().withMessage('El código debe ser alfanumérico')
+        .isAlphanumeric().withMessage('El código debe ser alfanumérico'),
+
+    body('type')
+        .optional()
+        .isString().withMessage('El tipo debe ser texto'),
+
+    body('description')
+        .optional()
+        .isObject().withMessage('La descripción debe ser un JSON válido')
 ];
+
 
 export const getProductValidation = [
     body('id')
@@ -102,11 +117,13 @@ export const createCustomerValidation = [
 
     body("document")
         .notEmpty().withMessage("El documento es obligatorio.")
-        .isInt({ min: 1000000, max: 9999999999 }).withMessage("El documento debe ser un número entero válido de 7 a 10 dígitos (cédula colombiana)."),
+        .isLength({ max: 10 }).matches(/^\d+$/).withMessage("El documento debe contener solo números.")
+        .withMessage("El documento debe ser un número entero válido de 7 a 10 dígitos (cédula colombiana)."),
 
     body("phone")
-        .notEmpty().withMessage("El teléfono es obligatorio.")
-        .matches(/^(3\d{9}|2\d{6})$/).withMessage("El teléfono debe ser un número válido en Bogotá (fijo 7 dígitos o móvil 10 dígitos, empieza con 3)."),
+        .notEmpty().withMessage("El teléfono es obligatorio.").isLength({ max: 10 })
+        .matches(/^\d+$/).withMessage("El teléfono debe contener solo números.")
+        .withMessage("El teléfono debe ser un número válido en Bogotá (fijo 7 dígitos o móvil 10 dígitos, empieza con 3)."),
 
     body("email")
         .notEmpty().withMessage("El correo es obligatorio.")
@@ -122,8 +139,8 @@ export const updateCustomerValidation = [
 
     // Al menos un campo opcional debe enviarse
     body().custom(body => {
-        const { nombre, documento, telefono, correo } = body;
-        if (nombre === undefined && documento === undefined && telefono === undefined && correo === undefined) {
+        const { name, document, phone, email } = body;
+        if (name === undefined && document === undefined && phone === undefined && email === undefined) {
             throw new Error("Debe enviar al menos un campo a actualizar (nombre, documento, telefono o correo).");
         }
         return true;
@@ -139,14 +156,15 @@ export const updateCustomerValidation = [
     // Documento opcional (cédula colombiana)
     body("document")
         .optional()
-        .isInt({ min: 1000000, max: 9999999999 })
-        .withMessage("El documento debe ser un número válido de 7 a 10 dígitos (cédula colombiana)."),
+        .isLength({ max: 10 }).matches(/^\d+$/).withMessage("El documento debe contener solo números.")
+        .withMessage("El documento debe ser un número entero válido de 7 a 10 dígitos (cédula colombiana)."),
 
     // Teléfono opcional (Bogotá: fijo 7 dígitos o móvil 10 dígitos)
     body("phone")
         .optional()
-        .matches(/^(3\d{9}|2\d{6})$/)
-        .withMessage("El teléfono debe ser un número válido en Bogotá (fijo 7 dígitos o móvil 10 dígitos)."),
+        .isLength({ max: 10 })
+        .matches(/^\d+$/).withMessage("El teléfono debe contener solo números.")
+        .withMessage("El teléfono debe ser un número válido en Bogotá (fijo 7 dígitos o móvil 10 dígitos, empieza con 3)."),
 
     // Correo opcional
     body("email")
@@ -156,27 +174,37 @@ export const updateCustomerValidation = [
 ];
 
 export const createSaleValidation = [
-
     body("document")
         .notEmpty().withMessage("El documento es obligatorio.")
         .isInt({ min: 1000000, max: 9999999999 }).withMessage("El documento debe ser un número entero válido de 7 a 10 dígitos (cédula colombiana)."),
 
-    body("paymentMethod")
-        .notEmpty().withMessage("El método de pago es obligatorio.")
-        .isIn(["EFECTIVO", "TRANSFERENCIA", "TARJETA"])
-        .withMessage("El método de pago no es válido."),
-
     body("items")
-        .isArray({ min: 1 }).withMessage("Debe enviar al menos un item en la venta."),
+        .isArray({ min: 1 }).withMessage("La venta debe incluir al menos un ítem."),
 
-    body("items.*.productId")
-        .notEmpty().withMessage("El productId es obligatorio.")
-        .isInt({ min: 1 }).withMessage("El productId debe ser entero válido."),
+    body("items.*.code")
+        .notEmpty().withMessage('El codigo es obligatoria')
+        .isAlphanumeric().withMessage('El código debe ser alfanumérico'),
 
     body("items.*.quantity")
         .notEmpty().withMessage("La cantidad es obligatoria.")
-        .isInt({ min: 1 }).withMessage("La cantidad debe ser mayor a 0.")
+        .isInt({ min: 1 }).withMessage("La cantidad debe ser un entero mayor a 0."),
+
+    body("paymentMethod")
+        .notEmpty().withMessage("El método de pago es obligatorio.")
+        .isIn(["EFECTIVO", "TARJETA", "TRANSFERENCIA"])
+        .withMessage("Método de pago inválido."),
+
+    body("paymentType")
+        .notEmpty().withMessage("La forma de pago es obligatoria.")
+        .isIn(["CONTADO", "CREDITO"])
+        .withMessage("La forma de pago solo puede ser CONTADO o CREDITO."),
+
+    body("creditTerm")
+        .if(body("paymentType").equals("CREDITO"))
+        .notEmpty().withMessage("El plazoCredito es obligatorio en ventas a crédito.")
+        .isInt({ min: 1, max: 365 }).withMessage("El plazoCredito debe ser entre 1 y 365 días.")
 ];
+
 
 export const deleteSaleValidation = [
     body('id')

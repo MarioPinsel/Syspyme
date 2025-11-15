@@ -9,7 +9,8 @@ import {
     addProductInInventory,
     updateInventoryQuantity,
     updateProductById,
-    deleteFromInventory
+    deleteFromInventory,
+    findProductByCodeExcept
 } from "../repositories/inventory/inventoryRepository.js";
 
 
@@ -72,40 +73,90 @@ export const updateProductService = async (pool, {
         return { success: false, message: "No existe un registro de inventario con ese ID." };
     }
 
-    const row = invRes.rows[0];
-    const productId = row.id_producto;
+    const inventoryRow = invRes.rows[0];
+    const productId = inventoryRow.id_producto;
+
+    const productRes = await findProductByIdOrCode(pool, productId);
+    const product = productRes.rows[0];
+
+    const unchangedFields = [];
+    const changedFields = {};
 
     if (quantity !== undefined) {
-        if (row.cantidad === quantity) {
-            return {
-                success: false,
-                message: "La cantidad es la misma, no se realizaron cambios.",
-                inventory: row
-            };
+        if (quantity === inventoryRow.cantidad) {
+            unchangedFields.push("quantity");
+        } else {
+            await updateInventoryQuantity(pool, id, quantity);
+            changedFields.quantity = quantity;
         }
-        await updateInventoryQuantity(pool, id, quantity);
     }
 
-    const fields = {};
-    if (unitPrice !== undefined) fields.precio_unitario = unitPrice;
-    if (code !== undefined) fields.codigo = code;
-    if (type !== undefined) fields.tipo_producto = type;
-    if (description !== undefined) fields.descripcion = description;
+    if (code !== undefined) {
 
-    let updatedProduct = null;
+        if (code === product.codigo) {
+            unchangedFields.push("code");
+        } else {
+            const dupCode = await findProductByCodeExcept(pool, code, productId);
+            if (dupCode.rowCount > 0) {
+                return {
+                    success: false,
+                    message: "Ya existe un producto con ese código."
+                };
+            }
+            changedFields.codigo = code;
+        }
+    }
 
-    if (Object.keys(fields).length > 0) {
-        const productRes = await updateProductById(pool, productId, fields);
-        updatedProduct = productRes.rows[0];
+    if (type !== undefined || description !== undefined) {
+
+        const newType = type ?? product.tipo_producto;
+        const newDesc = description ?? product.descripcion;
+
+        const typeSame = newType === product.tipo_producto;
+        const descSame = JSON.stringify(newDesc) === JSON.stringify(product.descripcion);
+
+        if (typeSame && descSame) {
+            unchangedFields.push("type");
+            unchangedFields.push("description");
+        } else {
+            const dup = await findProductByTypeAndDescription(pool, newType, newDesc);
+
+            if (dup.rowCount > 0 && dup.rows[0].id !== productId) {
+                return {
+                    success: false,
+                    message: "Ya existe un producto con ese tipo y descripción."
+                };
+            }
+
+            changedFields.tipo_producto = newType;
+            changedFields.descripcion = newDesc;
+        }
+    }
+
+    if (unitPrice !== undefined) {
+        if (unitPrice === product.precio_unitario) {
+            unchangedFields.push("unitPrice");
+        } else {
+            changedFields.precio_unitario = unitPrice;
+        }
+    }
+
+    let updatedProduct = product;
+
+    if (Object.keys(changedFields).length > 0) {
+        const res = await updateProductById(pool, productId, changedFields);
+        updatedProduct = res.rows[0];
     }
 
     return {
         success: true,
-        message: "Actualización realizada correctamente.",
-        inventoryId: id,
-        product: updatedProduct
+        message: "Actualización completa.",
+        changedFields,
+        unchangedFields,
+        updatedProduct
     };
 };
+
 
 
 export const getProductsService = async (pool) => {

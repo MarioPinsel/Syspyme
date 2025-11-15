@@ -27,8 +27,6 @@ export default function VerificationCode() {
         }
 
         try {
-            const token = Cookies.get("token")
-
             const { data } = await api.post("/auth/verify",
                 { codigo: fullCode },
                 {
@@ -43,16 +41,15 @@ export default function VerificationCode() {
 
             if (newToken) {
                 Cookies.set("token", newToken, {
-                    expires: 1,
-                    path: "/",
+                    expires: 1 / 96,
+                    path: "/auth",
                     secure: true,
                     sameSite: "lax",
                 });
             }
 
-
             console.log("✅ Verificación exitosa:", data);
-            navigate("/dashboard/admin")
+            navigate("/auth/register")
         } catch (error) {
             console.error("❌ Error en la verificación:", error);
         }
