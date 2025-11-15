@@ -68,9 +68,15 @@ export const updateProductValidation = [
         .isInt({ gt: 0 }).withMessage('El ID debe ser un número entero positivo'),
 
     body().custom(body => {
-        const { unitPrice, quantity, code } = body;
-        if (unitPrice === undefined && quantity === undefined && code === undefined) {
-            throw new Error('Debe enviar al menos un campo a actualizar (unitPrice, quantity o code)');
+        const { unitPrice, quantity, code, type, description } = body;
+        if (
+            unitPrice === undefined &&
+            quantity === undefined &&
+            code === undefined &&
+            type === undefined &&
+            description === undefined
+        ) {
+            throw new Error('Debe enviar al menos un campo a actualizar');
         }
         return true;
     }),
@@ -85,8 +91,17 @@ export const updateProductValidation = [
 
     body('code')
         .optional()
-        .isAlphanumeric().withMessage('El código debe ser alfanumérico')
+        .isAlphanumeric().withMessage('El código debe ser alfanumérico'),
+
+    body('type')
+        .optional()
+        .isString().withMessage('El tipo debe ser texto'),
+
+    body('description')
+        .optional()
+        .isObject().withMessage('La descripción debe ser un JSON válido')
 ];
+
 
 export const getProductValidation = [
     body('id')
