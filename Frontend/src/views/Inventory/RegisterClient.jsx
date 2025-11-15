@@ -1,4 +1,4 @@
-import "../../styles/Layouts/RegisterClient.css";
+import "../../styles/RegisterClient.css";
 
 export default function RegisterClient() {
   return (

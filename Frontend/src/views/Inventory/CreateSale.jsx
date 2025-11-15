@@ -1,4 +1,4 @@
-import "../../styles/Layouts/CreateSale.css";
+import "../../styles/CreateSale.css";
 
 export default function CrearVenta() {
   return (
@@ -27,7 +27,7 @@ export default function CrearVenta() {
         <button className="btn-add">Añadir</button>
       </div>
 
-  
+
       <div className="lista-box">
         <h3>Productos Agregados</h3>
 

@@ -1,4 +1,4 @@
-import "../../styles/Layouts/CreateProduct.css";
+import "../../styles/CreateProduct.css";
 
 export default function CreateProductView() {
   return (
@@ -6,21 +6,21 @@ export default function CreateProductView() {
       <header className="page-header">
         <h1>Crear producto</h1>
         <p className="subtitle">
-          Rellena los datos del producto. 
+          Rellena los datos del producto.
         </p>
       </header>
 
       <form className="product-form" noValidate>
         <div className="form-row">
           <label htmlFor="code">
-            Código 
+            Código
           </label>
           <input id="code" name="code" type="text" placeholder="EJ: P-0001" required />
         </div>
 
         <div className="form-row">
           <label htmlFor="name">
-            Tipo de producto 
+            Tipo de producto
           </label>
 
           <input id="name" name="name" type="text" placeholder="Nombre del producto" required />
@@ -29,7 +29,7 @@ export default function CreateProductView() {
         <div className="form-grid">
           <div className="form-column">
             <label htmlFor="unitPrice">
-              Precio por unidad (COP) 
+              Precio por unidad (COP)
             </label>
             <div className="input-prefix">
               <span className="prefix">$</span>
@@ -47,7 +47,7 @@ export default function CreateProductView() {
 
           <div className="form-column">
             <label htmlFor="quantity">
-              Cantidad en inventario 
+              Cantidad en inventario
             </label>
             <input id="quantity" name="quantity" type="number" min="0" step="1" placeholder="0" required />
           </div>

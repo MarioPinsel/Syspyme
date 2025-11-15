@@ -1,4 +1,4 @@
-import "../../styles/Layouts/InventoryOptions.css";
+import "../../styles/InventoryOptions.css";
 
 export default function InventoryOptions() {
   return (

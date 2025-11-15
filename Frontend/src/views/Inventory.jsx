@@ -36,8 +36,8 @@ export default function Inventory() {
         queryFn: getProducts,
     });
 
-    if (isLoading) return <p>Cargando productos...</p>;
-    if (isError) return <p>Error: {error.message}</p>;
+    // if (isLoading) return <p>Cargando productos...</p>;
+    // if (isError) return <p>Error: {error.message}</p>;
 
     const filteredItems = items.filter(
         (item) =>
@@ -60,10 +60,10 @@ export default function Inventory() {
             </div>
 
             <div className="button-group">
-                <Link to="/actualizar-inventario" className="btn-update">
+                <Link to="/inventory/actualizarproduct" className="btn-update">
                     Actualizar Inventario
                 </Link>
-                <Link to="/crear-producto" className="btn-create">
+                <Link to="/inventory/create-product" className="btn-create">
                     Crear
                 </Link>
                 <Link to="/eliminar-producto" className="btn-delete">
