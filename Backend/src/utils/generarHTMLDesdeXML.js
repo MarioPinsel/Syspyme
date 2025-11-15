@@ -52,6 +52,7 @@ export async function generarHTMLDesdeXML(xmlString) {
   const lineas = factura["cac:InvoiceLine"];
   const cufe = factura["cbc:UUID"];
   const fecha = factura["cbc:IssueDate"];
+  const hora = factura["cbc:IssueTime"];
   const qr = await generarQRDesdeCUFE(cufe);
   const logo = obtenerLogoBase64();
   
@@ -315,7 +316,7 @@ export async function generarHTMLDesdeXML(xmlString) {
 
   <div class="encabezado info">
     <strong>Factura N°:</strong> <span>${factura["cbc:ID"]}</span><br>
-    <strong>Fecha de emisión:</strong> <span>${fecha}</span>
+    <strong>Fecha de emisión:</strong> <span>${fecha}: ${hora} </span>
   </div>
 
   <div class="grid-dos-columnas">
@@ -327,7 +328,7 @@ export async function generarHTMLDesdeXML(xmlString) {
         <div><strong>Vendedor:</strong> ${vendedor["cbc:Name"]}</div>
       </div>
       <div class="contacto-empresa">
-        <strong>Contáctenos:</strong> SyspymeOficial@gmail.com
+        <strong>Contáctenos:</strong> ${vendedor["cbc:ElectronicMail"]}
       </div>
     </div>
 
@@ -349,7 +350,7 @@ export async function generarHTMLDesdeXML(xmlString) {
     </tr>
     ${productos.map(p => `
       <tr>
-          <td>${p["cbc:ID"]}</td>
+          <td>${p["cbc:Code"]}</td>
           <td>${p["cac:Item"]["cbc:Description"]}</td>
           <td class="text-right">${p["cbc:InvoicedQuantity"]}</td>
           <td class="text-right">$${formatearNumero(p["cac:Price"]["cbc:PriceAmount"]._)}</td>

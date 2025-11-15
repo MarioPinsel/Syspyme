@@ -36,7 +36,7 @@ export function generarXMLFactura({
         // Información de contacto o vendedor
         .ele('cac:AccountingContact')
         .ele('cbc:Name').txt(vendedor.nombre).up()
-        .ele('cbc:ElectronicMail').txt(vendedor.correo).up()
+        .ele('cbc:ElectronicMail').txt(empresa.correo).up()
         .up()
         .up()
 
@@ -71,7 +71,7 @@ export function generarXMLFactura({
     // 🔸 Detalles (líneas de productos)
     for (const d of detalles) {
         xml.ele('cac:InvoiceLine')
-            .ele('cbc:ID').txt(d.producto_id).up()
+            .ele('cbc:Code').txt(d.producto_code).up()
             .ele('cbc:InvoicedQuantity').txt(d.unidades).up()
             .ele('cbc:LineExtensionAmount', { currencyID: 'COP' }).txt(d.total.toFixed(2)).up()
             .ele('cac:Item')
