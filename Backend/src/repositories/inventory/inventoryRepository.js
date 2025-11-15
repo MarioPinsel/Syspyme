@@ -11,6 +11,12 @@ export const findProductByCode = (pool, code) => {
         [code]
     );
 };
+export const findProductByCodeExcept = (pool, code, idToExclude) => {
+    return pool.query(
+        "SELECT * FROM productos WHERE codigo = $1 AND id <> $2",
+        [code, idToExclude]
+    );
+};
 
 export const findProductByIdOrCode = (pool, value) => {
     const isNumeric = /^\d+$/.test(value);
