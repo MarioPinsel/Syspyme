@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "../styles/DashboardView.css";
 import { Package, PlusSquare, Users, FileText } from "lucide-react";
 
@@ -15,6 +16,9 @@ export default function DashboardView() {
           <div className="action-card">
             <Package size={28} />
             <p>Ver inventario</p>
+            <Link>
+
+            </Link>
           </div>
           <div className="action-card">
             <PlusSquare size={28} />

@@ -21,9 +21,9 @@ export default function Router() {
 
         <Route path="/auth" element={<Global />}>
           <Route path="login" element={<LoginView />} />
+          <Route path="loginVerify" element={<LoginVerify />} />
           <Route path="register" element={<RegisterView />} />
           <Route path="companyRegister" element={<CompanyRegisterView />} />
-          <Route path="loginVerify" element={<LoginVerify />} />
           <Route path="registerVerify" element={<RegisterVerify />} />
           <Route path="companyRegisterVerify" element={<CompanyRegisterVerify />} />
         </Route>
