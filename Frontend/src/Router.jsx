@@ -10,6 +10,7 @@ import Inventory from "./views/Inventory.jsx"
 import CreateProductView from "./views/Auth/CreateProduct.jsx";
 import InventoryOptions from "./views/Auth/InventoryOptions.jsx";
 import CreateSale from "./views/Auth/CreateSale.jsx";
+import RegisterClient from "./views/Auth/RegisterClient.jsx";
 
 export default function Router() {
   return (
@@ -28,6 +29,7 @@ export default function Router() {
           <Route path="create-product" element={<CreateProductView />} />
           <Route path="inventory-options" element={<InventoryOptions />} />
           <Route path="create-sale" element={<CreateSale />} />
+          <Route path="register-client" element={<RegisterClient/>} />
         </Route>
 
         <Route path="/inventory" element={<AuthLayout />}>

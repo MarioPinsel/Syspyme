@@ -1,0 +1,94 @@
+:root {
+  --color-fondo: #ffffff;
+  --color-cuadro: #ffffff;
+  --color-borde: #cccccc;
+  --color-boton: #225EA8;
+  --color-boton-hover: #28E0DE;
+  --fuente-principal: 'Titillium Web', sans-serif;
+  --fuente-secundaria: 'Inter', sans-serif;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: var(--color-fondo);
+  font-family: var(--fuente-principal);
+}
+
+.cliente-container {
+  max-width: 400px;
+  margin: 60px auto;
+  background-color: var(--color-cuadro);
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.titulo {
+  margin-bottom: 20px;
+  font-size: 1.6rem;
+  color: #333;
+  font-family: var(--fuente-secundaria);
+}
+
+.cliente-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.campo label {
+  font-weight: 500;
+  text-align: left;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.campo input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--color-borde);
+  border-radius: 6px;
+  font-size: 1rem;
+  outline: none;
+  font-family: var(--fuente-principal);
+  transition: border-color 0.3s;
+}
+
+.campo input:focus {
+  border-color: var(--color-boton);
+}
+
+.btn-enviar {
+  background-color: var(--color-boton);
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 10px;
+}
+
+.btn-enviar:hover {
+  background-color: var(--color-boton-hover);
+}
+
+@media (max-width: 600px) {
+  .cliente-container {
+    width: 90%;
+    padding: 20px;
+  }
+
+  .titulo {
+    font-size: 1.4rem;
+  }
+
+  .btn-enviar {
+    font-size: 0.9rem;
+  }
+}
