@@ -90,7 +90,7 @@ export const verifyAccount = async ({ pool, empresaNombre, correo, tipo, codigo 
         await deleteTempEmpresa(correo);
 
         const empresaNombre = result.rows[0].nombre;
-        const finalToken = generateToken({ isAdmin: true, created: true, correo, empresaNombre }, '1h');
+        const finalToken = generateToken({ isAdmin: true, created: true, correo, empresaNombre }, '1d');
         await createDataBase(empresaNombre);
         return { message: 'Registro exitoso', token: finalToken };
     } else {
@@ -106,7 +106,7 @@ export const verifyAccount = async ({ pool, empresaNombre, correo, tipo, codigo 
         const userId = result.rows[0].id;
         const isAdmin = userId === 1;
 
-        const finalToken = generateToken({ correo, isAdmin, created: true, empresaNombre }, '1h');
+        const finalToken = generateToken({ correo, isAdmin, created: true, empresaNombre }, '1d');
         return { message: 'Registro exitoso', token: finalToken };
     }
 };
@@ -148,7 +148,7 @@ export const verifyLoginUsuario = async ({ pool, empresaNombre, correo, codigo }
         throw new Error('INVALID_CODE');
 
     const isAdmin = usuarioData.id === 1;
-    const finalToken = generateToken({ correo, isAdmin, created: true, empresaNombre }, '1h');
+    const finalToken = generateToken({ correo, isAdmin, created: true, empresaNombre }, '1d');
 
     return { message: 'Login exitoso', token: finalToken };
 };
