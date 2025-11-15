@@ -14,8 +14,8 @@ export function generarXMLFactura({
     firma_digital
 }) {
     console.log(vendedor)
-    const fecha = new Date().toISOString().split('T')[0];
-    const hora = new Date().toISOString().split('T')[1].substring(0, 8);
+    const fecha =  new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota", year: "numeric", month: "2-digit", day: "2-digit" });
+    const hora = new Date().toLocaleTimeString("en-GB", { timeZone: "America/Bogota", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
 
     const xml = create({ version: '1.0', encoding: 'UTF-8' })
         .ele('Invoice', {

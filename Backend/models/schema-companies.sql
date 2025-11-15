@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS productos (
 CREATE TABLE IF NOT EXISTS inventario (
   id SERIAL PRIMARY KEY,
   id_producto INT NOT NULL,
-  fecha_ingreso TIMESTAMPTZ DEFAULT NOW(),
+  fecha_ingreso TIMESTAMP DEFAULT (NOW() AT TIME ZONE 'America/Bogota') NOT NULL,
   cantidad INT NOT NULL,
   FOREIGN KEY (id_producto) REFERENCES productos(id)
 );
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS facturas (
   sub_total INT NOT NULL,
   impuestos INT NOT NULL,
   precio_total INT NOT NULL,
-  fecha_venta TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+  fecha_venta TIMESTAMP DEFAULT (NOW() AT TIME ZONE 'America/Bogota') NOT NULL,
   cufe VARCHAR(255) UNIQUE,
   firma_digital VARCHAR(150),
   factura_xml XML DEFAULT NULL,

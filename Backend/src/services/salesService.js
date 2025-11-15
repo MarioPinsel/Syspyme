@@ -85,8 +85,8 @@ export const createSaleService = async (pool, correo, empresaNombre, {document, 
 
     const cufe = generarCUFE({
         numFac: `FV${receiptId}`,
-        fecFac: new Date().toISOString().split('T')[0],
-        horFac: new Date().toISOString().split('T')[1].substring(0, 8),
+        fecFac: new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota", year: "numeric", month: "2-digit", day: "2-digit" }),  
+        horFac: new Date().toLocaleTimeString("en-GB", { timeZone: "America/Bogota", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }),
         valFac: subTotal.toFixed(2),
         codImp1: '01',
         valImp1: impuestos.toFixed(2),

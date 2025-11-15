@@ -55,7 +55,6 @@ export async function generarHTMLDesdeXML(xmlString) {
   const qr = await generarQRDesdeCUFE(cufe);
   const logo = obtenerLogoBase64();
   
-  // Extraer información del vendedor y tasas de IVA
   const vendedor = emisor["cac:AccountingContact"];
   const taxSubtotal = factura["cac:TaxTotal"]["cac:TaxSubtotal"];
   const tasaIVA = taxSubtotal["cac:TaxCategory"]["cbc:Percent"] || "19";
