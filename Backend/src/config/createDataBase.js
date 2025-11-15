@@ -4,9 +4,9 @@ import { createConection, createSecret, getPool, supplyDataBase } from "./secret
 
 const credential = new DefaultAzureCredential();
 const client = new PostgreSQLManagementFlexibleServerClient(credential, process.env.SUBSCRIPTION_ID);
+await createConection(credential);
 
-export async function createDataBase(company) {
-    await createConection(credential);
+export async function createDataBase(company) {    
     await createDB(company);
     
     await createSecret(company);

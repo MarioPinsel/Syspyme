@@ -51,11 +51,11 @@ export const createSaleService = async (pool, correo, empresaNombre, {document, 
 
         const subtotal = producto.precio_unitario * item.quantity;
         subTotal += subtotal;
-        const descripcionArray = Object.values(producto.descripcion);
+        const descripcionArray = Object.values(producto.descripcion).join(" ");
         detalles.push({
             producto_id: producto.id,
             tipo_producto: producto.tipo_producto,
-            descripcion: `${descripcionArray[0]} ${descripcionArray[0]}.` ,
+            descripcion: descripcionArray,
             unidades: item.quantity,
             valor_unitario: producto.precio_unitario,
             total: subtotal
@@ -70,7 +70,6 @@ export const createSaleService = async (pool, correo, empresaNombre, {document, 
 
     const receipt = await createReceipt(pool, cliente.id, usuario.id, paymentMethod, paymentType, subTotal, impuestos, plazoFinal, totalConIva, 'aun_nocufe', firma_digital);
     const receiptId = receipt.rows[0].id;
-
     for (const d of detalles) {
         await createDetailReceipt(
             pool,
@@ -86,8 +85,8 @@ export const createSaleService = async (pool, correo, empresaNombre, {document, 
 
     const cufe = generarCUFE({
         numFac: `FV${receiptId}`,
-        fecFac: new Date().toISOString().split('T')[0],
-        horFac: new Date().toISOString().split('T')[1].substring(0, 8),
+        fecFac: new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota", year: "numeric", month: "2-digit", day: "2-digit" }),  
+        horFac: new Date().toLocaleTimeString("en-GB", { timeZone: "America/Bogota", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }),
         valFac: subTotal.toFixed(2),
         codImp1: '01',
         valImp1: impuestos.toFixed(2),
