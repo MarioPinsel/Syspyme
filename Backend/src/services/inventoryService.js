@@ -119,7 +119,7 @@ export const updateProductService = async (pool, {
             unchangedFields.push("type");
             unchangedFields.push("description");
         } else {
-            const dup = await findProductByTypeAndDescription(pool, newType, newDesc);
+            const dup = await findProductByType(pool, newType, newDesc);
 
             if (dup.rowCount > 0 && dup.rows[0].id !== productId) {
                 return {
