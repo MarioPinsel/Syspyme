@@ -51,11 +51,11 @@ export const createSaleService = async (pool, correo, empresaNombre, {document, 
 
         const subtotal = producto.precio_unitario * item.quantity;
         subTotal += subtotal;
-        const descripcionArray = Object.values(producto.descripcion);
+        const descripcionArray = Object.values(producto.descripcion).join(" ");
         detalles.push({
             producto_id: producto.id,
             tipo_producto: producto.tipo_producto,
-            descripcion: `${descripcionArray[0]} ${descripcionArray[0]}.` ,
+            descripcion: descripcionArray,
             unidades: item.quantity,
             valor_unitario: producto.precio_unitario,
             total: subtotal
@@ -70,7 +70,6 @@ export const createSaleService = async (pool, correo, empresaNombre, {document, 
 
     const receipt = await createReceipt(pool, cliente.id, usuario.id, paymentMethod, paymentType, subTotal, impuestos, plazoFinal, totalConIva, 'aun_nocufe', firma_digital);
     const receiptId = receipt.rows[0].id;
-
     for (const d of detalles) {
         await createDetailReceipt(
             pool,
