@@ -1,0 +1,136 @@
+:root {
+  --color-fondo: #ffffff;
+  --color-cuadro: #f7f9fc;
+  --color-borde: #d6d6d6;
+  --color-boton: #225EA8;
+  --color-boton-hover: #28E0DE;
+  --color-confirmar: #0E8A34;
+  --color-confirmar-hover: #13b84c;
+  --fuente-principal: 'Titillium Web', sans-serif;
+  --fuente-secundaria: 'Inter', sans-serif;
+}
+
+
+.venta-container {
+  max-width: 700px;
+  margin: 40px auto;
+  background-color: var(--color-cuadro);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  font-family: var(--fuente-principal);
+}
+
+
+.titulo-venta {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 25px;
+  font-family: var(--fuente-secundaria);
+  font-weight: 700;
+  color: #333;
+}
+
+
+.documento-box,
+.lista-box,
+.pago-box {
+  background: var(--color-fondo);
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--color-borde);
+  margin-bottom: 25px;
+}
+
+.documento-box h3,
+.lista-box h3,
+.pago-box h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: #333;
+  font-family: var(--fuente-secundaria);
+}
+
+
+.campo {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.campo label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.campo input,
+.campo select {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid var(--color-borde);
+  border-radius: 8px !important;
+  background: var(--color-fondo);
+  outline: none;
+  transition: 0.2s;
+}
+
+
+.btn-add {
+  width: 100%;
+  background-color: var(--color-boton);
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.btn-add:hover {
+  background-color: var(--color-boton-hover);
+}
+
+
+.item-ejemplo {
+  padding: 12px;
+  border-radius: 8px;
+  background-color: #e9f1ff;
+  border: 1px solid #c9d9f2;
+  margin-bottom: 10px;
+}
+
+.acciones {
+  margin-top: 20px;
+}
+
+.btn-realizar {
+  width: 100%;
+  background-color: var(--color-confirmar);
+  color: white;
+  padding: 14px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-realizar:hover {
+  background-color: var(--color-confirmar-hover);
+}
+
+@media (max-width: 600px) {
+  .venta-container {
+    width: 92%;
+    padding: 20px;
+  }
+
+  .btn-realizar {
+    font-size: 1rem;
+  }
+}

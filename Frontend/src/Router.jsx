@@ -8,6 +8,10 @@ import Global from './layouts/Global.jsx'
 import Homepage from './views/Homepage'
 import LoginVerify from './views/Auth/LoginVerify.jsx'
 import Inventory from "./views/Inventory.jsx"
+import CreateProductView from "./views/Inventory/CreateProduct.jsx";
+import InventoryOptions from "./views/Inventory/ActualizarProducto.jsx";
+import CreateSale from "./views/Inventory/CreateSale.jsx";
+import RegisterClient from "./views/Inventory/RegisterClient.jsx";
 import Dashboard from "./views/DashboardView.jsx"
 
 
@@ -25,11 +29,15 @@ export default function Router() {
           <Route path="register" element={<RegisterView />} />
           <Route path="companyRegister" element={<CompanyRegisterView />} />
           <Route path="registerVerify" element={<RegisterVerify />} />
-          <Route path="companyRegisterVerify" element={<CompanyRegisterVerify />} />
+           <Route path="companyRegisterVerify" element={<CompanyRegisterVerify />} />
         </Route>
 
-        <Route path="/inventory" element={<Global />}>
-          <Route path="info" element={<Inventory />} />
+        <Route path="/inventory" element={<AuthLayout />}>
+          <Route path="inicio" element={<Inventory />} />
+          <Route path="create-product" element={<CreateProductView />} />
+          <Route path="inventory-options" element={<InventoryOptions />} />
+          <Route path="create-sale" element={<CreateSale />} />
+          <Route path="register-client" element={<RegisterClient />} />     
         </Route>
 
         <Route path="dashboard" element={<Global />}>
