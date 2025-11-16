@@ -9,14 +9,14 @@ import CompanyRegisterVerify from './views/Auth/CompanyRegisterVerify.jsx'
 import Homepage from './views/Homepage'
 
 import LoginVerify from './views/Auth/LoginVerify.jsx'
-import Inventory from "./views/Inventory.jsx"
+import Inventory from "./views/Inventory/Inventory.jsx"
 import CreateProductView from "./views/Inventory/CreateProduct.jsx";
 import ActualizarProduct from "./views/Inventory/ActualizarProducto.jsx";
 import CreateSale from "./views/Inventory/CreateSale.jsx";
 import RegisterClient from "./views/Inventory/RegisterClient.jsx";
 import Dashboard from "./views/DashboardView.jsx"
-
-
+import BorrarProducto from "./views/Inventory/BorrarProducto.jsx"
+import AgregarProducto from "./views/Inventory/AgregarProducto.jsx"
 export default function Router() {
   return (
     <BrowserRouter>
@@ -38,6 +38,8 @@ export default function Router() {
           <Route index={true} element={<Inventory />} />
           <Route path="create-product" element={<CreateProductView />} />
           <Route path="actualizarproduct" element={<ActualizarProduct />} />
+          <Route path="deleteProduct" element={<BorrarProducto />} />
+          <Route path="agregarProduct" element={<AgregarProducto />} />
         </Route>
 
         <Route path="/sales" element={<Global />}>
