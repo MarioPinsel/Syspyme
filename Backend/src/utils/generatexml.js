@@ -1,6 +1,7 @@
-// utils/xmlBuilder.js
 import { create } from 'xmlbuilder2';
+import writtenNumber from 'written-number';
 
+writtenNumber.defaults.lang = 'es';
 export function generarXMLFactura({
     receiptId,
     empresa,
@@ -11,10 +12,13 @@ export function generarXMLFactura({
     impuestos,
     totalConIva,
     cufe,
-    firma_digital
+    firma_digital,
+    paymentMethod,
+    paymentType,
+    plazoFinal
 }) {
     console.log(vendedor)
-    const fecha =  new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota", year: "numeric", month: "2-digit", day: "2-digit" });
+    const fecha = new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota", year: "numeric", month: "2-digit", day: "2-digit" });
     const hora = new Date().toLocaleTimeString("en-GB", { timeZone: "America/Bogota", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
 
     const xml = create({ version: '1.0', encoding: 'UTF-8' })
@@ -28,6 +32,7 @@ export function generarXMLFactura({
         .ele('cbc:IssueDate').txt(fecha).up()
         .ele('cbc:IssueTime').txt(hora).up()
         .ele('cbc:UUID').txt(cufe).up()
+        .ele('cbc:StringNumber').txt(writtenNumber(Number(totalConIva), { lang: 'es' })).up()
 
         // Empresa (proveedor)
         .ele('cac:AccountingSupplierParty')
@@ -36,7 +41,7 @@ export function generarXMLFactura({
         // Información de contacto o vendedor
         .ele('cac:AccountingContact')
         .ele('cbc:Name').txt(vendedor.nombre).up()
-        .ele('cbc:ElectronicMail').txt(vendedor.correo).up()
+        .ele('cbc:ElectronicMail').txt(empresa.correo).up()
         .up()
         .up()
 
@@ -44,6 +49,8 @@ export function generarXMLFactura({
         .ele('cac:AccountingCustomerParty')
         .ele('cbc:ID').txt(cliente.documento).up()
         .ele('cbc:Name').txt(cliente.nombre).up()
+        .ele('cbc:Email').txt(cliente.correo).up()
+        .ele('cbc:Phone').txt(cliente.telefono).up()
         .up()
 
         // Impuestos
@@ -67,18 +74,21 @@ export function generarXMLFactura({
         .ele('cbc:TaxExclusiveAmount', { currencyID: 'COP' }).txt(Number(subTotal).toFixed(2)).up()
         .ele('cbc:TaxInclusiveAmount', { currencyID: 'COP' }).txt(Number(totalConIva).toFixed(2)).up()
         .ele('cbc:PayableAmount', { currencyID: 'COP' }).txt(Number(totalConIva).toFixed(2)).up()
+        .ele('cbc:PaymentMethod').txt(paymentMethod).up()
+        .ele('cbc:PaymentType').txt(paymentType).up()
+        .ele('cbc:FinalTerm').txt(plazoFinal).up()
         .up();
     // 🔸 Detalles (líneas de productos)
     for (const d of detalles) {
         xml.ele('cac:InvoiceLine')
-            .ele('cbc:ID').txt(d.producto_id).up()
+            .ele('cbc:Code').txt(d.producto_code).up()
             .ele('cbc:InvoicedQuantity').txt(d.unidades).up()
             .ele('cbc:LineExtensionAmount', { currencyID: 'COP' }).txt(d.total.toFixed(2)).up()
             .ele('cac:Item')
             .ele('cbc:Description').txt(d.descripcion).up()
             .ele('cbc:Name').txt(d.tipo_producto).up()
             .ele('cac:SellersItemIdentification')
-            .ele('cbc:ID').txt(d.codigo).up() // 👈 código del producto
+            .ele('cbc:ID').txt(d.codigo).up() 
             .up()
             .up()
             .ele('cac:Price')

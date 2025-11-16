@@ -54,8 +54,9 @@ export const createSaleService = async (pool, correo, empresaNombre, {document, 
         const descripcionArray = Object.values(producto.descripcion).join(" ");
         detalles.push({
             producto_id: producto.id,
+            producto_code: producto.codigo,
             tipo_producto: producto.tipo_producto,
-            descripcion: descripcionArray,
+            descripcion: `${producto.tipo_producto} ${descripcionArray}`,
             unidades: item.quantity,
             valor_unitario: producto.precio_unitario,
             total: subtotal
@@ -111,7 +112,10 @@ export const createSaleService = async (pool, correo, empresaNombre, {document, 
         impuestos,
         totalConIva,
         cufe,
-        firma_digital
+        firma_digital,
+        paymentMethod,
+        paymentType,
+        plazoFinal
     })
 
     await addXMLAndCUFEToReceipt(pool, receiptId, cufe, facturaXML);

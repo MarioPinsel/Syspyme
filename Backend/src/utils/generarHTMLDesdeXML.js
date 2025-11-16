@@ -21,6 +21,13 @@ async function generarQRDesdeCUFE(cufe) {
     return null;
   }
 }
+function getNodeValue(node) {
+  if (!node) return "";
+  if (typeof node === "string") return node;
+  if (node._) return node._;
+  return "";
+}
+
 
 function formatearNumero(numero) {
   return new Intl.NumberFormat('es-CO', {
@@ -52,9 +59,10 @@ export async function generarHTMLDesdeXML(xmlString) {
   const lineas = factura["cac:InvoiceLine"];
   const cufe = factura["cbc:UUID"];
   const fecha = factura["cbc:IssueDate"];
+  const hora = factura["cbc:IssueTime"];
+  const totalLetra = (factura["cbc:StringNumber"]?._ || factura["cbc:StringNumber"] || 'No disponible').toUpperCase();
   const qr = await generarQRDesdeCUFE(cufe);
   const logo = obtenerLogoBase64();
-  
   const vendedor = emisor["cac:AccountingContact"];
   const taxSubtotal = factura["cac:TaxTotal"]["cac:TaxSubtotal"];
   const tasaIVA = taxSubtotal["cac:TaxCategory"]["cbc:Percent"] || "19";
@@ -203,28 +211,50 @@ export async function generarHTMLDesdeXML(xmlString) {
   }
   
   .totales { 
-    text-align: right; 
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
     margin-top: 15px;
     padding: 12px;
     background: #fafafa;
     border-radius: 6px;
     border: 1px solid #e0e0e0;
   }
-  
-  .totales p { 
+
+  .totales-izquierda,
+  .totales-derecha {
+    flex: 1;
+  }
+
+  .totales-izquierda {
+    text-align: left;
+  }
+
+  .totales-derecha {
+    text-align: right;
+  }
+
+  .totales-izquierda p,
+  .totales-derecha p { 
     margin: 5px 0; 
     font-size: 13px;
   }
-  
-  .totales p:last-child {
-    font-size: 16px;
+
+  .totales-derecha p:last-child {
+    font-size: 15px;
     color: #0b3954;
     border-top: 2px solid #0b3954;
     padding-top: 8px;
     margin-top: 8px;
     font-weight: bold;
   }
-  
+
+  .total-letras {
+    font-size: 15px;
+    color: #0b3954;
+    font-weight: bold;
+  }
+
   .firma { 
     margin-top: 15px; 
     padding: 10px;
@@ -239,7 +269,7 @@ export async function generarHTMLDesdeXML(xmlString) {
   .cufe-qr-container {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: flex-start;
     margin-top: 15px;
     padding: 10px;
     background: #f9f9f9;
@@ -250,22 +280,27 @@ export async function generarHTMLDesdeXML(xmlString) {
   .cufe {
     flex: 1;
     padding-right: 15px;
+    max-width: calc(100% - 100px);
   }
   
   .cufe strong {
     color: #0b3954;
-    font-size: 11px;
+    font-size: 14px;
+    display: block; 
+    margin-bottom: 5px;
   }
   
   .cufe-text {
-    font-size: 9px;
+    font-size: 13px;
     color: #666;
-    word-wrap: break-word;
+    word-break: break-all;
     margin-top: 4px;
+    line-height: 1.4;
   }
   
   .qr-container {
     text-align: right;
+    flex-shrink: 0;
   }
   
   .qr-container img {
@@ -315,26 +350,27 @@ export async function generarHTMLDesdeXML(xmlString) {
 
   <div class="encabezado info">
     <strong>Factura N°:</strong> <span>${factura["cbc:ID"]}</span><br>
-    <strong>Fecha de emisión:</strong> <span>${fecha}</span>
+    <strong>Fecha de emisión:</strong> <span>${fecha}</span> <strong>Hora de emisión:</strong> <span>${hora}</span>
   </div>
 
   <div class="grid-dos-columnas">
     <div class="encabezado">
       <h3>Emisor</h3>
-      <div><strong>Nombre:</strong> ${emisor["cbc:Name"]}</div>
+      <div><strong>Razon Social/Nombre:</strong> ${emisor["cbc:Name"]}</div>
       <div><strong>NIT:</strong> ${emisor["cbc:CompanyID"]}</div>
+
       <div class="vendedor-info">
         <div><strong>Vendedor:</strong> ${vendedor["cbc:Name"]}</div>
-      </div>
-      <div class="contacto-empresa">
-        <strong>Contáctenos:</strong> SyspymeOficial@gmail.com
-      </div>
+        <div><strong>Contactenos:</strong> ${vendedor["cbc:ElectronicMail"]}</div>          
+      </div>                  
     </div>
 
     <div class="encabezado">
       <h3>Cliente</h3>
       <div><strong>Nombre:</strong> ${cliente["cbc:Name"]}</div>
       <div><strong>Documento:</strong> ${cliente["cbc:ID"]}</div>
+      <div><strong>Correo:</strong> ${cliente["cbc:Email"]}</div>
+      <div><strong>Telefono:</strong> ${cliente["cbc:Phone"]}</div>
     </div>
   </div>
 
@@ -349,7 +385,7 @@ export async function generarHTMLDesdeXML(xmlString) {
     </tr>
     ${productos.map(p => `
       <tr>
-          <td>${p["cbc:ID"]}</td>
+          <td>${p["cbc:Code"]}</td>
           <td>${p["cac:Item"]["cbc:Description"]}</td>
           <td class="text-right">${p["cbc:InvoicedQuantity"]}</td>
           <td class="text-right">$${formatearNumero(p["cac:Price"]["cbc:PriceAmount"]._)}</td>
@@ -359,17 +395,30 @@ export async function generarHTMLDesdeXML(xmlString) {
   </table>
 
   <div class="totales">
-    <p><strong>Subtotal:</strong> $${formatearNumero(totales["cbc:LineExtensionAmount"]._)}</p>
-    <p><strong>IVA (${tasaIVA}%):</strong> $${formatearNumero((parseFloat(totales["cbc:PayableAmount"]._) - parseFloat(totales["cbc:TaxExclusiveAmount"]._)))}</p>
-    <p><strong>Total:</strong> $${formatearNumero(totales["cbc:PayableAmount"]._)}</p>
+    <div class="totales-izquierda">
+      <p><strong>Método de Pago:</strong> ${totales["cbc:PaymentMethod"]}</p>
+      <p><strong>Forma de Pago:</strong> ${totales["cbc:PaymentType"]}</p>     
+      <p><strong>Termino:</strong> ${totales["cbc:FinalTerm"]}</p>
+    </div>
+  
+    <div class="totales-derecha">
+     <p><strong>Subtotal:</strong> $${formatearNumero(totales["cbc:LineExtensionAmount"]._)}</p>
+     <p><strong>IVA (${tasaIVA}%):</strong> $${formatearNumero((parseFloat(totales["cbc:PayableAmount"]._) - parseFloat(totales["cbc:TaxExclusiveAmount"]._)))}</p>
+     <p><strong>Total:</strong> $${formatearNumero(totales["cbc:PayableAmount"]._)}</p>
+    </div>    
+  </div>  
+
+  <div class="totales-derecha">         
+    <div class="total-letras">
+      ${totalLetra} PESOS COLOMBIANOS
+    </div>
   </div>
 
-  
-  <div class="cufe-qr-container">
-    <div class="cufe">
+  <div class="cufe-qr-container">      
+    <div class="cufe">     
       <strong>CUFE:</strong>
-      <div class="cufe-text">${cufe}</div>
-    </div>
+      <div class="cufe-text">${cufe}</div>      
+    </div>    
     <div class="qr-container">
       <img src="${qr}" alt="Código QR">
     </div>
@@ -377,6 +426,7 @@ export async function generarHTMLDesdeXML(xmlString) {
 
   <div class="footer">
     <p>Software: <b>SysPyME</b> | Fabricante: SYSPYME.ORG</p>
+    <p>Haciendo función y cumplimiento de la resolución 000012 del 9 de febrero del 2021, nos permitimos generar esta factura electrónica. También, siguiendo el título V de la resolución 42 del 5 de mayo del 2020, hacemos cumplimiento de los requisitos mínimos para los documentos referentes a la facturación electrónica.</p>
     <p>&copy; ${new Date().getFullYear()} Todos los derechos reservados.</p>
   </div>
 </div>
