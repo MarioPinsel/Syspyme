@@ -350,7 +350,7 @@ export async function generarHTMLDesdeXML(xmlString) {
 
   <div class="encabezado info">
     <strong>Factura N°:</strong> <span>${factura["cbc:ID"]}</span><br>
-    <strong>Fecha de emisión:</strong> <span>${fecha}: ${hora} </span>
+    <strong>Fecha de emisión:</strong> <span>${fecha}</span> <strong>Hora de emisión:</strong> <span>${hora}</span>
   </div>
 
   <div class="grid-dos-columnas">
@@ -405,10 +405,7 @@ export async function generarHTMLDesdeXML(xmlString) {
      <p><strong>Subtotal:</strong> $${formatearNumero(totales["cbc:LineExtensionAmount"]._)}</p>
      <p><strong>IVA (${tasaIVA}%):</strong> $${formatearNumero((parseFloat(totales["cbc:PayableAmount"]._) - parseFloat(totales["cbc:TaxExclusiveAmount"]._)))}</p>
      <p><strong>Total:</strong> $${formatearNumero(totales["cbc:PayableAmount"]._)}</p>
-    </div>
-    <div class="total-letras">
-      ${totalLetra} PESOS COLOMBIANOS
-    </div>
+    </div>    
   </div>  
 
   <div class="totales-derecha">         
@@ -429,7 +426,7 @@ export async function generarHTMLDesdeXML(xmlString) {
 
   <div class="footer">
     <p>Software: <b>SysPyME</b> | Fabricante: SYSPYME.ORG</p>
-    <p>Haciendo función y cumplimiento de la resolución 000012 del 9 de febrero del 2021, nos permitimos generar esta factura electrónica. También, siguiendo el título 5 de la resolución 42 del 5 de mayo del 2020, hacemos cumplimiento de los requisitos mínimos para los documentos referentes a la facturación electrónica.</p>
+    <p>Haciendo función y cumplimiento de la resolución 000012 del 9 de febrero del 2021, nos permitimos generar esta factura electrónica. También, siguiendo el título V de la resolución 42 del 5 de mayo del 2020, hacemos cumplimiento de los requisitos mínimos para los documentos referentes a la facturación electrónica.</p>
     <p>&copy; ${new Date().getFullYear()} Todos los derechos reservados.</p>
   </div>
 </div>
