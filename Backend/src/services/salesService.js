@@ -112,7 +112,10 @@ export const createSaleService = async (pool, correo, empresaNombre, {document, 
         impuestos,
         totalConIva,
         cufe,
-        firma_digital
+        firma_digital,
+        paymentMethod,
+        paymentType,
+        plazoFinal
     })
 
     await addXMLAndCUFEToReceipt(pool, receiptId, cufe, facturaXML);

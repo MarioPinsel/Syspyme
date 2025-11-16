@@ -38,7 +38,7 @@ export const createProductValidation = [
 
     body('unitPrice')
         .notEmpty().withMessage('El precio unitario es obligatorio')
-        .isFloat({ gt: 0 }).withMessage('El precio unitario debe ser mayor que 0'),
+        .isFloat({ gt: 50 }).withMessage('El precio unitario debe ser mayor que 0'),
 
     body('quantity')
         .notEmpty().withMessage('La cantidad es obligatoria')
@@ -83,7 +83,7 @@ export const updateProductValidation = [
 
     body('unitPrice')
         .optional()
-        .isFloat({ gt: 0 }).withMessage('El precio unitario debe ser mayor que 0'),
+        .isFloat({ gt: 50 }).withMessage('El precio unitario debe ser mayor que 0'),
 
     body('quantity')
         .optional()
