@@ -350,7 +350,7 @@ export async function generarHTMLDesdeXML(xmlString) {
 
   <div class="encabezado info">
     <strong>Factura N°:</strong> <span>${factura["cbc:ID"]}</span><br>
-    <strong>Fecha de emisión:</strong> <span>${fecha}</span> <strong>Hora de emisión:</strong> <span>${hora}</span>
+   <strong>Fecha de emisión:</strong> <span>${fecha}</span> <strong> Hora de emisión:</strong> <span>${hora}</span>
   </div>
 
   <div class="grid-dos-columnas">
