@@ -19,10 +19,12 @@ export default function RegisterClient() {
   });
 
   const handleRegisterClient = async (formData) => {
+    console.log(formData)
     try {
       const token = Cookies.get("token");
+      console.log(token)
 
-      const { data } = await api.post("/customers/createCostumer", formData,
+      const { data } = await api.post("/customers/createCustomer", formData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -46,44 +48,44 @@ export default function RegisterClient() {
       <form className="cliente-form" onSubmit={handleSubmit(handleRegisterClient)}>
 
         <div className="campo">
-          <label htmlFor="nombre">Nombre Completo:</label>
+          <label htmlFor="name">Nombre Completo:</label>
           <input
             type="text"
-            id="nombre"
-            {...register("nombre", { required: "El nombre es obligatorio" })}
+            id="name"
+            {...register("name", { required: "El nombre es obligatorio" })}
             placeholder="Ej: Santiago Ramirez"
           />
           {errors.nombre && <p className="error-message">{errors.nombre.message}</p>}
         </div>
 
         <div className="campo">
-          <label htmlFor="cedula">Cédula:</label>
+          <label htmlFor="document">Cédula:</label>
           <input
             type="text"
-            id="cedula"
-            {...register("cedula", { required: "La cédula es obligatoria" })}
+            id="document"
+            {...register("document", { required: "La cédula es obligatoria" })}
             placeholder="Ej: 1012345678"
           />
           {errors.cedula && <p className="error-message">{errors.cedula.message}</p>}
         </div>
 
         <div className="campo">
-          <label htmlFor="correo">Correo:</label>
+          <label htmlFor="email">Correo:</label>
           <input
             type="email"
-            id="correo"
-            {...register("correo", { required: "El correo es obligatorio" })}
+            id="email"
+            {...register("email", { required: "El correo es obligatorio" })}
             placeholder="Ej: correo@ejemplo.com"
           />
           {errors.correo && <p className="error-message">{errors.correo.message}</p>}
         </div>
 
         <div className="campo">
-          <label htmlFor="celular">Celular:</label>
+          <label htmlFor="phone">Celular:</label>
           <input
             type="text"
-            id="celular"
-            {...register("celular", { required: "El celular es obligatorio" })}
+            id="phone"
+            {...register("phone", { required: "El celular es obligatorio" })}
             placeholder="Ej: 3001234567"
           />
           {errors.celular && <p className="error-message">{errors.celular.message}</p>}

@@ -1,0 +1,102 @@
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { isAxiosError } from "axios";
+import Cookies from "js-cookie";
+import api from "../../config/axios";
+import "../../styles/Layouts/Auth.css";
+
+export default function RegisterView() {
+
+    const initialValues = {
+        nombre: "",
+        correo: "",
+        handle: "",
+        password: "",
+    };
+
+    const { register, handleSubmit, formState: { errors } } = useForm({
+        defaultValues: initialValues,
+    });
+
+    const handleRegister = async (formData) => {
+        try {
+            const token = Cookies.get("token")
+
+            const { data } = await api.post(
+                "/auth/registerUser",
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            toast.success(data.message);
+        } catch (error) {
+            if (isAxiosError(error) && error.response) {
+                toast.error(error.response.data.error);
+            }
+        }
+    };
+
+    return (
+        <div className="auth-container">
+            <div className="auth-box">
+                <h2>Registrar Empleado</h2>
+
+                <form onSubmit={handleSubmit(handleRegister)}>
+                    <label>Nombre del Empleado</label>
+                    <input
+                        type="text"
+                        {...register("nombre", {
+                            required: "El nombre del empleado es obligatorio",
+                        })}
+                        placeholder="Ej: Juan Pérez"
+                    />
+                    {errors.nombre && (
+                        <p className="error-message">{errors.nombre.message}</p>
+                    )}
+
+                    <label>Correo del Empleado</label>
+                    <input
+                        type="email"
+                        {...register("correo", {
+                            required: "El correo del empleado es obligatorio",
+                        })}
+                        placeholder="Ej: employee@empresa.com"
+                    />
+                    {errors.correo && (
+                        <p className="error-message">{errors.correo.message}</p>
+                    )}
+
+                    <label>Handle o Identificador</label>
+                    <input
+                        type="text"
+                        {...register("handle", {
+                            required: "El identificador es obligatorio",
+                        })}
+                        placeholder="Ej: employee123"
+                    />
+                    {errors.handle && (
+                        <p className="error-message">{errors.handle.message}</p>
+                    )}
+
+                    <label>Contraseña del empleado</label>
+                    <input
+                        type="password"
+                        {...register("password", {
+                            required: "La contraseña del empleado es obligatoria",
+                        })}
+                        placeholder="********"
+                    />
+                    {errors.password && (
+                        <p className="error-message">{errors.password.message}</p>
+                    )}
+
+                    <button type="submit">Registrar</button>
+                </form>
+            </div>
+        </div>
+    );
+}

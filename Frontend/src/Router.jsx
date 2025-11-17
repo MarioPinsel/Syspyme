@@ -15,9 +15,10 @@ import CreateProductView from "./views/Inventory/CreateProduct.jsx";
 import ActualizarProduct from "./views/Inventory/ActualizarProducto.jsx";
 import CreateSale from "./views/Sales/CreateSale.jsx";
 import RegisterClient from "./views/Sales/RegisterClient.jsx";
-import Dashboard from "./views/DashboardView.jsx"
+import Dashboard from "./views/Admin/DashboardView.jsx"
 import BorrarProducto from "./views/Inventory/BorrarProducto.jsx"
 import AgregarProducto from "./views/Inventory/AgregarProducto.jsx"
+import RegistrarEmpleado from "./views/Admin/RegisterEmployee.jsx"
 
 import RequireAuth from "./components/RequireAuth.jsx";
 
@@ -39,17 +40,21 @@ export default function Router() {
           <Route path="companyRegisterVerify" element={<CompanyRegisterVerify />} />
         </Route>
 
-
-        <Route path="/dashboard" element={<Common />}>
-          <Route index element={<Dashboard />} />
+        <Route element={<RequireAuth allowedRoles={"admin"} />}>
+          <Route path="/dashboard" element={<Common />}>
+            <Route index element={<Dashboard />} />
+            <Route path="register-employee" element={<RegistrarEmpleado />} />
+          </Route>
         </Route>
 
-        <Route path="/inventory" element={<Common />} allowedRoles={["admin"]}>
-          <Route index element={<Inventory />} />
-          <Route path="create-product" element={<CreateProductView />} />
-          <Route path="actualizarproduct" element={<ActualizarProduct />} />
-          <Route path="deleteProduct" element={<BorrarProducto />} />
-          <Route path="agregarProduct" element={<AgregarProducto />} />
+        <Route element={<RequireAuth allowedRoles={["admin"]} />}>
+          <Route path="/inventory" element={<Common />}>
+            <Route index element={<Inventory />} />
+            <Route path="create-product" element={<CreateProductView />} />
+            <Route path="actualizarproduct" element={<ActualizarProduct />} />
+            <Route path="deleteProduct" element={<BorrarProducto />} />
+            <Route path="agregarProduct" element={<AgregarProducto />} />
+          </Route>
         </Route>
 
         <Route element={<RequireAuth allowedRoles={["employee", "admin"]} />}>
@@ -62,6 +67,6 @@ export default function Router() {
 
 
       </Routes>
-    </BrowserRouter>
+    </BrowserRouter >
   );
 }

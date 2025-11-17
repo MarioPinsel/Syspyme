@@ -5,9 +5,27 @@
     background: #28E0D0;
     padding: 16px 32px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
 }
 
-/* Contenedor de links a la izquierda */
+.role-badge {
+    position: absolute;
+    top: 16px;
+    right: 32px;
+    background-color: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 12px;
+    letter-spacing: 0.5px;
+    backdrop-filter: blur(10px);
+}
+
+.role-badge.welcome {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
 .header-links {
     display: flex;
     align-items: center;
@@ -29,7 +47,6 @@
     transform: translateY(-1px);
 }
 
-/* Botón de cerrar sesión alineado a la derecha */
 .header button {
     padding: 8px 20px;
     background-color: #ffffff;
@@ -50,7 +67,10 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Estilo específico para header de empleados si lo necesitas */
 .employee-header {
+    background: #28E0D0;
+}
+
+.public-header {
     background: #28E0D0;
 }

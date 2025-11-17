@@ -3,20 +3,12 @@ import { useAuth } from "../context/useAuth";
 
 
 export default function RequireAuth({ allowedRoles }) {
-    const { user } = useAuth();
+    const { user, loading } = useAuth();
 
-    console.log("✔ RequireAuth ejecutado | user =", user, "| allowed =", allowedRoles);
+    if (loading) return <div>Cargando...</div>;
 
-    if (!user) {
-        console.log("⛔ No hay user → redirigiendo a login");
-        return <Navigate to="/auth/login" />;
-    }
+    if (!user) return <Navigate to="/auth/login" />;
+    if (!allowedRoles.includes(user.role)) return <Navigate to="/" />;
 
-    if (!allowedRoles.includes(user.role)) {
-        console.log("⛔ Rol no permitido → redirigiendo a /");
-        return <Navigate to="/" />;
-    }
-
-    console.log("✔ Acceso permitido");
     return <Outlet />;
 }
