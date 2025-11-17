@@ -54,7 +54,7 @@ export const findAllProducts = (pool) => {
             i.cantidad AS cantidad,
             i.fecha_ingreso AS inventory_created_at
         FROM productos p
-        JOIN inventario i ON p.id = i.id_producto
+        LEFT JOIN inventario i ON p.id = i.id_producto
     `);
 };
 
