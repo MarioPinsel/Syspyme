@@ -114,3 +114,7 @@ export const getInventoryByProductId = (pool, productId) => {
         [productId]
     );
 }
+
+export const getAllProducts = (pool) => {
+    return pool.query(`SELECT COUNT(*) AS total FROM productos`);
+}
