@@ -46,9 +46,30 @@ export const registerEmpresa = async ({ nombre, nit, correo, password }) => {
     return { message: 'Código de verificación enviado al correo.', token };
 };
 
-export const registerUsuario = async ({ pool, empresaNombre, nombre, correo, handle, password }) => {
-    if ((await findUsuarioByCorreo(pool, correo)).rowCount) throw new Error('USUARIO_ALREADY_EXISTS');
-    if ((await findTempUsuarioByCorreo(pool, correo)).rowCount) throw new Error('PENDING_VERIFICATION');
+export const registerUsuario = async ({ pool, userId, empresaNombre, nombre, correo, handle, password }) => {
+
+    if ((await findUsuarioByCorreo(pool, correo)).rowCount)
+        throw new Error('USUARIO_ALREADY_EXISTS');
+
+    if (userId === 1) {
+
+        const hashed = await hashPassword(password);
+
+        const result = await createUsuario(pool, {
+            nombre,
+            correo,
+            handle,
+            password: hashed
+        });
+
+        return {
+            message: 'Usuario creado correctamente por el administrador.',
+            user: result.rows[0]
+        };
+    }
+
+    if ((await findTempUsuarioByCorreo(pool, correo)).rowCount)
+        throw new Error('PENDING_VERIFICATION');
 
     const hashed = await hashPassword(password);
     const code = generateCode();
@@ -65,7 +86,11 @@ export const registerUsuario = async ({ pool, empresaNombre, nombre, correo, han
     await sendVerificationEmail(correo, code);
 
     const token = generateToken({ correo, tipo: 'usuario', empresaNombre, created: true }, '15m');
-    return { message: 'Código de verificación enviado al correo.', token };
+
+    return {
+        message: 'Código de verificación enviado al correo.',
+        token
+    };
 };
 
 export const verifyAccount = async ({ pool, empresaNombre, correo, tipo, codigo }) => {
@@ -106,7 +131,7 @@ export const verifyAccount = async ({ pool, empresaNombre, correo, tipo, codigo 
         const userId = result.rows[0].id;
         const isAdmin = userId === 1;
 
-        const finalToken = generateToken({ correo, isAdmin, created: true, empresaNombre }, '1d');
+        const finalToken = generateToken({ correo, userId, isAdmin, created: true, empresaNombre }, '1d');
         return { message: 'Registro exitoso', token: finalToken };
     }
 };
@@ -148,7 +173,7 @@ export const verifyLoginUsuario = async ({ pool, empresaNombre, correo, codigo }
         throw new Error('INVALID_CODE');
 
     const isAdmin = usuarioData.id === 1;
-    const finalToken = generateToken({ correo, isAdmin, created: true, empresaNombre }, '1d');
+    const finalToken = generateToken({ correo, userId: usuarioData.id, isAdmin, created: true, empresaNombre }, '1d');
 
     return { message: 'Login exitoso', token: finalToken };
 };
