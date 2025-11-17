@@ -14,7 +14,8 @@
   --ancho-max-texto: 600px;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
@@ -35,8 +36,7 @@ html, body {
 
 .hero-section {
   text-align: center;
-  padding: calc(var(--espaciado-grande) + 80px) var(--espaciado-pequeño)
-    calc(var(--espaciado-grande) - 20px);
+  padding: calc(var(--espaciado-grande) + 80px) var(--espaciado-pequeño) calc(var(--espaciado-grande) - 20px);
 }
 
 .hero-section h1 {
@@ -151,7 +151,7 @@ html, body {
   background-color: #ddd;
   border-radius: 15px;
   overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .section-image img {
@@ -169,49 +169,4 @@ html, body {
   font-size: 1.4rem;
   color: #2ac9e0;
   margin-bottom: 10px;
-}
-
-@media (max-width: 992px) {
-  .welcome-section {
-    flex-direction: column;
-    align-items: center;
-    padding-left: 0;
-  }
-
-  .section-block,
-  .section-block.reverse {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .section-image, 
-  .section-text {
-    width: 90%;
-  }
-
-  .hero-section h1 {
-    font-size: 32px;
-  }
-
-  .welcome-text p {
-    font-size: 18px;
-  }
-}
-
-@media (max-width: 576px) {
-  .team-card {
-    width: 90%;
-  }
-
-  .section-text h3 {
-    font-size: 1.2rem;
-  }
-
-  .hero-section h1 {
-    font-size: 26px;
-  }
-
-  .welcome-text p {
-    font-size: 16px;
-  }
 }

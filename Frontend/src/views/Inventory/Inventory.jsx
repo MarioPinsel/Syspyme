@@ -1,49 +1,47 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import api from "../../config/axios";
+import Cookies from "js-cookie";
 import { Link } from "react-router-dom";
-import { isAxiosError } from "axios";
-import api from "../config/axios.js";
-import Cookies from "js-cookie"
-import "../styles/InventoryForm.css";
-
-
-
-const getProducts = async () => {
-    try {
-        const token = Cookies.get("token");
-        const { data } = await api.get('/inventory/getProducts',
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-        );
-
-        console.log(data)
-        return data;
-    } catch (error) {
-        if (isAxiosError(error) && error.response) {
-            console.log(error.response.data.error)
-        }
-    }
-};
+import "../../styles//Inventory/InventoryForm.css"
 
 export default function Inventory() {
     const [search, setSearch] = useState("");
 
-    const { data: items = [], isLoading, isError, error } = useQuery({
-        queryKey: ["products"],
-        queryFn: getProducts,
+    const getProducts = async () => {
+        const token = Cookies.get("token");
+        console.log(token)
+        const { data } = await api.get("/inventory/getProducts", {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        console.log(data.message)
+        return data;
+    };
+
+    const { data: items = [], isLoading, isError, error, } = useQuery({ queryKey: ["products"], queryFn: getProducts, });
+
+    if (isLoading) return <p>Cargando productos...</p>;
+    if (isError) {
+        const msg = error.response?.data?.message;
+
+        if (msg) {
+            return <p>{msg}</p>;
+        }
+
+        return <p>Error: {error.message}</p>;
+    }
+
+    const filteredItems = items.filter((item) => {
+        const codigo = item.product.codigo || "";
+        const descripcion = item.product.descripcion.texto || "";
+
+        return (
+            codigo.toLowerCase().includes(search.toLowerCase()) ||
+            descripcion.toLowerCase().includes(search.toLowerCase())
+        );
     });
-
-    // if (isLoading) return <p>Cargando productos...</p>;
-    // if (isError) return <p>Error: {error.message}</p>;
-
-    const filteredItems = items.filter(
-        (item) =>
-            item.product.codigo?.toLowerCase().includes(search.toLowerCase()) ||
-            item.product.descripcion?.toLowerCase().includes(search.toLowerCase())
-    );
 
     return (
         <div className="inventory-container">
@@ -66,8 +64,11 @@ export default function Inventory() {
                 <Link to="/inventory/create-product" className="btn-create">
                     Crear
                 </Link>
-                <Link to="/eliminar-producto" className="btn-delete">
+                <Link to="/inventory/deleteProduct" className="btn-delete">
                     Eliminar
+                </Link>
+                <Link to="/inventory/agregarProduct">
+                    Agregar
                 </Link>
             </div>
 
@@ -90,7 +91,7 @@ export default function Inventory() {
                                 <td>{item.product.id}</td>
                                 <td>{item.product.codigo}</td>
                                 <td>{item.product.tipo}</td>
-                                <td>{item.product.descripcion}</td>
+                                <td>{item.product.descripcion.texto}</td>
                                 <td>${item.product.precioUnitario}</td>
                                 <td>{item.cantidad}</td>
                                 <td>{new Date(item.createdAt).toLocaleDateString()}</td>
@@ -105,6 +106,6 @@ export default function Inventory() {
                     )}
                 </tbody>
             </table>
-        </div>
+        </div >
     );
 }

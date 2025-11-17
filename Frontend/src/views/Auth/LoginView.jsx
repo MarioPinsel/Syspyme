@@ -4,7 +4,7 @@ import { isAxiosError } from "axios";
 import Cookies from "js-cookie";
 import api from "../../config/axios";
 import { useNavigate, Link } from "react-router-dom";
-import "../../styles/Auth.css";
+import "../../styles/Layouts/Auth.css";
 
 export default function LoginView() {
   const navigate = useNavigate();
@@ -35,6 +35,7 @@ export default function LoginView() {
 
       toast.success(data.message);
       navigate("/auth/loginVerify");
+      window.location.reload();
     } catch (error) {
       if (isAxiosError(error) && error.response) {
         toast.error(error.response.data.error)

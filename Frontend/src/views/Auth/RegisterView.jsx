@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { isAxiosError } from "axios";
 import Cookies from "js-cookie";
 import api from "../../config/axios";
-import "../../styles/Auth.css";
+import "../../styles/Layouts/Auth.css";
 import { useNavigate, Link } from "react-router-dom";
 
 export default function RegisterView() {

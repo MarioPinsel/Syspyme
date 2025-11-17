@@ -76,7 +76,6 @@ body {
 
 
 button {
-  width: 100%;
   background-color: var(--color-boton);
   color: white;
   border: none;
@@ -110,22 +109,4 @@ button:hover {
 
 .register-link:hover {
   color: var(--color-boton-hover);
-}
-
-
-@media (max-width: 600px) {
-  .verification-box {
-    width: 90%;
-    padding: 1.5rem;
-  }
-
-  .code-input {
-    width: 40px;
-    height: 45px;
-    font-size: 18px;
-  }
-
-  button {
-    font-size: 0.9rem;
-  }
 }

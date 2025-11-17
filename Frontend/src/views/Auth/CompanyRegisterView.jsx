@@ -4,7 +4,7 @@ import { isAxiosError } from "axios";
 import Cookies from "js-cookie";
 import api from "../../config/axios.js"
 import { useNavigate, Link } from "react-router-dom";
-import "../../styles/Auth.css";
+import "../../styles/Layouts/Auth.css";
 
 export default function CompanyRegisterView() {
   const navigate = useNavigate();
