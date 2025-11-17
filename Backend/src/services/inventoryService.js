@@ -167,9 +167,9 @@ export const getProductsService = async (pool) => {
     }
 
     return result.rows.map(row => ({
-        inventoryId: row.inventory_id,
-        cantidad: row.cantidad,
-        createdAt: row.inventory_created_at,
+        inventoryId: row.inventory_id ?? null,
+        cantidad: row.cantidad ?? 0,
+        createdAt: row.inventory_created_at ?? null,
         product: {
             id: row.product_id,
             codigo: row.product_code,
@@ -178,6 +178,7 @@ export const getProductsService = async (pool) => {
             precioUnitario: row.precio_unitario
         }
     }));
+
 };
 
 
