@@ -4,6 +4,7 @@ import authRouter from './routes/authRouter.js';
 import inventoryRouter from './routes/inventoryRouter.js'
 import customersRouter from './routes/customersRouter.js';
 import salesRouter from './routes/salesRouter.js'
+import statsRouter from './routes/statsRouter.js';
 import './config/conectionCore.js';
 import { corsConfig } from './config/cors.js';
 
@@ -17,5 +18,6 @@ app.use('/auth', authRouter)
 app.use('/inventory', inventoryRouter)
 app.use('/customers', customersRouter)
 app.use('/sales', salesRouter)
+app.use('/dashboard', statsRouter)
 
 export default app;

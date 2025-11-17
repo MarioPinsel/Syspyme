@@ -22,6 +22,9 @@ export const addXMLAndCUFEToReceipt = (pool, receiptId, cufe, factura_xml) => {
   );
 }
 
+export const getAllReceipts = (pool) => {
+  return pool.query(`SELECT COUNT(*) AS total FROM facturas`);
+}
 
 
 
