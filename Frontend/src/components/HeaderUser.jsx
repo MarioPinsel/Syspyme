@@ -7,6 +7,7 @@ export default function HeaderUser() {
 
     return (
         <header className="header">
+            <div className="role-badge">ADMIN</div>
             <nav className="header-links">
                 <Link to="/">Inicio</Link>
                 <Link to="/dashboard">Dashboard</Link>

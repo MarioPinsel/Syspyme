@@ -3,7 +3,8 @@ import "../styles/Header.css";
 
 export default function HeaderPublic() {
     return (
-        <header className="header">
+        <header className="header public-header">
+            <div className="role-badge welcome">BIENVENIDO</div>
             <nav className="header-links">
                 <Link to="/">Inicio</Link>
                 <Link to="/auth/login">Iniciar Sesión</Link>
@@ -12,3 +13,5 @@ export default function HeaderPublic() {
         </header>
     );
 }
+
+

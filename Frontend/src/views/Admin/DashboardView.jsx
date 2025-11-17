@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import api from "../config/axios";
+import api from "../../config/axios";
 import Cookies from "js-cookie";
 import { Link } from "react-router-dom";
-import "../styles/Views/DashboardView.css";
+import "../../styles/Views/DashboardView.css";
 import { Package, PlusSquare, Users, FileText } from "lucide-react";
 
 export default function DashboardView() {
@@ -51,7 +51,7 @@ export default function DashboardView() {
               <p>Crear una venta</p>
             </Link>
 
-            <Link to="/sales/register-client" className="action-card">
+            <Link to="/dashboard/register-employee" className="action-card">
               <Users size={28} />
               <p>Crear nuevo empleado</p>
             </Link>
