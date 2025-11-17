@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Cookies from "js-cookie";
 import api from "../../config/axios";
-import "../../styles/ActualizarProducto.css";
+import "../../styles/Inventory/ActualizarProducto.css";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 

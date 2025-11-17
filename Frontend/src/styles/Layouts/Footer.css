@@ -6,7 +6,8 @@
   --fuente-principal: "Poppins", sans-serif;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
@@ -108,48 +109,4 @@ section {
 .legal {
   font-size: 13px;
   opacity: 0.8;
-}
-
-/* ==== RESPONSIVE ==== */
-@media (max-width: 768px) {
-  footer {
-    min-height: auto;
-    padding-top: 30px;
-  }
-
-  .background {
-    width: 200%;
-    bottom: -10px;
-  }
-
-  .links {
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 15px;
-  }
-
-  .github-link svg {
-    width: 24px;
-    height: 24px;
-  }
-
-  .legal {
-    font-size: 12px;
-    margin-top: 8px;
-  }
-}
-
-@media (max-width: 480px) {
-  .links {
-    gap: 8px;
-  }
-
-  .github-link svg {
-    width: 22px;
-    height: 22px;
-  }
-
-  .legal {
-    font-size: 11px;
-  }
 }

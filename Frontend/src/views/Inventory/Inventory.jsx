@@ -3,14 +3,14 @@ import { useQuery } from "@tanstack/react-query";
 import api from "../../config/axios";
 import Cookies from "js-cookie";
 import { Link } from "react-router-dom";
-import "../../styles/InventoryForm.css"
+import "../../styles//Inventory/InventoryForm.css"
 
 export default function Inventory() {
     const [search, setSearch] = useState("");
 
     const getProducts = async () => {
         const token = Cookies.get("token");
-
+        console.log(token)
         const { data } = await api.get("/inventory/getProducts", {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -32,6 +32,7 @@ export default function Inventory() {
 
         return <p>Error: {error.message}</p>;
     }
+
     const filteredItems = items.filter((item) => {
         const codigo = item.product.codigo || "";
         const descripcion = item.product.descripcion.texto || "";

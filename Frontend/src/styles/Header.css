@@ -1,0 +1,56 @@
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #28E0D0;
+    padding: 16px 32px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Contenedor de links a la izquierda */
+.header-links {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.header a {
+    text-decoration: none;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.header a:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+/* Botón de cerrar sesión alineado a la derecha */
+.header button {
+    padding: 8px 20px;
+    background-color: #ffffff;
+    border: 2px solid #ffffff;
+    color: #28E0D0;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    margin-left: auto;
+}
+
+.header button:hover {
+    background-color: transparent;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Estilo específico para header de empleados si lo necesitas */
+.employee-header {
+    background: #28E0D0;
+}

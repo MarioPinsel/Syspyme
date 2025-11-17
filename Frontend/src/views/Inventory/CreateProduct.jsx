@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import Cookies from "js-cookie";
 import api from "../../config/axios";
 import { useNavigate } from "react-router-dom";
-import "../../styles/CreateProduct.css"
+import "../../styles/Inventory/CreateProduct.css"
 
 export default function CreateProductView() {
   const navigate = useNavigate();

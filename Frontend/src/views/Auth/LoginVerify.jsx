@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import "../../styles/Layouts/Verify.css";
 import api from "../../config/axios.js";
+import { jwtDecode } from "jwt-decode";
 
 export default function VerificationCode() {
   const [code, setCode] = useState(Array(6).fill(""));
@@ -49,12 +50,19 @@ export default function VerificationCode() {
         });
       }
 
-      console.log("✅ Verificación exitosa:", data);
 
-      if (data.IsAdmin == false) {
-        navigate("/dashboard/admin");
+      const decoded = jwtDecode(newToken);
+
+      Cookies.set("role", decoded.isAdmin ? "admin" : "employee");
+
+      console.log("✅ Verificación exitosa:");
+
+      if (decoded.isAdmin == true) {
+        navigate("/dashboard/");
+        window.location.reload();
       } else {
-        navigate("/dashboard/employee");
+        navigate("/inventory");
+        window.location.reload();
       }
 
     } catch (error) {

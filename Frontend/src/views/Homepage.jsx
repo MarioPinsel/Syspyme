@@ -1,4 +1,4 @@
-import "../styles/Homepage.css";
+import "../styles/Views/Homepage.css";
 
 function Homepage() {
   return (
@@ -9,7 +9,7 @@ function Homepage() {
         </h1>
       </section>
 
- 
+
       <section className="welcome-section">
         <div className="welcome-text">
           <h2>

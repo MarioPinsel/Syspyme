@@ -3,10 +3,10 @@ import { useForm } from "react-hook-form";
 import Cookies from "js-cookie";
 import api from "../../config/axios";
 import { toast } from "sonner";
-import "../../styles/ActualizarProducto.css";
+import "../../styles/Inventory/ActualizarProducto.css";
 
 export default function AgregarProducto() {
-    const { register, handleSubmit, setValue, } = useForm({
+    const { register, handleSubmit, setValue } = useForm({
         defaultValues: { metodo: "", id: "", code: "", quantity: "" },
     });
 
@@ -24,24 +24,23 @@ export default function AgregarProducto() {
             return;
         }
 
-        let body = { cantidad: Number(formData.cantidad) };
-
-        if (formData.metodo === "id") {
-            body.id = Number(formData.id);
-        } else if (formData.metodo === "code") {
-            body.code = formData.code;
-        }
+        const body = {
+            code: formData.metodo === "id" ? String(formData.id) : formData.code,
+            quantity: Number(formData.cantidad),
+        };
 
         try {
+            console.log("JSON FINAL:", body);
+
             await api.post("/inventory/addProduct", body, {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: { Authorization: `Bearer ${token}` },
             });
 
             toast.success("Producto agregado correctamente");
         } catch (err) {
             console.error("Error:", err);
-            const msg = err.response?.data?.message
-            toast.error(msg);
+            const msg = err.response?.data?.message;
+            toast.error(msg || "Error agregando producto");
         }
     };
 
@@ -53,10 +52,7 @@ export default function AgregarProducto() {
 
                 <div className="campo">
                     <label>Método</label>
-                    <select
-                        value={metodo}
-                        onChange={(e) => setMetodo(e.target.value)}
-                    >
+                    <select value={metodo} onChange={(e) => setMetodo(e.target.value)}>
                         <option value="">Seleccione</option>
                         <option value="id">Por ID</option>
                         <option value="code">Por Código</option>
@@ -82,7 +78,7 @@ export default function AgregarProducto() {
                     <input type="number" {...register("cantidad")} />
                 </div>
 
-                <button type="submit" className="btn-enviar" style={{ background: "#2ecc71" }}>
+                <button type="submit" className="btn-enviar" >
                     Agregar
                 </button>
             </form>
