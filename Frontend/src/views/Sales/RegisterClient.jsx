@@ -22,6 +22,7 @@ export default function RegisterClient() {
     console.log(formData)
     try {
       const token = Cookies.get("token");
+      console.log(token)
 
       const { data } = await api.post("/customers/createCustomer", formData,
         {
