@@ -54,7 +54,7 @@ export default function CrearVenta() {
     console.log(body)
 
     try {
-      const { data } = await api.post("/sales/create", body, {
+      const { data } = await api.post("/sales/createSale", body, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

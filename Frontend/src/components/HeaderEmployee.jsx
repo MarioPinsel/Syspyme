@@ -11,8 +11,9 @@ export default function HeaderEmployee() {
             <nav className="header-links">
                 <Link to="/sales/register-client">Registro de clientes</Link>
                 <Link to="/sales">Realizar Venta</Link>
+                <button onClick={logout}>Cerrar Sesión</button>
             </nav>
-            <button onClick={logout}>Cerrar Sesión</button>
+
         </header>
     );
 }

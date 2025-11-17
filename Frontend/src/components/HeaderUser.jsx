@@ -11,9 +11,10 @@ export default function HeaderUser() {
             <nav className="header-links">
                 <Link to="/">Inicio</Link>
                 <Link to="/dashboard">Dashboard</Link>
-                <Link to="/inventario">Inventario</Link>
+                <Link to="/inventory">Inventario</Link>
+                <button onClick={logout}>Cerrar Sesión</button>
             </nav>
-            <button onClick={logout}>Cerrar Sesión</button>
+
         </header>
     );
 }

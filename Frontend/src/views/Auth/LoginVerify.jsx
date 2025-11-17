@@ -61,7 +61,7 @@ export default function VerificationCode() {
         navigate("/dashboard/");
         window.location.reload();
       } else {
-        navigate("/inventory");
+        navigate("/");
         window.location.reload();
       }
 

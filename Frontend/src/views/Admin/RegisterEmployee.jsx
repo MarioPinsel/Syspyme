@@ -82,7 +82,7 @@ export default function RegisterView() {
                         <p className="error-message">{errors.handle.message}</p>
                     )}
 
-                    <label>Contraseña del Administrador</label>
+                    <label>Contraseña del empleado</label>
                     <input
                         type="password"
                         {...register("password", {

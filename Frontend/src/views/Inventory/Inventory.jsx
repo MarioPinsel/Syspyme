@@ -94,7 +94,7 @@ export default function Inventory() {
                                 <td>{item.product.descripcion.texto}</td>
                                 <td>${item.product.precioUnitario}</td>
                                 <td>{item.cantidad}</td>
-                                <td>{new Date(item.createdAt).toLocaleDateString()}</td>
+                                <td>{new Date(item.createdAt).toLocaleString()}</td>
                             </tr>
                         ))
                     ) : (
