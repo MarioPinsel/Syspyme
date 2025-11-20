@@ -27,7 +27,7 @@ export default function VerificationCode() {
       console.error("No se encontró el token");
       return;
     }
-
+    //localhost:4000/auth/verify-login
     try {
       const { data } = await api.post("/auth/verify-login",
         { codigo: fullCode },
