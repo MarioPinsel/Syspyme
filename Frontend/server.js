@@ -2,19 +2,20 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const filename = fileURLToPath(import.meta.url);
-const dirname = path.dirname(filename);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const app = express();
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8080;
 
-// servir estáticos
-app.use(express.static(path.join(dirname, 'dist')));
+// ✅ Servir estáticos
+app.use(express.static(path.join(__dirname, 'dist')));
 
-// fallback SPA (expresión regular evita servir index.html para assets)
-app.get(/^(?!..).$/, (req, res) => {
+// ✅ Fallback SPA - REDIRIGE todas las rutas a index.html
+// Excepto archivos con extensión (CSS, JS, etc.)
+app.get(/^(?!.*\.).*$/, (req, res) => {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 app.listen(PORT, () => {
-    console.log(`Frontend servido en http://localhost:${PORT}`);
+    console.log(`✅ Frontend servido en http://localhost:${PORT}`);
 });
