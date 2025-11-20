@@ -18,13 +18,12 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18.x'
+          node-version: '22.x'
 
       - name: npm install and build
         run: |
           cd Frontend
-          npm install
-          npm run build
+          npm install          
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
