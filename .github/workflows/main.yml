@@ -27,13 +27,18 @@ jobs:
         run: |
           cd Frontend
           npm ci 
-          npm run build          
+          npm run build   
+
+      - name: Zip dist
+        run: |
+          cd Frontend
+          zip -r ../frontend-dist.zip dist       
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: frontend-dist
-          path: Frontend/dist
+          path: Frontend/dist.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -47,7 +52,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: frontend-dist
-          path: Frontend/dist
+          path: .
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -61,4 +66,4 @@ jobs:
         with:
           app-name: 'Syspyme'              # ajusta si tu App Service tiene otro nombre
           slot-name: 'Production'
-          package: .
+          package: ./frontend-dist.zip
