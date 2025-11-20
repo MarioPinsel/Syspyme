@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "nodemon src/app.js",
     "dev:api": "nodemon src/app.js --api",
-    "start": "node src/app.js"
+    "start": "node src/app.js",
+    "postinstall": "playwright install chromium"
   },
   "author": "Mario Pinto, Fabian Baron, Esteban Guzman, Santiago Ramirez",
   "license": "ISC",
