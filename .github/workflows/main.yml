@@ -20,6 +20,9 @@ jobs:
         with:
           node-version: '22.x'
 
+      - name: clean build 
+        run: rm -rf Frontend/dist
+
       - name: npm install and build
         run: |
           cd Frontend
