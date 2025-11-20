@@ -29,7 +29,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: frontend-dist
-          path: Frontend/dist
+          path: Frontend
 
   deploy:
     runs-on: ubuntu-latest
