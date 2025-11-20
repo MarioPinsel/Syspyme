@@ -24,8 +24,7 @@ export default function RegisterView() {
     try {
       const token = Cookies.get("token")
 
-      const { data } = await api.post(
-        "/auth/registerUser",
+      const { data } = await api.post("/auth/registerUser",
         formData,
         {
           headers: {
