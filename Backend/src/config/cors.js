@@ -11,6 +11,5 @@ export const corsConfig = {
         } else {
             callback(new Error('Error de CORS'))
         }
-    }
-    
+    }    
 } 
