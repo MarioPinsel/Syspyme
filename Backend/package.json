@@ -6,7 +6,8 @@
   "main": "src/app.js",
   "scripts": {
     "dev": "nodemon src/app.js",
-    "dev:api": "nodemon src/app.js --api"
+    "dev:api": "nodemon src/app.js --api",
+    "start": "node src/app.js"
   },
   "author": "Mario Pinto, Fabian Baron, Esteban Guzman, Santiago Ramirez",
   "license": "ISC",
