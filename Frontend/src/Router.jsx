@@ -22,6 +22,7 @@ import RegistrarEmpleado from "./views/Admin/RegisterEmployee.jsx"
 
 import RequireAuth from "./components/RequireAuth.jsx";
 
+
 export default function Router() {
   return (
     <BrowserRouter>
