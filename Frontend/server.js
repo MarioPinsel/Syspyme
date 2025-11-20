@@ -2,21 +2,19 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 
-// ✅ Servir archivos estáticos (HTML, CSS, JS compilado)
-app.use(express.static(path.join(__dirname, 'dist')));
+// servir estáticos
+app.use(express.static(path.join(dirname, 'dist')));
 
-// ✅ Fallback para React Router - CORRECTO para Express 5.x
-app.get(/^(?!.*\.).*$/, (req, res) => {
+// fallback SPA (expresión regular evita servir index.html para assets)
+app.get(/^(?!..).$/, (req, res) => {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
-// ✅ Iniciar servidor
 app.listen(PORT, () => {
-    console.log(`✅ Frontend corriendo en http://localhost:${PORT}`);
+    console.log(`Frontend servido en http://localhost:${PORT}`);
 });

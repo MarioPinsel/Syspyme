@@ -20,16 +20,20 @@ jobs:
         with:
           node-version: '22.x'
 
+      - name: Set VITE env for production
+        run: echo "VITE_API_URL=https://api-syspyme.azurewebsites.net/" > Frontend/.env.production
+
       - name: npm install and build
         run: |
           cd Frontend
-          npm install          
+          npm ci 
+          npm run build          
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: frontend-dist
-          path: Frontend
+          path: Frontend/dist
 
   deploy:
     runs-on: ubuntu-latest
