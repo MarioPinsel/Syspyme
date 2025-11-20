@@ -1,27 +1,16 @@
 import nodemailer from 'nodemailer';
-import puppeteer from 'puppeteer-core';
-import chromium from '@sparticuz/chromium';
+import html_to_pdf from 'html-pdf-node';
 import { generarHTMLDesdeXML } from './generarHTMLDesdeXML.js';
 
 export async function sendFacturaEmail(xmlString, clienteEmail) {
     const html = await generarHTMLDesdeXML(xmlString);
 
-    // Lanzar navegador compatible con Azure
-    const browser = await puppeteer.launch({
-        args: chromium.args,
-        executablePath: await chromium.executablePath,
-        headless: chromium.headless,
-    });
+    const file = { content: html };
 
-    const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'networkidle0' });
-
-    const pdfBuffer = await page.pdf({
+    const pdfBuffer = await html_to_pdf.generatePdf(file, {
         format: 'A4',
         printBackground: true
     });
-
-    await browser.close();
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
