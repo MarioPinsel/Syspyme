@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import { toast } from "sonner";
 import "../../styles/Layouts/Verify.css";
 import api from "../../config/axios";
+import { jwtDecode } from "jwt-decode";
 
 export default function VerificationCode() {
     const [code, setCode] = useState(Array(6).fill(""));
@@ -22,13 +24,11 @@ export default function VerificationCode() {
         const token = Cookies.get("token");
 
         if (!token) {
-            console.error("No se encontró el token");
+            toast.error("No se encontró el token");
             return;
         }
 
         try {
-            const token = Cookies.get("token")
-
             const { data } = await api.post("/auth/verify",
                 { codigo: fullCode },
                 {
@@ -40,9 +40,18 @@ export default function VerificationCode() {
 
             const newToken = data?.token;
 
-
             if (newToken) {
+                // Guardar token globalmente
                 Cookies.set("token", newToken, {
+                    expires: 1,
+                    path: "/",
+                    secure: true,
+                    sameSite: "lax",
+                });
+
+                // Decodificar y guardar rol
+                const decoded = jwtDecode(newToken);
+                Cookies.set("role", decoded.isAdmin ? "admin" : "employee", {
                     expires: 1,
                     path: "/",
                     secure: true,
@@ -50,11 +59,11 @@ export default function VerificationCode() {
                 });
             }
 
-
-            console.log("✅ Verificación exitosa:", data);
-            navigate("/dashboard/")
+            toast.success(data.message);
+            navigate("/dashboard/");
             window.location.reload();
         } catch (error) {
+            toast.error("Error en la verificación");
             console.error("❌ Error en la verificación:", error);
         }
     };
@@ -67,26 +76,24 @@ export default function VerificationCode() {
                     Revisa la bandeja de tu correo electrónico por el código de verificación.
                 </p>
 
-                {
-                    <form onSubmit={handleVerify}>
-                        <label>Código de Verificación</label>
+                <form onSubmit={handleVerify}>
+                    <label>Código de Verificación</label>
 
-                        <div className="verification-code">
-                            {code.map((digit, index) => (
-                                <input
-                                    key={index}
-                                    type="text"
-                                    maxLength="1"
-                                    className="code-input"
-                                    value={digit}
-                                    onChange={(e) => handleChange(e.target.value, index)}
-                                />
-                            ))}
-                        </div>
+                    <div className="verification-code">
+                        {code.map((digit, index) => (
+                            <input
+                                key={index}
+                                type="text"
+                                maxLength="1"
+                                className="code-input"
+                                value={digit}
+                                onChange={(e) => handleChange(e.target.value, index)}
+                            />
+                        ))}
+                    </div>
 
-                        <button type="submit">Verificar</button>
-                    </form>
-                }
+                    <button type="submit">Verificar</button>
+                </form>
             </div>
         </div>
     );

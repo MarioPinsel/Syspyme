@@ -23,15 +23,17 @@ export default function CompanyRegisterView() {
       const { data } = await api.post("/auth/registerEmpresa", formData);
       const token = data.token;
 
+      // Cambiar path a "/" para que sea global
       Cookies.set("token", token, {
         expires: 1 / 96,
-        path: "/auth",
+        path: "/",
         secure: true,
         sameSite: "lax",
       });
 
       toast.success(data.message);
       navigate("/auth/companyRegisterVerify");
+
     } catch (error) {
       if (isAxiosError(error) && error.response) {
         toast.error(error.response.data.error);
