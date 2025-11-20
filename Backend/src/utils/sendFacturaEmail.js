@@ -44,6 +44,5 @@ export async function sendFacturaEmail(xmlString, clienteEmail) {
             { filename: 'Factura.xml', content: xmlString }
         ]
     });
-
     console.log("Factura enviada a:", clienteEmail);
 }
