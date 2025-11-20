@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "lint": "eslint .",
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "vite build"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.8",
