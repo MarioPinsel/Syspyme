@@ -46,6 +46,7 @@ export default function RegisterView() {
 
       toast.success(data.message);
       navigate("/auth/registerVerify");
+      window.location.reload();
     } catch (error) {
       if (isAxiosError(error) && error.response) {
         toast.error(error.response.data.error);

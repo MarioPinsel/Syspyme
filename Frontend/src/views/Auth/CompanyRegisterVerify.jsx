@@ -50,6 +50,7 @@ export default function VerificationCode() {
 
             console.log("✅ Verificación exitosa:", data);
             navigate("/auth/register")
+            window.location.reload();
         } catch (error) {
             console.error("❌ Error en la verificación:", error);
         }
