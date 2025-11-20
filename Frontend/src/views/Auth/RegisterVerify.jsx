@@ -52,7 +52,7 @@ export default function VerificationCode() {
 
 
             console.log("✅ Verificación exitosa:", data);
-            navigate("/dashboard/admin")
+            navigate("/dashboard/")
         } catch (error) {
             console.error("❌ Error en la verificación:", error);
         }
