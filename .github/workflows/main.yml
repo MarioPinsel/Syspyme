@@ -24,6 +24,7 @@ jobs:
         run: |
           cd Frontend
           npm install
+          npm run build
 
       - name: Upload Frontend artifact (completo con server.js)
         uses: actions/upload-artifact@v4
