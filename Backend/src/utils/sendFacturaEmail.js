@@ -1,29 +1,29 @@
 import nodemailer from 'nodemailer';
-import wkhtmltopdf from 'wkhtmltopdf';
+import puppeteer from 'puppeteer';
 import { generarHTMLDesdeXML } from './generarHTMLDesdeXML.js';
 
 export async function sendFacturaEmail(xmlString, clienteEmail) {
-
     // 1. Generar HTML desde el XML
     const html = await generarHTMLDesdeXML(xmlString);
 
-    // 2. Convertir HTML → PDF (sin navegador)
-    const pdfBuffer = await new Promise((resolve, reject) => {
-        wkhtmltopdf(html, {
-            pageSize: 'A4',
-            printMediaType: true,
-            enableLocalFileAccess: true,
-            javascriptDelay: 150
-        }, (err, stream) => {
-            if (err) return reject(err);
-
-            const chunks = [];
-            stream.on('data', chunk => chunks.push(chunk));
-            stream.on('end', () => resolve(Buffer.concat(chunks)));
-        });
+    // 2. Crear el PDF usando Puppeteer
+    const browser = await puppeteer.launch({
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
 
-    // 3. Configurar transporter
+    const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: 'networkidle0' });
+
+    const pdfBuffer = await page.pdf({
+        format: 'A4',
+        printBackground: true,
+        margin: { top: '20mm', bottom: '20mm', left: '15mm', right: '15mm' }
+    });
+
+    await browser.close();
+
+    // 3. Configurar transporter (usando tus variables de entorno)
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -39,18 +39,16 @@ export async function sendFacturaEmail(xmlString, clienteEmail) {
         subject: "Factura Electrónica - SysPyME",
         html: `
             <p>Estimado cliente,</p>
-            <p>Adjuntamos su <b>Factura Electrónica</b> en formato PDF, HTML y XML.</p>
+            <p>Adjuntamos su <b>Factura Electrónica</b> en formato PDF y XML.</p>
             <p>Gracias por confiar en <b>SysPyME</b>.</p>
         `,
         attachments: [
             { filename: 'Factura.pdf', content: pdfBuffer },
-            { filename: 'Factura.html', content: html, contentType: 'text/html' },
             { filename: 'Factura.xml', content: xmlString, contentType: 'application/xml' }
         ]
     };
 
     // 5. Enviar correo
     await transporter.sendMail(mailOptions);
-
-    console.log("📨 Factura enviada correctamente a:", clienteEmail);
+    console.log("✅ Factura enviada correctamente a:", clienteEmail);
 }
