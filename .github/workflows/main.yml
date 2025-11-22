@@ -24,7 +24,6 @@ jobs:
         run: |
           cd Backend
           npm install
-          npx playwright install --with-deps
           npm run test --if-present
 
       
