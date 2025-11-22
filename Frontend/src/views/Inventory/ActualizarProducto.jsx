@@ -6,11 +6,17 @@ import "../../styles/Inventory/ActualizarProducto.css";
 import { toast } from "sonner";
 
 export default function ActualizarProducto() {
-  const { register, handleSubmit, setValue } = useForm({
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm({
     defaultValues: { id: "", campo: "", valor: "" },
   });
 
   const [campoSeleccionado, setCampoSeleccionado] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setValue("campo", campoSeleccionado);
@@ -26,10 +32,11 @@ export default function ActualizarProducto() {
   };
 
   const onSubmit = async (formData) => {
+    if (loading) return; // evitar doble submit
+    setLoading(true);
 
     const values = { ...formData, campo: campoSeleccionado };
-    console.log("FORM DATA (RHF):", formData);
-    console.log("VALUES (sync):", values);
+    console.log("FORM DATA:", values);
 
     const body = { id: Number(values.id) };
 
@@ -53,16 +60,22 @@ export default function ActualizarProducto() {
         break;
     }
 
-    console.log("JSON que voy a enviar al backend:", body);
+    console.log("JSON ENVIADO:", body);
 
     try {
       const token = Cookies.get("token");
+
       await api.patch("/inventory/updateProduct", body, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      toast.success("Se logro el cambio")
+
+      toast.success("Producto actualizado correctamente");
     } catch (err) {
       console.error("Error update:", err);
+      const msg = err.response?.data?.message;
+      toast.error(msg || "Error actualizando producto");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -73,7 +86,11 @@ export default function ActualizarProducto() {
       <form className="inventario-form" onSubmit={handleSubmit(onSubmit)}>
         <div className="campo">
           <label>ID del Inventario</label>
-          <input type="number" {...register("id")} />
+          <input
+            type="number"
+            {...register("id", { required: "El ID es obligatorio" })}
+          />
+          {errors.id && <span className="error">{errors.id.message}</span>}
         </div>
 
         <div className="campo">
@@ -98,15 +115,19 @@ export default function ActualizarProducto() {
               key={campoSeleccionado}
               type={["precio", "cantidad"].includes(campoSeleccionado) ? "number" : "text"}
               placeholder={placeholderMap[campoSeleccionado]}
-              {...register("valor")}
+              {...register("valor", { required: "Este campo es obligatorio" })}
             />
+            {errors.valor && (
+              <span className="error">{errors.valor.message}</span>
+            )}
           </div>
         )}
 
-        <button type="submit" className="btn-enviar">
-          Actualizar
+        <button type="submit" className="btn-enviar" disabled={loading}>
+          {loading ? "Actualizando..." : "Actualizar"}
         </button>
       </form>
     </div>
   );
 }
+

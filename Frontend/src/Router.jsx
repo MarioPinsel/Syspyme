@@ -19,6 +19,7 @@ import Dashboard from "./views/Admin/DashboardView.jsx"
 import BorrarProducto from "./views/Inventory/BorrarProducto.jsx"
 import AgregarProducto from "./views/Inventory/AgregarProducto.jsx"
 import RegistrarEmpleado from "./views/Admin/RegisterEmployee.jsx"
+import BuscarFactura from "./views/Inventory/BuscarFactura.jsx"
 
 import RequireAuth from "./components/RequireAuth.jsx";
 
@@ -55,6 +56,7 @@ export default function Router() {
             <Route path="actualizarproduct" element={<ActualizarProduct />} />
             <Route path="deleteProduct" element={<BorrarProducto />} />
             <Route path="agregarProduct" element={<AgregarProducto />} />
+             <Route path="BuscarFactura" element={<BuscarFactura />} />
           </Route>
         </Route>
 

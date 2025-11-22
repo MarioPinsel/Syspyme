@@ -4,9 +4,11 @@ import Cookies from "js-cookie";
 import api from "../../config/axios";
 import { useNavigate } from "react-router-dom";
 import "../../styles/Inventory/CreateProduct.css"
+import { useState } from "react";
 
 export default function CreateProductView() {
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false); // loading + evitar doble submit
 
   const initialValues = {
     type: "",
@@ -16,19 +18,29 @@ export default function CreateProductView() {
     code: ""
   };
 
-  const { register, handleSubmit, formState: { errors } } = useForm({ defaultValues: initialValues, });
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    defaultValues: initialValues,
+  });
+
   const handleCreate = async (formData) => {
-    console.log("FORM DATA ENVIADO:", formData);
+    if (isSubmitting) return; // evita doble submit
+    setIsSubmitting(true);
+
+    
+    const finalData = {
+      ...formData,
+      description: {
+        texto: formData.description?.texto || ""
+      }
+    };
 
     try {
       const token = Cookies.get("token");
 
       const { data } = await api.post("/inventory/createProduct",
-        formData,
+        finalData,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` }
         }
       );
 
@@ -52,6 +64,9 @@ export default function CreateProductView() {
         "Ocurrió un error inesperado";
 
       toast.error(backendError);
+
+    } finally {
+      setIsSubmitting(false); 
     }
   };
 
@@ -69,9 +84,15 @@ export default function CreateProductView() {
           <label htmlFor="code">Código</label>
           <input
             id="code"
-            {...register("code", { required: "El código es obligatorio" })}
+            {...register("code", {
+              required: "El código es obligatorio",
+              pattern: {
+                value: /^[a-zA-Z0-9]+$/,
+                message: "El código debe ser alfanumérico",
+              },
+            })}
             type="text"
-            placeholder="EJ: P-0001"
+            placeholder="Ej: ABC123"
           />
           {errors.code && <p className="error">{errors.code.message}</p>}
         </div>
@@ -80,9 +101,9 @@ export default function CreateProductView() {
           <label htmlFor="type">Tipo de producto</label>
           <input
             id="type"
-            {...register("type", { required: "El nombre es obligatorio" })}
+            {...register("type", { required: "El tipo es obligatorio" })}
             type="text"
-            placeholder="Nombre del producto"
+            placeholder="Ej: Herramienta"
           />
           {errors.type && <p className="error">{errors.type.message}</p>}
         </div>
@@ -98,6 +119,7 @@ export default function CreateProductView() {
                 {...register("unitPrice", {
                   required: "El precio es obligatorio",
                   valueAsNumber: true,
+                  min: { value: 51, message: "Debe ser mayor a 50" },
                 })}
                 type="number"
                 min="0"
@@ -115,10 +137,9 @@ export default function CreateProductView() {
               {...register("quantity", {
                 required: "La cantidad es obligatoria",
                 valueAsNumber: true,
+                min: { value: 1, message: "Debe ser mayor a 0" }
               })}
               type="number"
-              min="0"
-              step="1"
               placeholder="0"
             />
             {errors.quantity && <p className="error">{errors.quantity.message}</p>}
@@ -129,23 +150,24 @@ export default function CreateProductView() {
           <label htmlFor="description">Descripción</label>
           <textarea
             id="description"
-            {...register("description.texto", { required: "La descripción es obligatoria" })}
+            {...register("description.texto", {
+              required: "La descripción es obligatoria"
+            })}
             placeholder="Descripción corta del producto"
             rows={3}
           />
           {errors.description?.texto && (
             <p className="error">{errors.description.texto.message}</p>
           )}
-
-          {errors.description && <p className="error">{errors.description.message}</p>}
         </div>
 
         <div className="form-actions">
           <button type="button" className="btn btn-secondary">
             Cancelar
           </button>
-          <button type="submit" className="btn btn-primary">
-            Guardar producto
+
+          <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+            {isSubmitting ? "Guardando..." : "Guardar producto"}
           </button>
         </div>
       </form>

@@ -27,12 +27,12 @@ function Homepage() {
 
         <div className="section-block">
           <div className="section-image">
-            <img src="/Empresa 1.jpg" alt="Gestión inteligente" />
+            <img src="/Organiza inventario.jpg" alt="Gestión inteligente" />
           </div>
           <div className="section-text">
             <h3>Gestión inteligente</h3>
             <p>
-            Syspyme es la herramienta que transforma la manera en que las pymes administran su negocio. Centraliza tus procesos, automatiza tareas y te brinda información clara para tomar decisiones rápidas y acertadas.
+            SyspyME es la herramienta que transforma la manera en que las pymes administran su negocio. Centraliza tus procesos, automatiza tareas y te brinda información clara para tomar decisiones rápidas y acertadas.
 Con una interfaz moderna y fácil de usar, Syspyme te permite gestionar tu empresa desde cualquier navegador, optimizando tiempos, reduciendo errores y potenciando tu productividad.
 Es más que un software: es tu aliado para crecer, organizarte y llevar tu negocio al siguiente nivel.
             </p>
@@ -41,12 +41,12 @@ Es más que un software: es tu aliado para crecer, organizarte y llevar tu negoc
 
         <div className="section-block reverse">
           <div className="section-image">
-            <img src="/Empresa 2.jpg" alt="Facturación electrónica" />
+            <img src="/Facturación Electronica.jpg" alt="Facturación electrónica" />
           </div>
           <div className="section-text">
             <h3>Facturación electrónica</h3>
             <p>
-            Con Syspyme, la facturación electrónica se vuelve simple, rápida y completamente automatizada. Genera facturas válidas ante la DIAN en segundos, sin procesos complicados ni herramientas externas.
+            Con SyspyME, la facturación electrónica se vuelve simple, rápida y completamente automatizada. Genera facturas válidas ante la DIAN en segundos, sin procesos complicados ni herramientas externas.
   El sistema centraliza tus clientes, productos y comprobantes, permitiéndote emitir, enviar y consultar facturas desde cualquier navegador. Además, Syspyme mantiene todos tus documentos organizados, seguros y siempre disponibles.
   Ahorra tiempo, reduce errores y garantiza el cumplimiento legal con una solución diseñada para que tu negocio facture sin estrés.
             </p>
@@ -55,7 +55,7 @@ Es más que un software: es tu aliado para crecer, organizarte y llevar tu negoc
 
         <div className="section-block">
           <div className="section-image">
-            <img src="/Empresa 3.jpg" alt="Crece con SysPyME" />
+            <img src="/Crece con Syspyme.jpg" alt="Crece con SysPyME" />
           </div>
           <div className="section-text">
             <h3>Crece con SysPyME</h3>

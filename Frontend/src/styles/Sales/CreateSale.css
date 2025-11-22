@@ -6,6 +6,8 @@
   --color-boton-hover: #28E0DE;
   --color-confirmar: #0E8A34;
   --color-confirmar-hover: #13b84c;
+  --color-eliminar: #dc3545;
+  --color-eliminar-hover: #c82333;
   --fuente-principal: 'Titillium Web', sans-serif;
   --fuente-secundaria: 'Inter', sans-serif;
 }
@@ -96,11 +98,32 @@
 
 
 .item-ejemplo {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 15px;
   padding: 12px;
   border-radius: 8px;
   background-color: #e9f1ff;
   border: 1px solid #c9d9f2;
   margin-bottom: 10px;
+}
+
+.btn-remove {
+  background-color: var(--color-eliminar);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+  flex-shrink: 0;
+}
+
+.btn-remove:hover {
+  background-color: var(--color-eliminar-hover);
 }
 
 .acciones {
@@ -132,5 +155,14 @@
 
   .btn-realizar {
     font-size: 1rem;
+  }
+  
+  .item-ejemplo {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .btn-remove {
+    align-self: flex-end;
   }
 }

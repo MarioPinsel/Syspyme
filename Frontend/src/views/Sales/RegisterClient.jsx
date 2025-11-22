@@ -7,9 +7,13 @@ import "../../styles/Sales/RegisterClient.css";
 import { useNavigate } from "react-router-dom";
 
 export default function RegisterClient() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       name: "",
       document: "",
@@ -19,24 +23,20 @@ export default function RegisterClient() {
   });
 
   const handleRegisterClient = async (formData) => {
-    console.log(formData)
     try {
       const token = Cookies.get("token");
-      console.log(token)
 
-      const { data } = await api.post("/customers/createCustomer", formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const { data } = await api.post("/customers/createCustomer", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       toast.success(data.message);
-      navigate("/sales")
+      navigate("/sales");
     } catch (error) {
       if (isAxiosError(error) && error.response) {
-        toast.error(error.response.data.error);
+        toast.error(error.response.data.error || "Error registrando cliente");
       }
     }
   };
@@ -47,15 +47,21 @@ export default function RegisterClient() {
 
       <form className="cliente-form" onSubmit={handleSubmit(handleRegisterClient)}>
 
+      
         <div className="campo">
           <label htmlFor="name">Nombre Completo:</label>
           <input
             type="text"
             id="name"
-            {...register("name", { required: "El nombre es obligatorio" })}
+            {...register("name", {
+              required: "El nombre es obligatorio",
+              minLength: { value: 3, message: "Debe tener al menos 3 caracteres" },
+            })}
             placeholder="Ej: Santiago Ramirez"
           />
-          {errors.nombre && <p className="error-message">{errors.nombre.message}</p>}
+          {errors.name && (
+            <p className="error-message">{errors.name.message}</p>
+          )}
         </div>
 
         <div className="campo">
@@ -63,32 +69,58 @@ export default function RegisterClient() {
           <input
             type="text"
             id="document"
-            {...register("document", { required: "La cédula es obligatoria" })}
+            {...register("document", {
+              required: "La cédula es obligatoria",
+              pattern: {
+                value: /^[0-9]+$/,
+                message: "Solo se permiten números",
+              },
+            })}
             placeholder="Ej: 1012345678"
           />
-          {errors.cedula && <p className="error-message">{errors.cedula.message}</p>}
+          {errors.document && (
+            <p className="error-message">{errors.document.message}</p>
+          )}
         </div>
+
 
         <div className="campo">
           <label htmlFor="email">Correo:</label>
           <input
             type="email"
             id="email"
-            {...register("email", { required: "El correo es obligatorio" })}
+            {...register("email", {
+              required: "El correo es obligatorio",
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: "Formato de correo inválido",
+              },
+            })}
             placeholder="Ej: correo@ejemplo.com"
           />
-          {errors.correo && <p className="error-message">{errors.correo.message}</p>}
+          {errors.email && (
+            <p className="error-message">{errors.email.message}</p>
+          )}
         </div>
 
+     
         <div className="campo">
           <label htmlFor="phone">Celular:</label>
           <input
             type="text"
             id="phone"
-            {...register("phone", { required: "El celular es obligatorio" })}
+            {...register("phone", {
+              required: "El celular es obligatorio",
+              pattern: {
+                value: /^[0-9]{10}$/,
+                message: "Debe tener 10 dígitos",
+              },
+            })}
             placeholder="Ej: 3001234567"
           />
-          {errors.celular && <p className="error-message">{errors.celular.message}</p>}
+          {errors.phone && (
+            <p className="error-message">{errors.phone.message}</p>
+          )}
         </div>
 
         <button type="submit" className="btn-enviar">Registrar</button>
