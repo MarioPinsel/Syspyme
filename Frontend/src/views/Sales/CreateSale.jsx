@@ -11,47 +11,55 @@ export default function CrearVenta() {
   const [cantidad, setCantidad] = useState("");
   const [metodoPago, setMetodoPago] = useState("");
   const [tipoPago, setTipoPago] = useState("");
-  const [cuotas, setCuotas] = useState(0);
+  const [cuotas, setCuotas] = useState("");
 
   const [items, setItems] = useState([]);
 
   const handleAddProduct = () => {
-    if (!codigo || !cantidad || cantidad <= 0) {
-      return toast.error("Debes ingresar un código y una cantidad válida");
-    }
+    if (!codigo.trim()) return toast.error("Debes ingresar el código del producto");
+    if (!cantidad || Number(cantidad) <= 0)
+      return toast.error("La cantidad debe ser mayor a cero");
 
     const newItem = {
-      code: codigo,
+      code: codigo.trim(),
       quantity: Number(cantidad),
     };
 
     setItems([...items, newItem]);
 
+    setProducto("");
     setCodigo("");
     setCantidad("");
   };
 
+  const handleRemoveProduct = (index) => {
+    const newItems = items.filter((_, i) => i !== index);
+    setItems(newItems);
+    toast.success("Producto eliminado");
+  };
+
   const handleCreateSale = async () => {
-    if (!clienteId.trim())
-      return toast.error("Debes ingresar el documento del cliente");
+    if (!clienteId.trim()) return toast.error("Debes ingresar el documento del cliente");
+    if (!/^[0-9]+$/.test(clienteId.trim()))
+      return toast.error("El documento solo puede contener números");
+    if (items.length === 0) return toast.error("Debes agregar al menos un producto");
+    if (!metodoPago) return toast.error("Debes seleccionar un método de pago");
+    if (!tipoPago) return toast.error("Debes seleccionar un tipo de pago");
 
-    if (items.length === 0)
-      return toast.error("Debes agregar al menos 1 producto");
-
-    if (!metodoPago || !tipoPago)
-      return toast.error("Selecciona método y tipo de pago");
+    if (tipoPago === "credito") {
+      if (!cuotas || Number(cuotas) <= 0)
+        return toast.error("Debes ingresar el número de cuotas");
+    }
 
     const token = Cookies.get("token");
 
     const body = {
-      document: clienteId,
-      items: items,
+      document: clienteId.trim(),
+      items,
       paymentMethod: metodoPago.toUpperCase(),
       paymentType: tipoPago.toUpperCase(),
       creditTerm: tipoPago === "credito" ? Number(cuotas) : 0,
     };
-
-    console.log(body)
 
     try {
       const { data } = await api.post("/sales/createSale", body, {
@@ -61,14 +69,17 @@ export default function CrearVenta() {
       });
 
       toast.success(data.message || "Venta realizada con éxito");
-      setItems([]);
 
+      setItems([]);
+      setClienteId("");
+      setMetodoPago("");
+      setTipoPago("");
+      setCuotas("");
     } catch (error) {
       const msg = error.response?.data?.error;
 
       if (msg === "El cliente no existe") {
         toast.error("El cliente no existe — verifica el documento");
-        setClienteId("");
         document.getElementById("cliente")?.focus();
         return;
       }
@@ -77,14 +88,13 @@ export default function CrearVenta() {
     }
   };
 
-
   return (
     <div className="venta-container">
-
       <h2 className="titulo-venta">Crear Venta</h2>
 
       <div className="documento-box">
         <h3>Datos</h3>
+
         <div className="campo">
           <label htmlFor="cliente">Documento del Cliente:</label>
           <input
@@ -135,7 +145,6 @@ export default function CrearVenta() {
         </button>
       </div>
 
-
       <div className="lista-box">
         <h3>Productos Agregados</h3>
 
@@ -148,10 +157,12 @@ export default function CrearVenta() {
             <span>
               Código: <b>{item.code}</b> — Cantidad: <b>{item.quantity}</b>
             </span>
+            <button className="btn-remove" onClick={() => handleRemoveProduct(index)}>
+              ✕
+            </button>
           </div>
         ))}
       </div>
-
 
       <div className="pago-box">
         <h3>Método de Pago</h3>
@@ -162,7 +173,7 @@ export default function CrearVenta() {
             value={metodoPago}
             onChange={(e) => setMetodoPago(e.target.value)}
           >
-            <option value="" disabled>Selecciona método</option>
+            <option value="">Selecciona método</option>
             <option value="efectivo">Efectivo</option>
             <option value="tarjeta">Tarjeta</option>
           </select>
@@ -174,7 +185,7 @@ export default function CrearVenta() {
             value={tipoPago}
             onChange={(e) => setTipoPago(e.target.value)}
           >
-            <option value="" disabled>Selecciona tipo</option>
+            <option value="">Selecciona tipo</option>
             <option value="contado">Contado</option>
             <option value="credito">Crédito</option>
           </select>
