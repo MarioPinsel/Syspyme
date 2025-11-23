@@ -5,7 +5,8 @@ import Cookies from "js-cookie";
 import api from "../../config/axios";
 import "../../styles/Sales/RegisterClient.css";
 import { useNavigate } from "react-router-dom";
-import jwtDecode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
+
 
 export default function RegisterClient() {
   const navigate = useNavigate();
