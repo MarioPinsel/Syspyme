@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Cookies from "js-cookie";
 import api from "../../config/axios";
 import { toast } from "sonner";
 import "../../styles/Views/EmployeeDashboardView.css";
@@ -13,12 +14,22 @@ export default function BuscarFactura() {
             return;
         }
 
+        const token = Cookies.get("token");
+
+        if (!token) {
+            toast.error("No se encontró token");
+            return;
+        }
+
         setLoading(true);
 
         try {
             const response = await api.get(
                 `sales/getSale/${search}`,
-                { responseType: "text" }
+                {
+                    responseType: "text",
+                    headers: { Authorization: `Bearer ${token}` }
+                }
             );
 
             const html = response.data;
