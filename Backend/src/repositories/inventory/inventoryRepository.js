@@ -55,8 +55,12 @@ export const findAllProducts = (pool) => {
             i.fecha_ingreso AS inventory_created_at
         FROM productos p
         LEFT JOIN inventario i ON p.id = i.id_producto
+        ORDER BY
+            CASE WHEN i.id IS NULL THEN 0 ELSE 1 END ASC,
+            i.fecha_ingreso ASC;
     `);
 };
+
 
 export const createProduct = (pool, { type, description, unitPrice, code }) => {
     return pool.query(
