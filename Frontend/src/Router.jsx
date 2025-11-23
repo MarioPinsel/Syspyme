@@ -62,7 +62,7 @@ export default function Router() {
 
         <Route element={<RequireAuth allowedRoles={["employee", "admin"]} />}>
           <Route path="/sales" element={<Common />}>
-            <Route index element={<CreateSale />} />
+            <Route path="create-sale" element={<CreateSale />} />
             <Route path="register-client" element={<RegisterClient />} />
           </Route>
         </Route>
