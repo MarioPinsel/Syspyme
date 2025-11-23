@@ -75,314 +75,363 @@ export async function generarPDFBuffer(xmlString) {
   // Crear documento PDF
   const doc = new PDFDocument({ 
     size: 'LETTER',
-    margins: { top: 30, bottom: 30, left: 30, right: 30 }
+    margins: { top: 40, bottom: 40, left: 40, right: 40 }
   });
   
   // Capturar el PDF en buffers
   const buffers = [];
   doc.on('data', buffers.push.bind(buffers));
 
-  // Colores
-  const darkBlue = '#003d5c';
-  const lightGray = '#f5f5f5';
-  const mediumGray = '#666666';
-  const borderColor = '#cccccc';
+  // Colores basados en el HTML
+  const primaryColor = '#0b3954';
+  const lightGray = '#fafafa';
+  const borderColor = '#e0e0e0';
+  const textGray = '#666';
+  const darkText = '#333';
 
-  let yPos = 40;
+  let yPos = 50;
 
-  // Header con logo y título
+  // Header con logo y título (con línea inferior)
   if (logoPath) {
-    doc.image(logoPath, 30, yPos, { width: 120 });
+    doc.image(logoPath, 40, yPos, { width: 100, height: 40, fit: [100, 40] });
   }
   
   doc.fontSize(18)
-     .fillColor(darkBlue)
+     .fillColor(primaryColor)
      .font('Helvetica-Bold')
      .text('Factura Electrónica de Venta', 200, yPos, { align: 'right' });
   
-  doc.fontSize(10)
-     .fillColor(mediumGray)
+  doc.fontSize(12)
+     .fillColor(darkText)
      .font('Helvetica')
      .text('Representación Impresa', 200, yPos + 22, { align: 'right' });
 
-  yPos += 55;
+  yPos += 50;
 
-  // Línea separadora superior
-  doc.moveTo(30, yPos)
-     .lineTo(580, yPos)
-     .lineWidth(2)
-     .strokeColor(darkBlue)
+  // Línea separadora azul gruesa
+  doc.moveTo(40, yPos)
+     .lineTo(570, yPos)
+     .lineWidth(3)
+     .strokeColor(primaryColor)
      .stroke();
 
   yPos += 15;
 
-  // Información de factura en gris claro
-  doc.rect(30, yPos, 550, 30)
+  // Encabezado de factura (fondo gris claro con borde)
+  doc.roundedRect(40, yPos, 530, 30, 6)
      .fillAndStroke(lightGray, borderColor);
   
-  doc.fontSize(9)
-     .fillColor('#000000')
+  doc.fontSize(11)
+     .fillColor(darkText)
+     .font('Helvetica-Bold')
+     .text('Factura N°: ', 50, yPos + 10, { continued: true })
      .font('Helvetica')
-     .text(`Factura N°: ${factura["cbc:ID"]}`, 40, yPos + 10)
-     .text(`Fecha de emisión: ${fecha}  Hora de emisión: ${hora}`, 250, yPos + 10);
+     .text(factura["cbc:ID"]);
+  
+  doc.font('Helvetica-Bold')
+     .text('Fecha de emisión: ', 250, yPos + 10, { continued: true })
+     .font('Helvetica')
+     .text(`${fecha}  `, { continued: true });
+  
+  doc.font('Helvetica-Bold')
+     .text('Hora de emisión: ', { continued: true })
+     .font('Helvetica')
+     .text(hora);
 
   yPos += 45;
 
-  // Sección Emisor
-  doc.fontSize(11)
-     .fillColor('#ffffff')
-     .font('Helvetica-Bold');
+  // Grid de dos columnas: Emisor y Cliente
+  const colWidth = 255;
+  const colGap = 20;
+
+  // EMISOR (Columna izquierda)
+  const emisorX = 40;
+  const emisorY = yPos;
   
-  doc.rect(30, yPos, 260, 25)
-     .fillAndStroke(darkBlue, darkBlue);
+  doc.roundedRect(emisorX, emisorY, colWidth, 130, 6)
+     .fillAndStroke(lightGray, borderColor);
   
-  doc.text('Emisor', 40, yPos + 7);
-  
-  yPos += 25;
-  
-  // Contenido Emisor con borde
-  const emisorHeight = 90;
-  doc.rect(30, yPos, 260, emisorHeight)
-     .strokeColor(borderColor)
-     .stroke();
-  
-  yPos += 10;
-  
-  doc.fontSize(9)
-     .fillColor('#000000')
+  doc.fontSize(13)
+     .fillColor(primaryColor)
      .font('Helvetica-Bold')
-     .text('Razon Social/Nombre: ', 40, yPos, { continued: true })
+     .text('Emisor', emisorX + 10, emisorY + 10);
+  
+  // Línea debajo del título Emisor
+  doc.moveTo(emisorX + 10, emisorY + 25)
+     .lineTo(emisorX + colWidth - 10, emisorY + 25)
+     .lineWidth(2)
+     .strokeColor(primaryColor)
+     .stroke();
+
+  let emisorYPos = emisorY + 35;
+  
+  doc.fontSize(11)
+     .fillColor('#555')
+     .font('Helvetica-Bold')
+     .text('Razon Social/Nombre: ', emisorX + 10, emisorYPos, { continued: true, width: colWidth - 20 })
+     .fillColor(darkText)
      .font('Helvetica')
-     .text(emisor["cbc:Name"], { width: 230 });
+     .text(emisor["cbc:Name"], { width: colWidth - 20 });
   
-  yPos += 20;
+  emisorYPos += 20;
   
-  doc.font('Helvetica-Bold')
-     .text('NIT: ', 40, yPos, { continued: true })
+  doc.fillColor('#555')
+     .font('Helvetica-Bold')
+     .text('NIT: ', emisorX + 10, emisorYPos, { continued: true })
+     .fillColor(darkText)
      .font('Helvetica')
      .text(emisor["cbc:CompanyID"]);
-  
-  yPos += 15;
-  
-  doc.font('Helvetica-Bold')
-     .text('Vendedor: ', 40, yPos, { continued: true })
-     .font('Helvetica')
-     .text(vendedor["cbc:Name"]);
-  
-  yPos += 15;
-  
-  doc.font('Helvetica-Bold')
-     .text('Contactenos: ', 40, yPos, { continued: true })
-     .font('Helvetica')
-     .text(vendedor["cbc:ElectronicMail"]);
 
-  // Sección Cliente
-  yPos -= 75;
+  emisorYPos += 20;
   
-  doc.rect(310, yPos, 270, 25)
-     .fillAndStroke(darkBlue, darkBlue);
-  
-  doc.fontSize(11)
-     .fillColor('#ffffff')
-     .font('Helvetica-Bold')
-     .text('Cliente', 320, yPos + 7);
-  
-  yPos += 25;
-  
-  // Contenido Cliente con borde
-  doc.rect(310, yPos, 270, emisorHeight)
+  // Línea separadora para vendedor
+  doc.moveTo(emisorX + 10, emisorYPos)
+     .lineTo(emisorX + colWidth - 10, emisorYPos)
+     .lineWidth(1)
      .strokeColor(borderColor)
      .stroke();
   
-  yPos += 10;
+  emisorYPos += 10;
   
-  doc.fontSize(9)
-     .fillColor('#000000')
+  doc.fillColor('#555')
      .font('Helvetica-Bold')
-     .text('Nombre: ', 320, yPos, { continued: true })
+     .text('Vendedor: ', emisorX + 10, emisorYPos, { continued: true })
+     .fillColor(darkText)
      .font('Helvetica')
-     .text(cliente["cbc:Name"], { width: 240 });
+     .text(vendedor["cbc:Name"], { width: colWidth - 20 });
   
-  yPos += 20;
+  emisorYPos += 15;
   
-  doc.font('Helvetica-Bold')
-     .text('Documento: ', 320, yPos, { continued: true })
+  doc.fillColor('#555')
+     .font('Helvetica-Bold')
+     .text('Contactenos: ', emisorX + 10, emisorYPos, { continued: true })
+     .fillColor(darkText)
+     .font('Helvetica')
+     .text(vendedor["cbc:ElectronicMail"], { width: colWidth - 20 });
+
+  // CLIENTE (Columna derecha)
+  const clienteX = emisorX + colWidth + colGap;
+  const clienteY = yPos;
+  
+  doc.roundedRect(clienteX, clienteY, colWidth, 130, 6)
+     .fillAndStroke(lightGray, borderColor);
+  
+  doc.fontSize(13)
+     .fillColor(primaryColor)
+     .font('Helvetica-Bold')
+     .text('Cliente', clienteX + 10, clienteY + 10);
+  
+  // Línea debajo del título Cliente
+  doc.moveTo(clienteX + 10, clienteY + 25)
+     .lineTo(clienteX + colWidth - 10, clienteY + 25)
+     .lineWidth(2)
+     .strokeColor(primaryColor)
+     .stroke();
+
+  let clienteYPos = clienteY + 35;
+  
+  doc.fontSize(11)
+     .fillColor('#555')
+     .font('Helvetica-Bold')
+     .text('Nombre: ', clienteX + 10, clienteYPos, { continued: true, width: colWidth - 20 })
+     .fillColor(darkText)
+     .font('Helvetica')
+     .text(cliente["cbc:Name"], { width: colWidth - 20 });
+  
+  clienteYPos += 20;
+  
+  doc.fillColor('#555')
+     .font('Helvetica-Bold')
+     .text('Documento: ', clienteX + 10, clienteYPos, { continued: true })
+     .fillColor(darkText)
      .font('Helvetica')
      .text(cliente["cbc:ID"]);
   
-  yPos += 15;
+  clienteYPos += 15;
   
-  doc.font('Helvetica-Bold')
-     .text('Correo: ', 320, yPos, { continued: true })
+  doc.fillColor('#555')
+     .font('Helvetica-Bold')
+     .text('Correo: ', clienteX + 10, clienteYPos, { continued: true, width: colWidth - 20 })
+     .fillColor(darkText)
      .font('Helvetica')
-     .text(cliente["cbc:Email"], { width: 240 });
+     .text(cliente["cbc:Email"], { width: colWidth - 20 });
   
-  yPos += 15;
+  clienteYPos += 15;
   
-  doc.font('Helvetica-Bold')
-     .text('Teléfono: ', 320, yPos, { continued: true })
+  doc.fillColor('#555')
+     .font('Helvetica-Bold')
+     .text('Telefono: ', clienteX + 10, clienteYPos, { continued: true })
+     .fillColor(darkText)
      .font('Helvetica')
      .text(cliente["cbc:Phone"]);
 
-  yPos += 90;
+  yPos += 145;
 
-  // Tabla de productos - Header
-  doc.rect(30, yPos, 550, 25)
-     .fillAndStroke(darkBlue, darkBlue);
-  
-  doc.fontSize(11)
-     .fillColor('#ffffff')
+  // Título "Detalle de productos"
+  doc.fontSize(14)
+     .fillColor(primaryColor)
      .font('Helvetica-Bold')
-     .text('Detalle de productos', 40, yPos + 7);
-  
-  yPos += 25;
+     .text('Detalle de productos', 40, yPos);
 
-  // Header de tabla con bordes
-  doc.rect(30, yPos, 550, 30)
-     .fillAndStroke(darkBlue, darkBlue);
+  yPos += 20;
+
+  // Tabla de productos
+  const tableTop = yPos;
+  const tableLeft = 40;
+  const tableWidth = 530;
   
-  doc.fontSize(9)
-     .fillColor('#ffffff')
+  // Anchos de columna (porcentajes convertidos a píxeles)
+  const col1Width = tableWidth * 0.10; // Código
+  const col2Width = tableWidth * 0.40; // Descripción
+  const col3Width = tableWidth * 0.10; // Cantidad
+  const col4Width = tableWidth * 0.20; // Valor Unitario
+  const col5Width = tableWidth * 0.20; // Total
+
+  // Header de tabla
+  doc.rect(tableLeft, tableTop, tableWidth, 25)
+     .fillAndStroke(primaryColor, primaryColor);
+  
+  doc.fontSize(10)
+     .fillColor('white')
      .font('Helvetica-Bold')
-     .text('Código', 40, yPos + 10, { width: 70 })
-     .text('Descripción', 115, yPos + 10, { width: 200 })
-     .text('Cantidad', 320, yPos + 10, { width: 70, align: 'center' })
-     .text('Valor Unitario', 395, yPos + 10, { width: 85, align: 'right' })
-     .text('Total', 485, yPos + 10, { width: 85, align: 'right' });
+     .text('Código', tableLeft + 5, tableTop + 8, { width: col1Width - 10, align: 'left' })
+     .text('Descripción', tableLeft + col1Width + 5, tableTop + 8, { width: col2Width - 10, align: 'left' })
+     .text('Cantidad', tableLeft + col1Width + col2Width + 5, tableTop + 8, { width: col3Width - 10, align: 'right' })
+     .text('Valor Unitario', tableLeft + col1Width + col2Width + col3Width + 5, tableTop + 8, { width: col4Width - 10, align: 'right' })
+     .text('Total', tableLeft + col1Width + col2Width + col3Width + col4Width + 5, tableTop + 8, { width: col5Width - 10, align: 'right' });
 
-  yPos += 30;
+  let rowY = tableTop + 25;
 
   // Filas de productos
   productos.forEach((p, index) => {
     const rowHeight = 25;
+    const bgColor = index % 2 === 0 ? '#ffffff' : '#f9f9f9';
     
-    // Borde de fila
-    doc.rect(30, yPos, 550, rowHeight)
-       .strokeColor(borderColor)
-       .stroke();
+    doc.rect(tableLeft, rowY, tableWidth, rowHeight)
+       .fillAndStroke(bgColor, borderColor);
     
-    doc.fontSize(8)
-       .fillColor('#000000')
+    doc.fontSize(10)
+       .fillColor(darkText)
        .font('Helvetica')
-       .text(p["cbc:Code"] || '', 40, yPos + 8, { width: 70 })
-       .text(p["cac:Item"]["cbc:Description"] || '', 115, yPos + 8, { width: 200 })
-       .text(p["cbc:InvoicedQuantity"] || '', 320, yPos + 8, { width: 70, align: 'center' })
-       .text(`$${formatearNumero(p["cac:Price"]["cbc:PriceAmount"]._)}`, 395, yPos + 8, { width: 85, align: 'right' })
-       .text(`$${formatearNumero(p["cbc:LineExtensionAmount"]._)}`, 485, yPos + 8, { width: 85, align: 'right' });
+       .text(p["cbc:Code"] || '', tableLeft + 5, rowY + 8, { width: col1Width - 10, align: 'left' })
+       .text(p["cac:Item"]["cbc:Description"] || '', tableLeft + col1Width + 5, rowY + 8, { width: col2Width - 10, align: 'left' })
+       .text(p["cbc:InvoicedQuantity"] || '', tableLeft + col1Width + col2Width + 5, rowY + 8, { width: col3Width - 10, align: 'right' })
+       .text(`$${formatearNumero(p["cac:Price"]["cbc:PriceAmount"]._)}`, tableLeft + col1Width + col2Width + col3Width + 5, rowY + 8, { width: col4Width - 10, align: 'right' })
+       .text(`$${formatearNumero(p["cbc:LineExtensionAmount"]._)}`, tableLeft + col1Width + col2Width + col3Width + col4Width + 5, rowY + 8, { width: col5Width - 10, align: 'right' });
     
-    yPos += rowHeight;
+    rowY += rowHeight;
   });
 
-  yPos += 15;
+  yPos = rowY + 15;
 
-  // Sección de totales y método de pago
-  const totalesStartY = yPos;
-  
-  doc.fontSize(9)
-     .fillColor('#000000')
+  // Sección de totales (fondo gris con borde redondeado)
+  const totalesHeight = 70;
+  doc.roundedRect(40, yPos, 530, totalesHeight, 6)
+     .fillAndStroke(lightGray, borderColor);
+
+  const totalesIzqX = 50;
+  const totalesDerX = 320;
+  let totalesY = yPos + 15;
+
+  // Totales izquierda
+  doc.fontSize(11)
+     .fillColor(darkText)
      .font('Helvetica-Bold')
-     .text('Método de Pago: ', 40, yPos, { continued: true })
+     .text('Método de Pago: ', totalesIzqX, totalesY, { continued: true })
      .font('Helvetica')
      .text(totales["cbc:PaymentMethod"] || 'N/A');
-
-  yPos += 15;
-
-  doc.font('Helvetica-Bold')
-     .text('Forma de Pago: ', 40, yPos, { continued: true })
-     .font('Helvetica')
-     .text(totales["cbc:PaymentType"] || 'N/A');
-
-  yPos += 15;
-
-  doc.font('Helvetica-Bold')
-     .text('Termino: ', 40, yPos, { continued: true })
-     .font('Helvetica')
-     .text(totales["cbc:FinalTerm"] || '0');
-
-  // Totales a la derecha
-  let totalesY = totalesStartY;
-  
-  doc.font('Helvetica-Bold')
-     .text('Subtotal: ', 420, totalesY, { continued: true, width: 70 })
-     .font('Helvetica')
-     .text(`$${formatearNumero(totales["cbc:LineExtensionAmount"]._)}`, { width: 90, align: 'right' });
 
   totalesY += 15;
 
   doc.font('Helvetica-Bold')
-     .text(`IVA (${tasaIVA}%): `, 420, totalesY, { continued: true, width: 70 })
+     .text('Forma de Pago: ', totalesIzqX, totalesY, { continued: true })
      .font('Helvetica')
-     .text(`$${formatearNumero(parseFloat(totales["cbc:PayableAmount"]._) - parseFloat(totales["cbc:TaxExclusiveAmount"]._))}`, { width: 90, align: 'right' });
+     .text(totales["cbc:PaymentType"] || 'N/A');
 
-  totalesY += 20;
+  totalesY += 15;
 
-  // Total con fondo oscuro
-  doc.rect(420, totalesY - 5, 160, 25)
-     .fillAndStroke(darkBlue, darkBlue);
-  
-  doc.fontSize(11)
-     .fillColor('#ffffff')
+  doc.font('Helvetica-Bold')
+     .text('Termino: ', totalesIzqX, totalesY, { continued: true })
+     .font('Helvetica')
+     .text(totales["cbc:FinalTerm"] || '0');
+
+  // Totales derecha
+  totalesY = yPos + 15;
+
+  doc.font('Helvetica-Bold')
+     .text('Subtotal: ', totalesDerX, totalesY, { continued: true, width: 100 })
+     .font('Helvetica')
+     .text(`$${formatearNumero(totales["cbc:LineExtensionAmount"]._)}`, { width: 140, align: 'right' });
+
+  totalesY += 15;
+
+  doc.font('Helvetica-Bold')
+     .text(`IVA (${tasaIVA}%): `, totalesDerX, totalesY, { continued: true, width: 100 })
+     .font('Helvetica')
+     .text(`$${formatearNumero(parseFloat(totales["cbc:PayableAmount"]._) - parseFloat(totales["cbc:TaxExclusiveAmount"]._))}`, { width: 140, align: 'right' });
+
+  totalesY += 15;
+
+  doc.fontSize(13)
+     .fillColor(primaryColor)
      .font('Helvetica-Bold')
-     .text('Total: ', 430, totalesY + 3, { continued: true })
-     .text(`$${formatearNumero(totales["cbc:PayableAmount"]._)}`, { width: 130, align: 'right' });
+     .text('Total: ', totalesDerX, totalesY, { continued: true, width: 100 })
+     .text(`$${formatearNumero(totales["cbc:PayableAmount"]._)}`, { width: 140, align: 'right' });
 
-  yPos = Math.max(yPos, totalesY + 25) + 15;
+  yPos += totalesHeight + 15;
 
-  // Total en letras centrado
-  doc.fontSize(9)
-     .fillColor('#000000')
-     .font('Helvetica-Oblique')
-     .text(totalLetra + ' PESOS COLOMBIANOS', 30, yPos, { width: 550, align: 'center' });
+  // Total en letras (negrita y azul)
+  doc.fontSize(13)
+     .fillColor(primaryColor)
+     .font('Helvetica-Bold')
+     .text(totalLetra + ' PESOS COLOMBIANOS', 40, yPos, { width: 530, align: 'right' });
 
   yPos += 25;
 
-  // CUFE y QR
-  doc.rect(30, yPos, 550, 25)
-     .fillAndStroke(darkBlue, darkBlue);
-  
-  doc.fontSize(11)
-     .fillColor('#ffffff')
+  // CUFE y QR (fondo gris con borde redondeado)
+  const cufeHeight = 90;
+  doc.roundedRect(40, yPos, 530, cufeHeight, 6)
+     .fillAndStroke(lightGray, borderColor);
+
+  doc.fontSize(12)
+     .fillColor(primaryColor)
      .font('Helvetica-Bold')
-     .text('CUFE:', 40, yPos + 7);
+     .text('CUFE:', 50, yPos + 10);
 
-  yPos += 25;
-
-  // Contenedor del CUFE con borde
-  doc.rect(30, yPos, 550, 100)
-     .strokeColor(borderColor)
-     .stroke();
-
-  doc.fontSize(7)
-     .fillColor('#000000')
+  doc.fontSize(11)
+     .fillColor(textGray)
      .font('Helvetica')
-     .text(cufe, 40, yPos + 10, { width: 370 });
+     .text(cufe, 50, yPos + 30, { width: 380, lineBreak: true });
 
   if (qrBuffer) {
-    doc.image(qrBuffer, 450, yPos + 10, { width: 80 });
+    doc.image(qrBuffer, 480, yPos + 15, { width: 60, height: 60 });
   }
 
-  yPos += 110;
+  yPos += cufeHeight + 20;
 
-  // Footer con información legal
-  doc.fontSize(7)
-     .fillColor(mediumGray)
+  // Footer (centrado, texto gris pequeño)
+  doc.fontSize(9)
+     .fillColor('#999')
      .font('Helvetica')
-     .text('Software: SysPyME | Fabricante: SYSPYME.ORG', 30, yPos, { width: 550, align: 'center' });
-
-  yPos += 12;
-
-  doc.fontSize(7)
-     .text('Haciendo función y cumplimiento de la resolución 000012 del 9 de febrero del 2021, nos permitimos generar esta factura electrónica. También, siguiendo el título V de la', 
-           30, yPos, { width: 550, align: 'center' });
+     .text('Software: ', 40, yPos, { continued: true, width: 530, align: 'center' });
   
-  yPos += 10;
+  doc.font('Helvetica-Bold')
+     .fillColor(primaryColor)
+     .text('SysPyME', { continued: true });
   
-  doc.text('resolución 42 del 5 de mayo del 2020, hacemos cumplimiento de los requisitos mínimos para los documentos referentes a la declaración electrónica.', 
-           30, yPos, { width: 550, align: 'center' });
+  doc.font('Helvetica')
+     .fillColor('#999')
+     .text(' | Fabricante: SYSPYME.ORG');
 
   yPos += 15;
 
-  doc.text(`© ${new Date().getFullYear()} Todos los derechos reservados.`, 30, yPos, { width: 550, align: 'center' });
+  doc.fontSize(8)
+     .text('Haciendo función y cumplimiento de la resolución 000012 del 9 de febrero del 2021, nos permitimos generar esta factura electrónica. También, siguiendo el título V de la resolución 42 del 5 de mayo del 2020, hacemos cumplimiento de los requisitos mínimos para los documentos referentes a la facturación electrónica.', 
+           40, yPos, { width: 530, align: 'center', lineGap: 2 });
+
+  yPos += 25;
+
+  doc.text(`© ${new Date().getFullYear()} Todos los derechos reservados.`, 40, yPos, { width: 530, align: 'center' });
 
   // Finalizar PDF
   doc.end();
