@@ -1,28 +1,9 @@
 import nodemailer from 'nodemailer';
-import pdf from 'html-pdf';
-import { generarHTMLDesdeXML } from './generarHTMLDesdeXML.js';
+//import { generarHTMLDesdeXML } from './generarHTMLDesdeXML.js';
+import {generarPDFBuffer} from './generatePDF.js'
 
-export async function sendFacturaEmail(xmlString, clienteEmail) {
-    // 1. Generar HTML desde el XML
-    const html = await generarHTMLDesdeXML(xmlString);
-
-    // 2. Crear el PDF usando html-pdf
-    const pdfBuffer = await new Promise((resolve, reject) => {
-        const options = {
-            format: 'A4',
-            border: {
-                top: '20mm',
-                bottom: '20mm',
-                left: '15mm',
-                right: '15mm'
-            }
-        };
-
-        pdf.create(html, options).toBuffer((err, buffer) => {
-            if (err) return reject(err);
-            resolve(buffer);
-        });
-    });
+export async function sendFacturaEmail(xmlString, clienteEmail) {    
+    const pdfBuffer = await generarPDFBuffer(xmlString);
 
     // 3. Configurar transporter (usando tus variables de entorno)
     const transporter = nodemailer.createTransport({
@@ -39,13 +20,13 @@ export async function sendFacturaEmail(xmlString, clienteEmail) {
         to: clienteEmail,
         subject: "Factura Electrónica - SysPyME",
         html: `
-            <p>Estimado cliente,</p>
-            <p>Adjuntamos su <b>Factura Electrónica</b> en formato PDF y XML.</p>
-            <p>Gracias por confiar en <b>SysPyME</b>.</p>
-        `,
+      <p>Estimado cliente,</p>
+      <p>Adjuntamos su <b>Factura Electrónica</b> en formato PDF y XML.</p>
+      <p>Gracias por confiar en <b>SysPyME</b>.</p>
+    `,
         attachments: [
             { filename: 'Factura.pdf', content: pdfBuffer },
-            { filename: 'Factura.xml', content: xmlString, contentType: 'application/xml' }
+            { filename: 'Factura.xml', content: xmlString }
         ]
     };
 
