@@ -110,7 +110,8 @@ export default function Inventory() {
                                 <td>{item.product?.descripcion?.texto ?? "-"}</td>
                                 <td>{item.product?.precioUnitario != null ? `$${item.product.precioUnitario}` : "-"}</td>
                                 <td>{item.cantidad ?? 0}</td>
-                                <td>{item.createdAt ? new Date(item.createdAt).toLocaleString() : "-"}</td>
+                                <td>{item.createdAt ? new Date(item.createdAt.replace("Z", "")).toLocaleString("es-CO", { hour12: true })
+                                    : "-"}</td>
                             </tr>
                         ))
                     ) : (
