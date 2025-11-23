@@ -26,6 +26,9 @@ export const getAllReceipts = (pool) => {
   return pool.query(`SELECT COUNT(*) AS total FROM facturas`);
 }
 
+export const getReceiptById = (pool, id) => {
+  return pool.query(`SELECT * FROM facturas WHERE id = $1`, [id]);
+}
 
 
 

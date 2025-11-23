@@ -1,4 +1,4 @@
-import { createReceipt, createDetailReceipt, addXMLAndCUFEToReceipt } from '../repositories/sale/salesRepository.js'
+import { createReceipt, createDetailReceipt, addXMLAndCUFEToReceipt, getReceiptById } from '../repositories/sale/salesRepository.js'
 import { findCustomerByDocument } from '../repositories/customer/customersRepository.js'
 import { findUsuarioByCorreo } from '../repositories/user/userRepository.js'
 import { getTotalStockByProductId, findProductByCode, getInventoryByProductId, updateInventoryQuantity, deleteFromInventory } from '../repositories/inventory/inventoryRepository.js'
@@ -6,11 +6,12 @@ import { getFirmaDigital } from '../utils/firmaDigital.js'
 import { generarCUFE } from '../utils/cufeUtils.js';
 import { findEmpresaByNombre } from '../repositories/enterprise/companyRepository.js';
 import { sendFacturaEmail } from '../utils/sendFacturaEmail.js';
-import {generarXMLFactura} from '../utils/generatexml.js'
+import { generarXMLFactura } from '../utils/generatexml.js'
+import { generarHTMLDesdeXML } from '../utils/generarHTMLDesdeXML.js';
 
 const iva = 0.19;
 
-export const createSaleService = async (pool, correo, empresaNombre, {document, items, paymentMethod, paymentType, creditTerm}) => {
+export const createSaleService = async (pool, correo, empresaNombre, { document, items, paymentMethod, paymentType, creditTerm }) => {
 
     const clienteRes = await findCustomerByDocument(pool, document);
     if (clienteRes.rowCount === 0) {
@@ -86,7 +87,7 @@ export const createSaleService = async (pool, correo, empresaNombre, {document, 
 
     const cufe = generarCUFE({
         numFac: `FV${receiptId}`,
-        fecFac: new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota", year: "numeric", month: "2-digit", day: "2-digit" }),  
+        fecFac: new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota", year: "numeric", month: "2-digit", day: "2-digit" }),
         horFac: new Date().toLocaleTimeString("en-GB", { timeZone: "America/Bogota", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }),
         valFac: subTotal.toFixed(2),
         codImp1: '01',
@@ -124,8 +125,18 @@ export const createSaleService = async (pool, correo, empresaNombre, {document, 
     return { success: true, message: "Venta creada exitosamente.", receiptId }
 
 }
-export const getSalesService = async () => {
+
+export const getSaleService = async (pool, id) => {
+
+    const result = await getReceiptById(pool, id);
+
+    if (result.rowCount === 0) {
+        return { success: false, message: "Factura no encontrada." };
+    }
+
+    const facturaXML = result.rows[0].factura_xml;
+    const html = await generarHTMLDesdeXML(facturaXML);
+
+    return { success: true, html };
 }
 
-export const deleteSaleService = async () => {
-}
