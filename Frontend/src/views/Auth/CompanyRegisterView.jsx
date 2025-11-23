@@ -25,32 +25,48 @@ export default function CompanyRegisterView() {
   } = useForm({ defaultValues: initialValues, mode: "onChange" });
 
   const handleRegister = async (formData) => {
-    if (isSubmitting) return; // evita doble submit
-    setIsSubmitting(true);
+  if (isSubmitting) return;
+  setIsSubmitting(true);
 
-    try {
-      const { data } = await api.post("/auth/registerEmpresa", formData);
-      const token = data.token;
+  try {
+    const { data } = await api.post("/auth/registerEmpresa", formData);
 
-      Cookies.set("token", token, {
-        expires: 1 / 96,
-        path: "/",
-        secure: true,
-        sameSite: "lax",
-      });
+    const token = data.token;
 
-      toast.success(data.message);
-      navigate("/auth/companyRegisterVerify");
-    } catch (error) {
-      if (isAxiosError(error) && error.response) {
-        toast.error(error.response.data.error);
-      } else {
-        toast.error("Error al registrar la empresa");
+    Cookies.set("token", token, {
+      expires: 1 / 96,
+      path: "/",
+      secure: true,
+      sameSite: "lax",
+    });
+
+    toast.success(data.message);
+    navigate("/auth/companyRegisterVerify");
+
+  } catch (error) {
+
+    if (isAxiosError(error) && error.response) {
+
+      // 🟣 express-validator
+      if (error.response.data.errors) {
+        toast.error(error.response.data.errors[0].msg);
+        return;
       }
-    } finally {
-      setIsSubmitting(false);
+
+      // 🟢 backend (controladores)
+      if (error.response.data.error) {
+        toast.error(error.response.data.error);
+        return;
+      }
     }
-  };
+
+    toast.error("Error al registrar la empresa");
+
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
 
   return (
     <div className="auth-container">
