@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import api from "../../config/axios";
 import "../../styles/Sales/RegisterClient.css";
 import { useNavigate } from "react-router-dom";
+import jwtDecode from "jwt-decode";
 
 export default function RegisterClient() {
   const navigate = useNavigate();
@@ -24,7 +25,8 @@ export default function RegisterClient() {
 
   const handleRegisterClient = async (formData) => {
     try {
-      const token = Cookies.get("token");
+      const token = Cookies.get("token")
+      const { role } = jwtDecode(token);
 
       const { data } = await api.post("/customers/createCustomer", formData, {
         headers: {
@@ -33,7 +35,11 @@ export default function RegisterClient() {
       });
 
       toast.success(data.message);
-      navigate("/sales");
+          if (role === "admin") {
+      navigate("/dashboard");
+    } else if (role === "employee") {
+      navigate("/employee");
+    }
     } catch (error) {
       if (isAxiosError(error) && error.response) {
         toast.error(error.response.data.error || "Error registrando cliente");
