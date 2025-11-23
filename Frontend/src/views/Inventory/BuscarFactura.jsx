@@ -1,7 +1,7 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../../config/axios";
 import { toast } from "sonner";
-import "../../styles/Views/EmployeeDashboardView.css"
+import "../../styles/Views/EmployeeDashboardView.css";
 
 export default function BuscarFactura() {
     const [search, setSearch] = useState("");
@@ -16,13 +16,21 @@ export default function BuscarFactura() {
         setLoading(true);
 
         try {
-            const response = await axios.get(
+            const response = await api.get(
                 `/sales/getSale/${search}`,
                 { responseType: "text" }
             );
 
             const html = response.data;
+
             const newWindow = window.open("", "_blank");
+
+            if (!newWindow) {
+                toast.error("El navegador bloqueó la ventana emergente");
+                return;
+            }
+
+            newWindow.document.open();
             newWindow.document.write(html);
             newWindow.document.close();
 
