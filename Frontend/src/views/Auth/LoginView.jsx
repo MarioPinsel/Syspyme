@@ -38,8 +38,6 @@ export default function LoginView() {
       window.location.reload();
     } catch (error) {
       if (isAxiosError(error) && error.response) {
-        toast.error(error.response.data.error)
-
               // 🟣 express-validator
       if (error.response.data.errors) {
         toast.error(error.response.data.errors[0].msg);

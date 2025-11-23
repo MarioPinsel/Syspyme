@@ -91,26 +91,20 @@ export default function VerificationCode() {
             toast.success(data.message);
             navigate("/dashboard/");
             window.location.reload();
-        } catch (error) {
-            toast.error("Error en la verificación");
-            console.error("❌ Error en la verificación:", error);
+       } catch (error) {
+    console.error("❌ Error en la verificación:", error);
 
-                    // 🟣 express-validator
-            if (error.response?.data?.errors) {
-                toast.error(error.response.data.errors[0].msg);
-                return;
-            }
+    if (error.response?.data?.errors) {
+        return toast.error(error.response.data.errors[0].msg);
+    }
 
-            // 🟢 errores del backend
-            if (error.response?.data?.error) {
-                toast.error(error.response.data.error);
-                return;
-            }
+    if (error.response?.data?.error) {
+        return toast.error(error.response.data.error);
+    }
 
-            // 🔴 fallback
-            toast.error("Código incorrecto");
-        
-        }
+    // fallback genérico
+    return toast.error("Código incorrecto");
+}
     };
 
     return (
