@@ -56,11 +56,12 @@ export const findAllProducts = (pool) => {
         FROM productos p
         LEFT JOIN inventario i ON p.id = i.id_producto
         ORDER BY
-            CASE WHEN i.fecha_ingreso IS NULL THEN 0 ELSE 1 END ASC,
-            CASE WHEN i.fecha_ingreso IS NULL THEN p.id END ASC,
-            i.fecha_ingreso ASC;
+            CASE WHEN i.fecha_ingreso IS NOT NULL THEN 0 ELSE 1 END,  
+            i.fecha_ingreso DESC,                                     
+            p.id ASC;                                                 
     `);
 };
+
 
 
 
