@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
-import "../../styles/Inventory/BuscarFactura.css";
+import "../../styles/Views/EmployeeDashboardView.css"
 
 export default function BuscarFactura() {
     const [search, setSearch] = useState("");
@@ -16,17 +16,24 @@ export default function BuscarFactura() {
         setLoading(true);
 
         try {
-            const response = await axios.get(`/api/facturas/${search}/archivo`, {
-                responseType: "blob"
-            });
+            const response = await axios.get(
+                `/sales/getSale/${search}`,
+                { responseType: "text" }
+            );
 
-            const file = new Blob([response.data], { type: response.headers["content-type"] });
-            const url = window.URL.createObjectURL(file);
-            window.open(url, "_blank");
+            const html = response.data;
+            const newWindow = window.open("", "_blank");
+            newWindow.document.write(html);
+            newWindow.document.close();
 
-            toast.success("Factura encontrada");
+            toast.success("Factura encontrada ✅");
+
         } catch (error) {
-            toast.error("No se encontró ninguna factura con ese ID");
+            const backendMessage =
+                error.response?.data?.message ||
+                "No se encontró ninguna factura con ese ID";
+
+            toast.error(backendMessage);
         } finally {
             setLoading(false);
         }

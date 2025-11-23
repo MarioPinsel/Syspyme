@@ -1,0 +1,93 @@
+:root {
+  --color-primario: #225EA8;
+  --color-acento: #28E0DE;
+  --color-fondo: #ffffff;
+  --fuente-principal: 'Titillium Web', sans-serif;
+  --fuente-secundaria: 'Inter', sans-serif;
+}
+
+
+.dashboard-container {
+  min-height: 100vh;
+  background-color: var(--color-fondo);
+  padding: 2rem 4rem;
+  font-family: var(--fuente-secundaria);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+
+.dashboard-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.dashboard-header .highlight {
+  color: var(--color-acento);
+}
+
+
+.dashboard-main {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 3rem;
+  flex-wrap: wrap;
+  gap: 3rem;
+}
+
+
+.dashboard-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 340px); 
+  gap: 2.5rem;
+}
+
+
+.employee-card {
+  width: 340px;
+  height: 260px;
+
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 18px;
+
+  padding: 2.5rem;
+  text-align: center;
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  font-family: var(--fuente-principal);
+
+  text-decoration: none;
+  color: inherit;
+
+  transition: all 0.3s ease;
+}
+
+.employee-card:hover {
+  background-color: #f5f7fa;
+  transform: translateY(-3px);
+}
+
+
+.employee-card p {
+  margin-top: 1.2rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+
+.employee-card:visited {
+  color: inherit;
+  text-decoration: none;
+}
+
+.employee-card:hover {
+  text-decoration: none;
+  color: inherit;
+}

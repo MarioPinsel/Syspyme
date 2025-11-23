@@ -66,9 +66,13 @@ export default function Router() {
             <Route path="register-client" element={<RegisterClient />} />
           </Route>
         </Route>
-
-
-
+      
+         <Route element={<RequireAuth allowedRoles={["employee"]} />}>
+          <Route path="/employee" element={<Common />}>
+            <Route index element={<EmployeeDashboard />} />
+          </Route>
+        </Route>
+        
       </Routes>
     </BrowserRouter >
   );
