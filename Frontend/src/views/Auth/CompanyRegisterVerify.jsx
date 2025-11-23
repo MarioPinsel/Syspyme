@@ -60,7 +60,8 @@ export default function VerificationCode() {
         }
 
         try {
-            const { data } = await api.post("/auth/verify",
+            const { data } = await api.post(
+                "/auth/verify",
                 { codigo: fullCode },
                 {
                     headers: {
@@ -86,6 +87,17 @@ export default function VerificationCode() {
 
         } catch (error) {
             console.error("❌ Error en la verificación:", error);
+
+            if (error.response?.data?.errors) {
+                toast.error(error.response.data.errors[0].msg);
+                return;
+            }
+
+            if (error.response?.data?.error) {
+                toast.error(error.response.data.error);
+                return;
+            }
+
             toast.error("Código incorrecto");
         }
     };
@@ -123,4 +135,3 @@ export default function VerificationCode() {
         </div>
     );
 }
-

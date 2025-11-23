@@ -94,6 +94,22 @@ export default function VerificationCode() {
         } catch (error) {
             toast.error("Error en la verificación");
             console.error("❌ Error en la verificación:", error);
+
+                    // 🟣 express-validator
+            if (error.response?.data?.errors) {
+                toast.error(error.response.data.errors[0].msg);
+                return;
+            }
+
+            // 🟢 errores del backend
+            if (error.response?.data?.error) {
+                toast.error(error.response.data.error);
+                return;
+            }
+
+            // 🔴 fallback
+            toast.error("Código incorrecto");
+        
         }
     };
 

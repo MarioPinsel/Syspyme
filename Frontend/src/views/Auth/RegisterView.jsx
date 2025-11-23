@@ -30,43 +30,57 @@ export default function RegisterView() {
     defaultValues: initialValues,
   });
 
-  const handleRegister = async (formData) => {
-    if (isLoading) return; // evitar doble submit
-    setIsLoading(true);
+const handleRegister = async (formData) => {
+  if (isLoading) return; 
+  setIsLoading(true);
 
-    try {
-      const token = Cookies.get("token");
+  try {
+    const token = Cookies.get("token");
 
-      const { data } = await api.post("/auth/registerUser", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    const { data } = await api.post("/auth/registerUser", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const newToken = data?.token;
+
+    if (newToken) {
+      Cookies.set("token", newToken, {
+        expires: 1 / 96,
+        path: "/auth",
+        secure: true,
+        sameSite: "lax",
       });
-
-      const newToken = data?.token;
-
-      if (newToken) {
-        Cookies.set("token", newToken, {
-          expires: 1 / 96,
-          path: "/auth",
-          secure: true,
-          sameSite: "lax",
-        });
-      }
-
-      toast.success(data.message);
-      navigate("/auth/registerVerify");
-      window.location.reload();
-    } catch (error) {
-      if (isAxiosError(error) && error.response) {
-        toast.error(error.response.data.error);
-      } else {
-        toast.error("Error registrando el usuario");
-      }
-    } finally {
-      setIsLoading(false);
     }
-  };
+
+    toast.success(data.message);
+    navigate("/auth/registerVerify");
+    window.location.reload();
+
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+
+   // 🟣 express-validator
+      if (error.response.data.errors) {
+        toast.error(error.response.data.errors[0].msg);
+        return;
+      }
+
+      // 🟢 backend (controladores)
+      if (error.response.data.error) {
+        toast.error(error.response.data.error);
+        return;
+      }
+    }
+
+  
+    toast.error("Error registrando el usuario");
+  }
+  finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <div className="auth-container">

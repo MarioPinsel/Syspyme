@@ -107,17 +107,6 @@ export default function CrearVenta() {
         </div>
 
         <div className="campo">
-          <label htmlFor="producto">Producto:</label>
-          <input
-            type="text"
-            id="producto"
-            value={producto}
-            onChange={(e) => setProducto(e.target.value)}
-            placeholder="Ej: Arroz 500g"
-          />
-        </div>
-
-        <div className="campo">
           <label htmlFor="codigo">Código:</label>
           <input
             type="text"

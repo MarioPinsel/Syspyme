@@ -35,7 +35,17 @@ export default function RegisterView() {
             toast.success(data.message);
         } catch (error) {
             if (isAxiosError(error) && error.response) {
-                toast.error(error.response.data.error);
+                 // 🟣 express-validator
+      if (error.response.data.errors) {
+        toast.error(error.response.data.errors[0].msg);
+        return;
+      }
+
+      // 🟢 backend (controladores)
+      if (error.response.data.error) {
+        toast.error(error.response.data.error);
+        return;
+      }
             }
         }
     };

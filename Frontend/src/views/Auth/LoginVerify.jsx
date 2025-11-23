@@ -98,7 +98,18 @@ export default function VerificationCode() {
     } catch (error) {
       toast.error("Error en la verificación");
       console.error("❌ Error en la verificación:", error);
+       if (error.response?.data?.errors) {
+        toast.error(error.response.data.errors[0].msg);
+        return;
     }
+   
+    if (error.response?.data?.error) {
+        toast.error(error.response.data.error);
+        return;
+    }
+   
+    toast.error("Error en la verificación");
+}
   };
 
   return (
