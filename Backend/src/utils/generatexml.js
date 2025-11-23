@@ -100,6 +100,10 @@ export function generarXMLFactura({
     // 🔐 Firma digital
     xml.ele('ds:Signature')
         .ele('ds:SignatureValue').txt(firma_digital).up()
+        .ele('ds:TechProvider').txt('Syspyme').up()
+        .ele('ds:Software').txt('Syspyme').up()
+        .ele('ds:SignatureInfoContent').txt('Haciendo función y cumplimiento de la resolución 000012 del 9 de febrero del 2021 y la resolición 000165 del 1 de noviembre del 2023, nos permitimos generar esta factura electrónica. También, siguiendo el título V de la resolución 42 del 5 de mayo del 2020, hacemos cumplimiento de los requisitos mínimos para los documentos referentes a la facturación electrónica.').up()
+        .ele('ds:SignatureValue').txt(firma_digital).up()
         .up();
 
     return xml.end({ prettyPrint: true });

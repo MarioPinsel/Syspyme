@@ -124,13 +124,13 @@ export async function generarPDFBuffer(xmlString) {
      .text(factura["cbc:ID"], 115, yPos + 10);
   
   doc.font('Helvetica-Bold')
-     .text('Fecha de emisión: ', 240, yPos + 10);
+     .text('Fecha de emisión: ', 220, yPos + 10);
   
   doc.font('Helvetica')
-     .text(fecha, 345, yPos + 10);
+     .text(fecha, 325, yPos + 10);
   
   doc.font('Helvetica-Bold')
-     .text('Hora de emisión:', 415, yPos + 10);
+     .text('Hora de emisión:', 395, yPos + 10);
   
   doc.font('Helvetica')
      .text(hora, 500, yPos + 10);
@@ -356,7 +356,7 @@ export async function generarPDFBuffer(xmlString) {
   totalesY += 16;
 
   doc.font('Helvetica-Bold')
-     .text('Termino: ', totalesIzqX, totalesY, { continued: true })
+     .text('Plazo: ', totalesIzqX, totalesY, { continued: true })
      .font('Helvetica')
      .text(totales["cbc:FinalTerm"] || '0');
 
