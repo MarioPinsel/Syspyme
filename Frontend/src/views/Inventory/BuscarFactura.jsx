@@ -17,7 +17,7 @@ export default function BuscarFactura() {
 
         try {
             const response = await api.get(
-                `/sales/getSale/${search}`,
+                `sales/getSale/${search}`,
                 { responseType: "text" }
             );
 
