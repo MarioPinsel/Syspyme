@@ -136,12 +136,13 @@ export const verifyAccount = async ({ pool, empresaNombre, correo, tipo, codigo 
     }
 };
 
-export const loginUsuario = async ({ empresa, empresaPassword, usuario, password }) => {
-    const pool = await getPool(empresa);
+export const loginUsuario = async ({ empresa, empresaPassword, usuario, password }) => {    
     const empresaResult = await findEmpresaByNombre(empresa);
     if (!empresaResult.rowCount) throw new Error('COMPANY_NOT_FOUND');
     const empresaData = empresaResult.rows[0];
 
+    const pool = await getPool(empresa);
+    
     const empresaValid = await checkPassword(empresaPassword, empresaData.password);
     if (!empresaValid) throw new Error('INVALID_COMPANY_CREDENTIALS');
 

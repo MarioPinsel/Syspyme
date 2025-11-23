@@ -42,23 +42,10 @@ function obtenerLogoPath() {
   }
 }
 
-// Función auxiliar para dibujar caja con fondo y borde
 function dibujarCaja(doc, x, y, width, height, bgColor, borderColor, radius = 6) {
   doc.roundedRect(x, y, width, height, radius)
      .fillAndStroke(bgColor, borderColor)
      .lineWidth(1);
-}
-
-// Función auxiliar para texto con label y valor
-function textoLabelValor(doc, x, y, label, valor, width, labelColor = '#555', valorColor = '#333') {
-  doc.fontSize(11)
-     .fillColor(labelColor)
-     .font('Helvetica-Bold')
-     .text(label, x, y, { continued: true, width: width });
-  
-  doc.fillColor(valorColor)
-     .font('Helvetica')
-     .text(valor, { width: width });
 }
 
 export async function generarPDFBuffer(xmlString) {
@@ -80,21 +67,17 @@ export async function generarPDFBuffer(xmlString) {
   const tasaIVA = taxSubtotal["cac:TaxCategory"]["cbc:Percent"] || "19";
   const productos = Array.isArray(lineas) ? lineas : [lineas];
   
-  // Generar QR
   const qrBuffer = await generarQRBuffer(cufe);
   const logoPath = obtenerLogoPath();
 
-  // Crear documento PDF
   const doc = new PDFDocument({ 
     size: 'LETTER',
     margins: { top: 40, bottom: 40, left: 40, right: 40 }
   });
   
-  // Capturar el PDF en buffers
   const buffers = [];
   doc.on('data', buffers.push.bind(buffers));
 
-  // Colores exactos del HTML
   const primaryColor = '#0b3954';
   const lightGray = '#fafafa';
   const borderColor = '#e0e0e0';
@@ -104,24 +87,23 @@ export async function generarPDFBuffer(xmlString) {
 
   let yPos = 40;
 
-  // ==================== HEADER CON LOGO Y TÍTULO ====================
+  // ==================== HEADER ====================
   if (logoPath) {
     doc.image(logoPath, 40, yPos, { width: 120, height: 48, fit: [120, 48] });
   }
   
-  doc.fontSize(20)
+  doc.fontSize(18)
      .fillColor(primaryColor)
      .font('Helvetica-Bold')
      .text('Factura Electrónica de Venta', 200, yPos, { align: 'right' });
   
-  doc.fontSize(14)
+  doc.fontSize(12)
      .fillColor(darkText)
      .font('Helvetica')
-     .text('Representación Impresa', 200, yPos + 25, { align: 'right' });
+     .text('Representación Impresa', 200, yPos + 23, { align: 'right' });
 
   yPos += 60;
 
-  // Línea separadora azul gruesa (3px)
   doc.moveTo(40, yPos)
      .lineTo(570, yPos)
      .lineWidth(3)
@@ -130,273 +112,329 @@ export async function generarPDFBuffer(xmlString) {
 
   yPos += 15;
 
-  // ==================== ENCABEZADO DE FACTURA ====================
-  dibujarCaja(doc, 40, yPos, 530, 35, lightGray, borderColor, 6);
+  // ==================== ENCABEZADO FACTURA ====================
+  dibujarCaja(doc, 40, yPos, 530, 32, lightGray, borderColor, 6);
   
-  doc.fontSize(13)
+  doc.fontSize(11)
      .fillColor(darkText)
      .font('Helvetica-Bold')
-     .text('Factura N°: ', 50, yPos + 12, { continued: true })
-     .font('Helvetica')
-     .text(factura["cbc:ID"]);
+     .text('Factura N°: ', 50, yPos + 10);
+  
+  doc.font('Helvetica')
+     .text(factura["cbc:ID"], 115, yPos + 10);
   
   doc.font('Helvetica-Bold')
-     .text('Fecha de emisión: ', 280, yPos + 12, { continued: true })
-     .font('Helvetica')
-     .text(`${fecha}  `);
+     .text('Fecha de emisión: ', 240, yPos + 10);
+  
+  doc.font('Helvetica')
+     .text(fecha, 345, yPos + 10);
   
   doc.font('Helvetica-Bold')
-     .text('Hora de emisión: ', 430, yPos + 12, { continued: true })
-     .font('Helvetica')
-     .text(hora);
+     .text('Hora de emisión:', 415, yPos + 10);
+  
+  doc.font('Helvetica')
+     .text(hora, 500, yPos + 10);
 
-  yPos += 50;
+  yPos += 47;
 
-  // ==================== GRID DOS COLUMNAS: EMISOR Y CLIENTE ====================
+  // ==================== EMISOR Y CLIENTE ====================
   const colWidth = 255;
   const colGap = 20;
-  const colHeight = 155;
+  const colHeight = 135;
 
-  // EMISOR (Columna izquierda)
+  // EMISOR
   const emisorX = 40;
   const emisorY = yPos;
   
   dibujarCaja(doc, emisorX, emisorY, colWidth, colHeight, lightGray, borderColor, 6);
   
-  doc.fontSize(14)
+  doc.fontSize(13)
      .fillColor(primaryColor)
      .font('Helvetica-Bold')
-     .text('Emisor', emisorX + 12, emisorY + 12);
+     .text('Emisor', emisorX + 12, emisorY + 10);
   
-  // Línea debajo del título Emisor (2px azul)
-  doc.moveTo(emisorX + 12, emisorY + 28)
-     .lineTo(emisorX + colWidth - 12, emisorY + 28)
+  doc.moveTo(emisorX + 12, emisorY + 26)
+     .lineTo(emisorX + colWidth - 12, emisorY + 26)
      .lineWidth(2)
      .strokeColor(primaryColor)
      .stroke();
 
-  let emisorYPos = emisorY + 38;
+  let currentY = emisorY + 35;
   
-  textoLabelValor(doc, emisorX + 12, emisorYPos, 'Razon Social/Nombre: ', emisor["cbc:Name"], colWidth - 24, labelColor, darkText);
+  doc.fontSize(10)
+     .fillColor(labelColor)
+     .font('Helvetica-Bold')
+     .text('Razon Social/Nombre: ', emisorX + 12, currentY, { width: colWidth - 24, continued: false });
   
-  emisorYPos += 22;
+  currentY += 13;
   
-  textoLabelValor(doc, emisorX + 12, emisorYPos, 'NIT: ', emisor["cbc:CompanyID"], colWidth - 24, labelColor, darkText);
+  doc.fillColor(darkText)
+     .font('Helvetica')
+     .text(emisor["cbc:Name"], emisorX + 12, currentY, { width: colWidth - 24 });
+  
+  currentY += 18;
+  
+  doc.fillColor(labelColor)
+     .font('Helvetica-Bold')
+     .text('NIT: ', emisorX + 12, currentY, { continued: true });
+  
+  doc.fillColor(darkText)
+     .font('Helvetica')
+     .text(emisor["cbc:CompanyID"]);
 
-  emisorYPos += 30;
+  currentY += 20;
   
-  // Línea separadora para vendedor
-  doc.moveTo(emisorX + 12, emisorYPos)
-     .lineTo(emisorX + colWidth - 12, emisorYPos)
+  doc.moveTo(emisorX + 12, currentY)
+     .lineTo(emisorX + colWidth - 12, currentY)
      .lineWidth(1)
      .strokeColor(borderColor)
      .stroke();
   
-  emisorYPos += 12;
+  currentY += 10;
   
-  textoLabelValor(doc, emisorX + 12, emisorYPos, 'Vendedor: ', vendedor["cbc:Name"], colWidth - 24, labelColor, darkText);
+  doc.fillColor(labelColor)
+     .font('Helvetica-Bold')
+     .text('Vendedor: ', emisorX + 12, currentY, { width: colWidth - 24, continued: false });
   
-  emisorYPos += 18;
+  currentY += 13;
   
-  textoLabelValor(doc, emisorX + 12, emisorYPos, 'Contactenos: ', vendedor["cbc:ElectronicMail"], colWidth - 24, labelColor, darkText);
+  doc.fillColor(darkText)
+     .font('Helvetica')
+     .text(vendedor["cbc:Name"], emisorX + 12, currentY, { width: colWidth - 24 });
+  
+  currentY += 15;
+  
+  doc.fillColor(labelColor)
+     .font('Helvetica-Bold')
+     .text('Contactenos: ', emisorX + 12, currentY, { continued: true });
+  
+  doc.fillColor(darkText)
+     .font('Helvetica')
+     .text(vendedor["cbc:ElectronicMail"], { width: colWidth - 60 });
 
-  // CLIENTE (Columna derecha)
+  // CLIENTE
   const clienteX = emisorX + colWidth + colGap;
   const clienteY = yPos;
   
   dibujarCaja(doc, clienteX, clienteY, colWidth, colHeight, lightGray, borderColor, 6);
   
-  doc.fontSize(14)
+  doc.fontSize(13)
      .fillColor(primaryColor)
      .font('Helvetica-Bold')
-     .text('Cliente', clienteX + 12, clienteY + 12);
+     .text('Cliente', clienteX + 12, clienteY + 10);
   
-  // Línea debajo del título Cliente (2px azul)
-  doc.moveTo(clienteX + 12, clienteY + 28)
-     .lineTo(clienteX + colWidth - 12, clienteY + 28)
+  doc.moveTo(clienteX + 12, clienteY + 26)
+     .lineTo(clienteX + colWidth - 12, clienteY + 26)
      .lineWidth(2)
      .strokeColor(primaryColor)
      .stroke();
 
-  let clienteYPos = clienteY + 38;
+  currentY = clienteY + 35;
   
-  textoLabelValor(doc, clienteX + 12, clienteYPos, 'Nombre: ', cliente["cbc:Name"], colWidth - 24, labelColor, darkText);
+  doc.fontSize(10)
+     .fillColor(labelColor)
+     .font('Helvetica-Bold')
+     .text('Nombre: ', clienteX + 12, currentY, { width: colWidth - 24, continued: false });
   
-  clienteYPos += 22;
+  currentY += 13;
   
-  textoLabelValor(doc, clienteX + 12, clienteYPos, 'Documento: ', cliente["cbc:ID"], colWidth - 24, labelColor, darkText);
+  doc.fillColor(darkText)
+     .font('Helvetica')
+     .text(cliente["cbc:Name"], clienteX + 12, currentY, { width: colWidth - 24 });
   
-  clienteYPos += 18;
+  currentY += 18;
   
-  textoLabelValor(doc, clienteX + 12, clienteYPos, 'Correo: ', cliente["cbc:Email"], colWidth - 24, labelColor, darkText);
+  doc.fillColor(labelColor)
+     .font('Helvetica-Bold')
+     .text('Documento: ', clienteX + 12, currentY, { continued: true });
   
-  clienteYPos += 18;
+  doc.fillColor(darkText)
+     .font('Helvetica')
+     .text(cliente["cbc:ID"]);
   
-  textoLabelValor(doc, clienteX + 12, clienteYPos, 'Telefono: ', cliente["cbc:Phone"], colWidth - 24, labelColor, darkText);
+  currentY += 15;
+  
+  doc.fillColor(labelColor)
+     .font('Helvetica-Bold')
+     .text('Correo: ', clienteX + 12, currentY, { width: colWidth - 24, continued: false });
+  
+  currentY += 13;
+  
+  doc.fillColor(darkText)
+     .font('Helvetica')
+     .text(cliente["cbc:Email"], clienteX + 12, currentY, { width: colWidth - 24 });
+  
+  currentY += 15;
+  
+  doc.fillColor(labelColor)
+     .font('Helvetica-Bold')
+     .text('Telefono: ', clienteX + 12, currentY, { continued: true });
+  
+  doc.fillColor(darkText)
+     .font('Helvetica')
+     .text(cliente["cbc:Phone"]);
 
-  yPos += colHeight + 20;
+  yPos += colHeight + 18;
 
-  // ==================== TÍTULO DETALLE DE PRODUCTOS ====================
-  doc.fontSize(16)
+  // ==================== TABLA ====================
+  doc.fontSize(14)
      .fillColor(primaryColor)
      .font('Helvetica-Bold')
      .text('Detalle de productos', 40, yPos);
 
-  yPos += 25;
+  yPos += 22;
 
-  // ==================== TABLA DE PRODUCTOS ====================
-  const tableTop = yPos;
   const tableLeft = 40;
   const tableWidth = 530;
   
-  // Anchos de columna (exactos del HTML)
-  const col1Width = tableWidth * 0.10; // Código
-  const col2Width = tableWidth * 0.40; // Descripción
-  const col3Width = tableWidth * 0.10; // Cantidad
-  const col4Width = tableWidth * 0.20; // Valor Unitario
-  const col5Width = tableWidth * 0.20; // Total
+  const col1Width = tableWidth * 0.10;
+  const col2Width = tableWidth * 0.40;
+  const col3Width = tableWidth * 0.10;
+  const col4Width = tableWidth * 0.20;
+  const col5Width = tableWidth * 0.20;
 
-  // Header de tabla (fondo azul)
-  doc.rect(tableLeft, tableTop, tableWidth, 26)
+  // Header
+  doc.rect(tableLeft, yPos, tableWidth, 24)
      .fillAndStroke(primaryColor, primaryColor);
   
-  doc.fontSize(12)
+  doc.fontSize(10)
      .fillColor('white')
      .font('Helvetica-Bold')
-     .text('Código', tableLeft + 6, tableTop + 8, { width: col1Width - 12, align: 'left' })
-     .text('Descripción', tableLeft + col1Width + 6, tableTop + 8, { width: col2Width - 12, align: 'left' })
-     .text('Cantidad', tableLeft + col1Width + col2Width + 6, tableTop + 8, { width: col3Width - 12, align: 'right' })
-     .text('Valor Unitario', tableLeft + col1Width + col2Width + col3Width + 6, tableTop + 8, { width: col4Width - 12, align: 'right' })
-     .text('Total', tableLeft + col1Width + col2Width + col3Width + col4Width + 6, tableTop + 8, { width: col5Width - 12, align: 'right' });
+     .text('Código', tableLeft + 5, yPos + 7, { width: col1Width - 10, align: 'left' })
+     .text('Descripción', tableLeft + col1Width + 5, yPos + 7, { width: col2Width - 10, align: 'left' })
+     .text('Cantid', tableLeft + col1Width + col2Width + 5, yPos + 7, { width: col3Width - 10, align: 'right' })
+     .text('Valor Unitario', tableLeft + col1Width + col2Width + col3Width + 5, yPos + 7, { width: col4Width - 10, align: 'right' })
+     .text('Total', tableLeft + col1Width + col2Width + col3Width + col4Width + 5, yPos + 7, { width: col5Width - 10, align: 'right' });
 
-  let rowY = tableTop + 26;
+  yPos += 24;
 
-  // Filas de productos (alternando colores)
+  // Filas
   productos.forEach((p, index) => {
-    const rowHeight = 26;
+    const rowHeight = 24;
     const bgColor = index % 2 === 0 ? '#ffffff' : '#f9f9f9';
     
-    doc.rect(tableLeft, rowY, tableWidth, rowHeight)
+    doc.rect(tableLeft, yPos, tableWidth, rowHeight)
        .fillAndStroke(bgColor, borderColor)
        .lineWidth(1);
     
-    doc.fontSize(12)
+    doc.fontSize(10)
        .fillColor(darkText)
        .font('Helvetica')
-       .text(p["cbc:Code"] || '', tableLeft + 6, rowY + 8, { width: col1Width - 12, align: 'left' })
-       .text(p["cac:Item"]["cbc:Description"] || '', tableLeft + col1Width + 6, rowY + 8, { width: col2Width - 12, align: 'left' })
-       .text(p["cbc:InvoicedQuantity"] || '', tableLeft + col1Width + col2Width + 6, rowY + 8, { width: col3Width - 12, align: 'right' })
-       .text(`$${formatearNumero(p["cac:Price"]["cbc:PriceAmount"]._)}`, tableLeft + col1Width + col2Width + col3Width + 6, rowY + 8, { width: col4Width - 12, align: 'right' })
-       .text(`$${formatearNumero(p["cbc:LineExtensionAmount"]._)}`, tableLeft + col1Width + col2Width + col3Width + col4Width + 6, rowY + 8, { width: col5Width - 12, align: 'right' });
+       .text(p["cbc:Code"] || '', tableLeft + 5, yPos + 7, { width: col1Width - 10, align: 'left' })
+       .text(p["cac:Item"]["cbc:Description"] || '', tableLeft + col1Width + 5, yPos + 7, { width: col2Width - 10, align: 'left' })
+       .text(p["cbc:InvoicedQuantity"] || '', tableLeft + col1Width + col2Width + 5, yPos + 7, { width: col3Width - 10, align: 'right' })
+       .text(`$${formatearNumero(p["cac:Price"]["cbc:PriceAmount"]._)}`, tableLeft + col1Width + col2Width + col3Width + 5, yPos + 7, { width: col4Width - 10, align: 'right' })
+       .text(`$${formatearNumero(p["cbc:LineExtensionAmount"]._)}`, tableLeft + col1Width + col2Width + col3Width + col4Width + 5, yPos + 7, { width: col5Width - 10, align: 'right' });
     
-    rowY += rowHeight;
+    yPos += rowHeight;
   });
 
-  yPos = rowY + 15;
+  yPos += 15;
 
-  // ==================== SECCIÓN DE TOTALES ====================
-  const totalesHeight = 80;
+  // ==================== TOTALES ====================
+  const totalesHeight = 75;
   dibujarCaja(doc, 40, yPos, 530, totalesHeight, lightGray, borderColor, 6);
 
-  const totalesIzqX = 52;
-  const totalesDerX = 340;
-  let totalesY = yPos + 15;
+  const totalesIzqX = 50;
+  const totalesDerX = 320;
+  let totalesY = yPos + 12;
 
-  // Totales izquierda
-  doc.fontSize(13)
+  doc.fontSize(11)
      .fillColor(darkText)
      .font('Helvetica-Bold')
      .text('Método de Pago: ', totalesIzqX, totalesY, { continued: true })
      .font('Helvetica')
      .text(totales["cbc:PaymentMethod"] || 'N/A');
 
-  totalesY += 18;
+  totalesY += 16;
 
   doc.font('Helvetica-Bold')
      .text('Forma de Pago: ', totalesIzqX, totalesY, { continued: true })
      .font('Helvetica')
      .text(totales["cbc:PaymentType"] || 'N/A');
 
-  totalesY += 18;
+  totalesY += 16;
 
   doc.font('Helvetica-Bold')
      .text('Termino: ', totalesIzqX, totalesY, { continued: true })
      .font('Helvetica')
      .text(totales["cbc:FinalTerm"] || '0');
 
-  // Totales derecha
-  totalesY = yPos + 15;
+  // Derecha
+  totalesY = yPos + 12;
+
+  doc.fontSize(11)
+     .fillColor(darkText)
+     .font('Helvetica-Bold')
+     .text('Subtotal:', totalesDerX, totalesY, { width: 80, align: 'left' });
+  
+  doc.font('Helvetica')
+     .text(`$${formatearNumero(totales["cbc:LineExtensionAmount"]._)}`, totalesDerX + 85, totalesY, { width: 145, align: 'right' });
+
+  totalesY += 16;
 
   doc.font('Helvetica-Bold')
-     .text('Subtotal: ', totalesDerX, totalesY, { continued: true, width: 80 })
-     .font('Helvetica')
-     .text(`$${formatearNumero(totales["cbc:LineExtensionAmount"]._)}`, { width: 150, align: 'right' });
+     .text(`IVA (${tasaIVA}%):`, totalesDerX, totalesY, { width: 80, align: 'left' });
+  
+  doc.font('Helvetica')
+     .text(`$${formatearNumero(parseFloat(totales["cbc:PayableAmount"]._) - parseFloat(totales["cbc:TaxExclusiveAmount"]._))}`, totalesDerX + 85, totalesY, { width: 145, align: 'right' });
 
-  totalesY += 18;
+  totalesY += 20;
 
-  doc.font('Helvetica-Bold')
-     .text(`IVA (${tasaIVA}%): `, totalesDerX, totalesY, { continued: true, width: 80 })
-     .font('Helvetica')
-     .text(`$${formatearNumero(parseFloat(totales["cbc:PayableAmount"]._) - parseFloat(totales["cbc:TaxExclusiveAmount"]._))}`, { width: 150, align: 'right' });
-
-  totalesY += 25;
-
-  // Línea superior antes del total (2px azul)
-  doc.moveTo(totalesDerX, totalesY - 10)
-     .lineTo(570 - 12, totalesY - 10)
+  doc.moveTo(totalesDerX, totalesY - 6)
+     .lineTo(560, totalesY - 6)
      .lineWidth(2)
      .strokeColor(primaryColor)
      .stroke();
 
-  doc.fontSize(15)
+  doc.fontSize(13)
      .fillColor(primaryColor)
      .font('Helvetica-Bold')
-     .text('Total: ', totalesDerX, totalesY, { continued: true, width: 80 })
-     .text(`$${formatearNumero(totales["cbc:PayableAmount"]._)}`, { width: 150, align: 'right' });
+     .text('Total:', totalesDerX, totalesY, { width: 80, align: 'left' });
+  
+  doc.text(`$${formatearNumero(totales["cbc:PayableAmount"]._)}`, totalesDerX + 85, totalesY, { width: 145, align: 'right' });
 
-  yPos += totalesHeight + 15;
+  yPos += totalesHeight + 12;
 
-  // ==================== TOTAL EN LETRAS ====================
-  doc.fontSize(15)
+  // Total en letras
+  doc.fontSize(13)
      .fillColor(primaryColor)
      .font('Helvetica-Bold')
      .text(totalLetra + ' PESOS COLOMBIANOS', 40, yPos, { width: 530, align: 'right' });
 
-  yPos += 30;
+  yPos += 25;
 
   // ==================== CUFE Y QR ====================
-  const cufeHeight = 100;
+  const cufeHeight = 95;
   dibujarCaja(doc, 40, yPos, 530, cufeHeight, lightGray, borderColor, 6);
 
-  doc.fontSize(14)
+  doc.fontSize(12)
      .fillColor(primaryColor)
      .font('Helvetica-Bold')
-     .text('CUFE:', 52, yPos + 12);
+     .text('CUFE:', 50, yPos + 10);
 
-  doc.fontSize(13)
+  doc.fontSize(11)
      .fillColor(textGray)
      .font('Helvetica')
-     .text(cufe, 52, yPos + 32, { width: 390, lineBreak: true, lineGap: 2 });
+     .text(cufe, 50, yPos + 28, { width: 380, lineBreak: true, lineGap: 1.5 });
 
   if (qrBuffer) {
-    // QR con borde y fondo blanco
-    doc.rect(482, yPos + 17, 68, 68).fillAndStroke('#ffffff', '#dddddd').lineWidth(1);
-    doc.image(qrBuffer, 486, yPos + 21, { width: 60, height: 60 });
+    doc.rect(480, yPos + 15, 65, 65).fillAndStroke('#ffffff', '#dddddd').lineWidth(1);
+    doc.image(qrBuffer, 483, yPos + 18, { width: 59, height: 59 });
   }
 
-  yPos += cufeHeight + 20;
+  yPos += cufeHeight + 18;
 
   // ==================== FOOTER ====================
-  // Línea superior del footer
   doc.moveTo(40, yPos)
      .lineTo(570, yPos)
      .lineWidth(1)
      .strokeColor(borderColor)
      .stroke();
 
-  yPos += 15;
+  yPos += 12;
 
-  doc.fontSize(10)
+  doc.fontSize(9)
      .fillColor('#999')
      .font('Helvetica')
      .text('Software: ', 40, yPos, { continued: true, width: 530, align: 'center' });
@@ -409,28 +447,25 @@ export async function generarPDFBuffer(xmlString) {
      .fillColor('#999')
      .text(' | Fabricante: SYSPYME.ORG');
 
-  yPos += 18;
+  yPos += 15;
+
+  doc.fontSize(8)
+     .text('Haciendo función y cumplimiento de la resolución 000012 del 9 de febrero del 2021, nos permitimos generar esta factura electrónica. También, siguiendo el título V de la resolución 42 del 5 de mayo del 2020, hacemos cumplimiento de los requisitos mínimos para los documentos referentes a la facturación electrónica.', 
+           40, yPos, { width: 530, align: 'center', lineGap: 1.5 });
+
+  yPos += 25;
 
   doc.fontSize(9)
-     .text('Haciendo función y cumplimiento de la resolución 000012 del 9 de febrero del 2021, nos permitimos generar esta factura electrónica. También, siguiendo el título V de la resolución 42 del 5 de mayo del 2020, hacemos cumplimiento de los requisitos mínimos para los documentos referentes a la facturación electrónica.', 
-           40, yPos, { width: 530, align: 'center', lineGap: 2 });
-
-  yPos += 30;
-
-  doc.fontSize(10)
      .text(`© ${new Date().getFullYear()} Todos los derechos reservados.`, 40, yPos, { width: 530, align: 'center' });
 
-  // Finalizar PDF
   doc.end();
 
-  // Retornar el Buffer completo
   return new Promise((resolve, reject) => {
     doc.on('end', () => resolve(Buffer.concat(buffers)));
     doc.on('error', reject);
   });
 }
 
-// Función adicional para guardar el PDF en disco si lo necesitas
 export async function guardarPDFEnDisco(xmlString, outputPath) {
   const pdfBuffer = await generarPDFBuffer(xmlString);
   fs.writeFileSync(outputPath, pdfBuffer);
