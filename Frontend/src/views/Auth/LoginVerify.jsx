@@ -92,7 +92,7 @@ export default function VerificationCode() {
         navigate("/dashboard/");
         window.location.reload();
       } else {
-        navigate("/");
+        navigate("/employee");
         window.location.reload();
       }
     } catch (error) {
