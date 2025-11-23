@@ -1,27 +1,28 @@
 import nodemailer from 'nodemailer';
-import puppeteer from 'puppeteer';
+import pdf from 'html-pdf';
 import { generarHTMLDesdeXML } from './generarHTMLDesdeXML.js';
 
 export async function sendFacturaEmail(xmlString, clienteEmail) {
     // 1. Generar HTML desde el XML
     const html = await generarHTMLDesdeXML(xmlString);
 
-    // 2. Crear el PDF usando Puppeteer
-    const browser = await puppeteer.launch({
-        headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
+    // 2. Crear el PDF usando html-pdf
+    const pdfBuffer = await new Promise((resolve, reject) => {
+        const options = {
+            format: 'A4',
+            border: {
+                top: '20mm',
+                bottom: '20mm',
+                left: '15mm',
+                right: '15mm'
+            }
+        };
+
+        pdf.create(html, options).toBuffer((err, buffer) => {
+            if (err) return reject(err);
+            resolve(buffer);
+        });
     });
-
-    const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'networkidle0' });
-
-    const pdfBuffer = await page.pdf({
-        format: 'A4',
-        printBackground: true,
-        margin: { top: '20mm', bottom: '20mm', left: '15mm', right: '15mm' }
-    });
-
-    await browser.close();
 
     // 3. Configurar transporter (usando tus variables de entorno)
     const transporter = nodemailer.createTransport({
