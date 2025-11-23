@@ -9,6 +9,8 @@ import CompanyRegisterView from './views/Auth/CompanyRegisterView'
 import CompanyRegisterVerify from './views/Auth/CompanyRegisterVerify.jsx'
 import Homepage from './views/Homepage'
 import LoginVerify from './views/Auth/LoginVerify.jsx'
+import EmployeeDashboard from "./views/Admin/EmployeeDashboardView.jsx";
+
 
 import Inventory from "./views/Inventory/Inventory.jsx"
 import CreateProductView from "./views/Inventory/CreateProduct.jsx";
