@@ -50,6 +50,7 @@ export default function VerificationCode() {
 
   const handleVerify = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     const fullCode = code.join("");
     const token = Cookies.get("token");
