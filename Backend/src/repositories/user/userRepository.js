@@ -6,6 +6,22 @@ export const findTempUsuarioByCorreo = async (pool, correo) => {
   return await pool.query('SELECT * FROM temp_Usuarios WHERE correo = $1', [correo]);
 };
 
+export const findUsuarioByNombre = async (pool, correo) => {
+  return await pool.query('SELECT * FROM usuarios WHERE nombre = $1', [correo]);
+};
+
+export const findTempUsuarioByNombre = async (pool, correo) => {
+  return await pool.query('SELECT * FROM temp_Usuarios WHERE nombre = $1', [correo]);
+};
+
+export const findUsuarioByHandle = async (pool, correo) => {
+  return await pool.query('SELECT * FROM usuarios WHERE handle = $1', [correo]);
+};
+
+export const findTempUsuarioByHandle = async (pool, correo) => {
+  return await pool.query('SELECT * FROM temp_Usuarios WHERE handle = $1', [correo]);
+};
+
 export const findUsuarioByCorreoOHandle = async (pool, identifier) => {
   return await pool.query(
     `SELECT * FROM usuarios WHERE correo = $1 OR handle = $1`,
