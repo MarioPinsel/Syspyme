@@ -5,6 +5,7 @@ import api from "../../config/axios";
 import { useNavigate } from "react-router-dom";
 import "../../styles/Inventory/CreateProduct.css"
 import { useState } from "react";
+import { isAxiosError } from "axios";
 
 export default function CreateProductView() {
   const navigate = useNavigate();
