@@ -37,18 +37,16 @@ export default function AgregarProducto() {
             });
 
             toast.success("Producto agregado correctamente");
-        } catch (err) {
+     } catch (err) {
     console.error("Error:", err);
 
-    const backend = err.response?.data;
+    const backendError =
+        err.response?.data?.error ||
+        err.response?.data?.message;
 
-    const msg =
-        backend?.error || 
-        backend?.message ||
-        "Error agregando producto";
-
-    toast.error(msg);
+    toast.error(backendError || "Error agregando producto");
 }
+
 
     };
 

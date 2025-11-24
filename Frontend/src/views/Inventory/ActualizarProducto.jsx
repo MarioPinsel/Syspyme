@@ -70,14 +70,16 @@ export default function ActualizarProducto() {
       });
 
       toast.success("Producto actualizado correctamente");
-    } catch (err) {
-      console.error("Error update:", err);
-      const msg = err.response?.data?.message;
-      toast.error(msg || "Error actualizando producto");
-    } finally {
-      setLoading(false);
-    }
-  };
+    }catch (err) {
+  console.error("Error update:", err);
+
+  const backendError =
+    err.response?.data?.message ||
+    err.response?.data?.error;
+
+  toast.error(backendError || "Error actualizando producto");
+}
+}
 
   return (
     <div className="inventario-container">

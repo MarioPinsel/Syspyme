@@ -52,9 +52,15 @@ export default function EliminarProducto() {
             }
 
         } catch (err) {
-            console.error("❌ Error delete:", err);
-            toast.error("Error eliminando el producto");
-        }
+    console.error("❌ Error delete:", err);
+
+    const backendError =
+        err.response?.data?.error ||
+        err.response?.data?.message;
+
+    toast.error(backendError || "Error eliminando el producto");
+}
+
     };
 
     return (
