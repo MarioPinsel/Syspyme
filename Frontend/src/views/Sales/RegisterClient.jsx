@@ -41,18 +41,23 @@ export default function RegisterClient() {
     } else if (role === "employee") {
       navigate("/employee");
     }
-    } catch (error) {
-      if (isAxiosError(error) && error.response) {
-       const backendMessage =
-        error.response.data.message ||
-        error.response.data.error ||   
-        "Error registrando cliente";
+   } catch (error) {
+  let backendMessage = "Error registrando cliente";
 
-      toast.error(backendMessage);
-    } else {
-    toast.error("Error de conexión con el servidor");
+  if (isAxiosError(error) && error.response) {
+    const data = error.response.data;
+
+    if (typeof data === "string") {
+      backendMessage = data;
+    } else if (data?.message) {
+      backendMessage = data.message;
+    } else if (data?.error) {
+      backendMessage = data.error;
+    }
   }
-   }
+
+  toast.error(backendMessage);
+}
   };
 
   return (
