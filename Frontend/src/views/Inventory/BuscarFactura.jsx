@@ -2,7 +2,7 @@ import { useState } from "react";
 import Cookies from "js-cookie";
 import api from "../../config/axios";
 import { toast } from "sonner";
-import "../../styles/Views/EmployeeDashboardView.css";
+import "../../styles/Views/BuscarFactura.css";
 
 export default function BuscarFactura() {
     const [search, setSearch] = useState("");

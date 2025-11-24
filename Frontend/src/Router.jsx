@@ -24,6 +24,8 @@ import BuscarFactura from "./views/Inventory/BuscarFactura.jsx";
 
 import RequireAuth from "./components/RequireAuth.jsx";
 
+import NotFound from "./components/NotFound.jsx"; 
+
 export default function Router() {
   return (
     <BrowserRouter>
@@ -73,6 +75,9 @@ export default function Router() {
             <Route index element={<EmployeeDashboard />} />
           </Route>
         </Route>
+
+          <Route path="*" element={<NotFound />} />
+    
 
       </Routes>
     </BrowserRouter>

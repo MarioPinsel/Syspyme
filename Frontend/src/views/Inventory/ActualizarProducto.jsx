@@ -78,9 +78,10 @@ export default function ActualizarProducto() {
     err.response?.data?.error;
 
   toast.error(backendError || "Error actualizando producto");
+} finally {
+   setLoading(false);
 }
 }
-
   return (
     <div className="inventario-container">
       <h2 className="titulo">Actualizar Producto</h2>
