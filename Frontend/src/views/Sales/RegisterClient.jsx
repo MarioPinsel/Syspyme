@@ -43,9 +43,16 @@ export default function RegisterClient() {
     }
     } catch (error) {
       if (isAxiosError(error) && error.response) {
-        toast.error(error.response.data.error || "Error registrando cliente");
-      }
-    }
+       const backendMessage =
+        error.response.data.message ||
+        error.response.data.error ||   
+        "Error registrando cliente";
+
+      toast.error(backendMessage);
+    } else {
+    toast.error("Error de conexión con el servidor");
+  }
+   }
   };
 
   return (

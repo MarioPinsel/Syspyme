@@ -76,16 +76,19 @@ export default function CrearVenta() {
       setTipoPago("");
       setCuotas("");
     } catch (error) {
-      const msg = error.response?.data?.error;
+  const backendMsg =
+    error.response?.data?.message ||
+    "Error creando la venta";
 
-      if (msg === "El cliente no existe") {
-        toast.error("El cliente no existe — verifica el documento");
-        document.getElementById("cliente")?.focus();
-        return;
-      }
+  if (backendMsg === "El cliente no existe") {
+    toast.error("El cliente no existe — verifica el documento");
+    document.getElementById("cliente")?.focus();
+    return;
+  }
 
-      toast.error(msg || "Error creando la venta");
-    }
+  toast.error(backendMsg);
+}
+
   };
 
   return (
