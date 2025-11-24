@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import "../../styles/Views/EmployeeDashboardView.css";
-import { UserPlus, FilePlus2 } from "lucide-react";
+import { UserPlus, FilePlus2,Receipt } from "lucide-react";
 
 export default function EmployeeDashboardView() {
   return (
