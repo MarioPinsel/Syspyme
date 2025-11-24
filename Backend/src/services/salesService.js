@@ -37,18 +37,23 @@ export const createSaleService = async (pool, correo, empresaNombre, { document,
         if (stockRes.rows[0].total_stock < item.quantity)
             return { success: false, message: `Stock insuficiente para producto ${item.code}` };
 
-        let restante = item.quantity;
+        let restante = Number(item.quantity);
         const invRes = await getInventoryByProductId(pool, producto.id);
+
         for (const row of invRes.rows) {
+            const cantidadFila = Number(row.cantidad);
+
             if (restante <= 0) break;
-            if (row.cantidad <= restante) {
+
+            if (cantidadFila <= restante) {
                 await deleteFromInventory(pool, row.id);
-                restante -= row.cantidad;
+                restante -= cantidadFila;
             } else {
-                await updateInventoryQuantity(pool, row.id, row.cantidad - restante);
+                await updateInventoryQuantity(pool, row.id, cantidadFila - restante);
                 restante = 0;
             }
         }
+
 
         const subtotal = producto.precio_unitario * item.quantity;
         subTotal += subtotal;
