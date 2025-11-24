@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Common from './layouts/Common.jsx';
 import Main from './layouts/main.jsx';

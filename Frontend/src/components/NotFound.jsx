@@ -1,6 +1,5 @@
-
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import Header from "./HeaderSelector.jsx";
+import Footer from "../layouts/Footer.jsx"
 import "../styles/Views/NotFound.css";
 
 export default function NotFound() {
