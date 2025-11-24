@@ -138,7 +138,7 @@ export default function VerificationCode() {
                         ))}
                     </div>
 
-                      <button type="submit" disabled={loading} className={loading ? "loading" : ""}>
+                       <button type="submit" disabled={loading} className={loading ? "loading" : ""}>
                         {loading ? (
                             <>
                                 <span className="spinner"></span> Verificando...

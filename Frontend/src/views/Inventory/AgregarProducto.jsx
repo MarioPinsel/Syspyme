@@ -4,7 +4,6 @@ import Cookies from "js-cookie";
 import api from "../../config/axios";
 import { toast } from "sonner";
 import "../../styles/Inventory/ActualizarProducto.css";
-import { useState } from "react";
 
 export default function AgregarProducto() {
     const { register, handleSubmit, setValue } = useForm({

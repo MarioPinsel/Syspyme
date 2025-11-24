@@ -1,10 +1,10 @@
+
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Cookies from "js-cookie";
 import api from "../../config/axios";
 import "../../styles/Inventory/ActualizarProducto.css";
 import { toast } from "sonner";
-import { useState } from "react";
 
 export default function ActualizarProducto() {
   const {

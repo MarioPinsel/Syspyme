@@ -6,6 +6,7 @@ import "../../styles/Inventory/ActualizarProducto.css";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
+
 export default function EliminarProducto() {
     const navigate = useNavigate()
 
