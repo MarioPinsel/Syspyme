@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import api from "../../config/axios";
 import { useNavigate, Link } from "react-router-dom";
 import "../../styles/Layouts/Auth.css";
+import { useState } from "react";
 
 export default function LoginView() {
   const navigate = useNavigate();

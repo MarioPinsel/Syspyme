@@ -6,6 +6,8 @@ import api from "../../config/axios";
 import "../../styles/Sales/RegisterClient.css";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import { useState } from "react";
+
 
 
 export default function RegisterClient() {
@@ -60,7 +62,7 @@ export default function RegisterClient() {
   }
 
   toast.error(backendMessage);
-}finally {
+} finally {
       setIsSubmitting(false);
   };
 }

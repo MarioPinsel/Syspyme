@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import { toast } from "sonner";
 import "../../styles/Layouts/Verify.css";
 import api from "../../config/axios";
+import { useState } from "react";
 
 export default function VerificationCode() {
     const [code, setCode] = useState(Array(6).fill(""));
