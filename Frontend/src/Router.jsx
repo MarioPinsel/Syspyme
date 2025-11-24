@@ -45,7 +45,7 @@ export default function Router() {
           <Route path="companyRegisterVerify" element={<CompanyRegisterVerify />} />
         </Route>
 
-        <Route element={<RequireAuth allowedRoles={["admin"]} />}>
+        <Route element={<RequireAuth allowedRoles={["admin", "employee"]} />}>
           <Route path="/dashboard" element={<Common />}>
             <Route index element={<Dashboard />} />
             <Route path="register-employee" element={<RegistrarEmpleado />} />

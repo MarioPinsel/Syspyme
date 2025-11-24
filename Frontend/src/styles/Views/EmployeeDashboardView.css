@@ -7,42 +7,32 @@
 }
 
 
-.dashboard-container {
+.employee-dashboard-container {
   min-height: 100vh;
   background-color: var(--color-fondo);
   padding: 2rem 4rem;
   font-family: var(--fuente-secundaria);
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  align-items: center;
 }
 
 
-.dashboard-header h1 {
+.employee-title {
   font-size: 2rem;
   font-weight: 700;
-}
-
-.dashboard-header .highlight {
-  color: var(--color-acento);
-}
-
-
-.dashboard-main {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 3rem;
-  width: 100%;
+  margin-bottom: 3rem;
+  text-align: center;
 }
 
 
-.dashboard-actions {
+.employee-actions {
   display: flex;
   flex-direction: row;
-  gap: 3rem;
+  flex-wrap: wrap;
+  gap: 2.5rem;
   width: 100%;
-  max-width: 700px;
+  max-width: 1100px;
   justify-content: center;
   align-items: center;
   margin: 0 auto;
@@ -50,9 +40,9 @@
 
 
 .employee-card {
-  width: 100%;
+  width: 300px;
   height: 260px;
-  max-width: 320px;
+  flex-shrink: 0;
 
   background: #fff;
   border: 1px solid #ddd;
@@ -78,6 +68,7 @@
 .employee-card:hover {
   background-color: #f5f7fa;
   transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 
@@ -93,7 +84,15 @@
   text-decoration: none;
 }
 
-.employee-card:hover {
-  text-decoration: none;
-  color: inherit;
+
+/* Responsive */
+@media (max-width: 768px) {
+  .employee-actions {
+    flex-direction: column;
+  }
+  
+  .employee-card {
+    width: 100%;
+    max-width: 320px;
+  }
 }
