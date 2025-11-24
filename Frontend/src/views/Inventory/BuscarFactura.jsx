@@ -72,9 +72,13 @@ export default function BuscarFactura() {
                         onChange={(e) => setSearch(e.target.value)}
                     />
 
-                    <button onClick={handleSearch} disabled={loading}>
-                        {loading ? "Buscando..." : "Buscar"}
-                    </button>
+                    <button
+    onClick={handleSearch}
+    className="btn-buscar"
+    disabled={loading}
+>
+    {loading ? <span className="loader"></span> : "Buscar"}
+</button>
                 </div>
             </div>
         </div>

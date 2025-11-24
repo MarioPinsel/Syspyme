@@ -160,9 +160,10 @@ const handleRegister = async (formData) => {
           )}
 
           
-          <button type="submit" disabled={isLoading}>
-            {isLoading ? "Registrando..." : "Registrar"}
-          </button>
+          <button type="submit" disabled={isLoading} className="submit-btn">
+  {isLoading ? (
+    <div className="loader"></div> ) : ("Registrar" )}
+        </button>
         </form>
       </div>
     </div>

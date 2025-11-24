@@ -11,7 +11,7 @@ export default function AgregarProducto() {
     });
 
     const [metodo, setMetodo] = useState("");
-
+     const [loading, setLoading] = useState(false);
     useEffect(() => {
         setValue("metodo", metodo);
     }, [metodo, setValue]);
@@ -84,8 +84,8 @@ export default function AgregarProducto() {
                     <input type="number" {...register("cantidad")} />
                 </div>
 
-                <button type="submit" className="btn-enviar" >
-                    Agregar
+                <button type="submit" className="btn-enviar" disabled={loading}>
+                    {loading ? <span className="loader"></span> : "Agregar"}
                 </button>
             </form>
         </div>

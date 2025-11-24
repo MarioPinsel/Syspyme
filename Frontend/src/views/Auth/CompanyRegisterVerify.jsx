@@ -7,6 +7,7 @@ import api from "../../config/axios";
 
 export default function VerificationCode() {
     const [code, setCode] = useState(Array(6).fill(""));
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const inputRefs = useRef([]);
     const navigate = useNavigate();
 
@@ -99,7 +100,9 @@ export default function VerificationCode() {
             }
 
             toast.error("Código incorrecto");
-        }
+        } finally {
+            setIsSubmitting(false);
+         }
     };
 
     return (
@@ -129,7 +132,9 @@ export default function VerificationCode() {
                         ))}
                     </div>
 
-                    <button type="submit">Verificar</button>
+                     <button type="submit" disabled={isSubmitting}>
+                        {isSubmitting ? <div className="spinner"></div> : "Verificar"}
+                    </button>
                 </form>
             </div>
         </div>

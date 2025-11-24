@@ -10,7 +10,7 @@ import { jwtDecode } from "jwt-decode";
 
 export default function RegisterClient() {
   const navigate = useNavigate();
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     register,
     handleSubmit,
@@ -25,6 +25,9 @@ export default function RegisterClient() {
   });
 
   const handleRegisterClient = async (formData) => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    
     try {
       const token = Cookies.get("token")
       const { role } = jwtDecode(token);
@@ -57,9 +60,10 @@ export default function RegisterClient() {
   }
 
   toast.error(backendMessage);
-}
+}finally {
+      setIsSubmitting(false);
   };
-
+}
   return (
     <div className="cliente-container">
       <h2 className="titulo">Registrar Cliente</h2>
@@ -142,7 +146,9 @@ export default function RegisterClient() {
           )}
         </div>
 
-        <button type="submit" className="btn-enviar">Registrar</button>
+        <button type="submit" className="btn-enviar" disabled={isSubmitting}>
+          {isSubmitting ? <div className="spinner"></div> : "Registrar"}
+        </button>
       </form>
     </div>
   );

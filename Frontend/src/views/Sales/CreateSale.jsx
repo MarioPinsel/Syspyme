@@ -14,6 +14,8 @@ export default function CrearVenta() {
   const [cuotas, setCuotas] = useState("");
 
   const [items, setItems] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   const handleAddProduct = () => {
     if (!codigo.trim()) return toast.error("Debes ingresar el código del producto");
@@ -39,6 +41,8 @@ export default function CrearVenta() {
   };
 
   const handleCreateSale = async () => {
+    if (isSubmitting) return;
+  setIsSubmitting(true);
     if (!clienteId.trim()) return toast.error("Debes ingresar el documento del cliente");
     if (!/^[0-9]+$/.test(clienteId.trim()))
       return toast.error("El documento solo puede contener números");
@@ -84,7 +88,9 @@ export default function CrearVenta() {
         "Error creando la venta";
 
       toast.error(backendMsg);
-    }
+    }finally {
+    setIsSubmitting(false);  
+  }
 
   };
 
@@ -195,11 +201,16 @@ export default function CrearVenta() {
         )}
       </div>
 
-      <div className="acciones">
-        <button className="btn-realizar" onClick={handleCreateSale}>
-          Realizar Venta
-        </button>
-      </div>
+   <div className="acciones">
+  <button
+    className="btn-realizar"
+    onClick={handleCreateSale}
+    disabled={isSubmitting}
+  >
+    {isSubmitting ? <div className="spinner"></div> : "Realizar Venta"}
+  </button>
+</div>
+
     </div>
   );
 }

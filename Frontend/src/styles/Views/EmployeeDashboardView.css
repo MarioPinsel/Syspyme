@@ -38,13 +38,14 @@
 
 
 .dashboard-actions {
-  display: grid;
-  grid-template-columns: repeat(2,minmax(260px,1fr)); 
+  display: flex;
+  flex-direction: row;
   gap: 3rem;
   width: 100%;
   max-width: 700px;
-  justify-items: center;
-  margin:0 auto;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
 }
 
 

@@ -19,6 +19,12 @@ export default function EmployeeDashboardView() {
           <p>Registrar Venta</p>
         </Link>
 
+    
+        <Link to="/inventory/BuscarFactura" className="employee-card">
+              <Receipt size={60} />
+              <p>Buscar Factura</p>
+             </Link>
+          
       </div>
     </div>
   );

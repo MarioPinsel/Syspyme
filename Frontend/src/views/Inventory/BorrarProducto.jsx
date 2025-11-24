@@ -14,12 +14,14 @@ export default function EliminarProducto() {
     });
 
     const [metodo, setMetodo] = useState("");
-
+    const [loading, setLoading] = useState(false);
     useEffect(() => {
         setValue("metodo", metodo);
     }, [metodo, setValue]);
 
     const onSubmit = async (formData) => {
+         if (loading) return;
+        setLoading(true);
         const token = Cookies.get("token");
 
         if (!token) {
@@ -95,8 +97,13 @@ export default function EliminarProducto() {
                     </div>
                 )}
 
-                <button type="submit" className="btn-enviar" style={{ background: "#e74c3c" }}>
-                    Eliminar
+                <button
+                    type="submit"
+                    className="btn-enviar"
+                    style={{ background: "#e74c3c" }}
+                    disabled={loading}
+                >
+                    {loading ? <span className="loader"></span> : "Eliminar"}
                 </button>
             </form>
         </div>

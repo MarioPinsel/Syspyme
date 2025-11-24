@@ -144,9 +144,9 @@ export default function CompanyRegisterView() {
           )}
 
      
-          <button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Registrando..." : "Registrar Empresa"}
-          </button>
+        <button type="submit" disabled={isSubmitting}>
+                        {isSubmitting ? <div className="spinner"></div> : "Registrar Empresa"}
+                    </button>
         </form>
 
         <p className="auth-redirect">

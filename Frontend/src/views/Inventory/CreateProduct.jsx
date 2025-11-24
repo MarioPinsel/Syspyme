@@ -186,7 +186,8 @@ const handleCreate = async (formData) => {
           </button>
 
           <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-            {isSubmitting ? "Guardando..." : "Guardar producto"}
+            {isSubmitting ? <span className="loader"></span> : "Guardar producto"}
+
           </button>
         </div>
       </form>

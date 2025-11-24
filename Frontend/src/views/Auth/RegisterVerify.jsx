@@ -104,7 +104,9 @@ export default function VerificationCode() {
 
     // fallback genérico
     return toast.error("Código incorrecto");
-}
+}finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -136,7 +138,15 @@ export default function VerificationCode() {
                         ))}
                     </div>
 
-                    <button type="submit">Verificar</button>
+                      <button type="submit" disabled={loading} className={loading ? "loading" : ""}>
+                        {loading ? (
+                            <>
+                                <span className="spinner"></span> Verificando...
+                            </>
+                        ) : (
+                            "Verificar"
+                        )}
+                    </button>
                 </form>
             </div>
         </div>

@@ -127,7 +127,7 @@ export default function ActualizarProducto() {
         )}
 
         <button type="submit" className="btn-enviar" disabled={loading}>
-          {loading ? "Actualizando..." : "Actualizar"}
+          {loading ? <span className="loader"></span> : "Actualizar"}
         </button>
       </form>
     </div>

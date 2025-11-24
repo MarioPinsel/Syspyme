@@ -9,6 +9,7 @@ import { jwtDecode } from "jwt-decode";
 export default function VerificationCode() {
   const [code, setCode] = useState(Array(6).fill(""));
   const inputRefs = useRef([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
 
@@ -110,7 +111,9 @@ export default function VerificationCode() {
   }
 
   toast.error("Error en la verificación");
-}
+}  finally {
+            setIsSubmitting(false);
+         }
 
   };
 
@@ -141,7 +144,9 @@ export default function VerificationCode() {
             ))}
           </div>
 
-          <button type="submit">Verificar</button>
+          <button type="submit" disabled={isSubmitting}>
+                        {isSubmitting ? <div className="spinner"></div> : "Verificar"}
+                    </button>
         </form>
       </div>
     </div>

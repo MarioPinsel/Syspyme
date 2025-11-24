@@ -8,7 +8,7 @@ import "../../styles/Layouts/Auth.css";
 
 export default function LoginView() {
   const navigate = useNavigate();
-
+  const [loading, setLoading] = useState(false);
   const initialValues = {
     empresa: "",
     empresaPassword: "",
@@ -50,7 +50,9 @@ export default function LoginView() {
         return;
       }
     }
-    }
+    }finally {
+      setLoading(false);
+      } 
   }
 
   return (
@@ -111,7 +113,16 @@ export default function LoginView() {
             <p className="error-message">{errors.password.message}</p>
           )}
 
-          <button type="submit">Continuar</button>
+          <button type="submit" disabled={loading} className={loading ? "loading" : ""}>
+            {loading ? (
+              <>
+                <span className="spinner"></span> Cargando...
+              </>
+            ) : (
+              "Continuar"
+            )}
+          </button>
+
         </form>
 
         <p className="auth-redirect">
