@@ -67,7 +67,9 @@ export default function CrearVenta() {
           Authorization: `Bearer ${token}`,
         },
       });
-
+      if (!data.success) {
+        return toast.error(data.message || "No se pudo procesar la venta");
+      }
       toast.success(data.message || "Venta realizada con éxito");
 
       setItems([]);
