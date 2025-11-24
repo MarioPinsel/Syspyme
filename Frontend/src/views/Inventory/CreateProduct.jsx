@@ -59,29 +59,36 @@ const handleCreate = async (formData) => {
     toast.success(data.message || "Operación exitosa");
     navigate("/inventory/");
 
-  } catch(error) {
+ } catch (error) {
 
   if (isAxiosError(error) && error.response) {
     const res = error.response.data;
 
-
+    // 🟣 express-validator
     if (res.errors) {
-      return toast.error(res.errors[0].msg);
+      toast.error(res.errors[0].msg);
     }
 
-   
-    if (res.message) {
-      return toast.error(res.message);
+    // 🟢 errores del servicio o controller
+    else if (res.message) {
+      toast.error(res.message);
     }
 
-
+    else if (res.error) {
+      toast.error(res.error);
     }
+
+    else {
+      toast.error("Error inesperado");
+    }
+  } else {
+    toast.error("Error inesperado");
   }
 
-  toast.error("Error inesperado");
+} finally {
+  setIsSubmitting(false);  // 🔥 Esto SÍ se ejecuta ahora
 }
-
-
+}
 
   return (
     <main className="page">
