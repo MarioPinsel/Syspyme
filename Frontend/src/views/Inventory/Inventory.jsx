@@ -10,6 +10,13 @@ export default function Inventory() {
     const [inventory, setInventory] = useState([]);
     const [filteredInventory, setFilteredInventory] = useState([]);
 
+    // ✅ Formateador de precio con puntos de miles
+    const formatPrice = (value) => {
+        return new Intl.NumberFormat("es-CO", {
+            minimumFractionDigits: 0
+        }).format(value);
+    };
+
     const getProducts = async () => {
         const token = Cookies.get("token");
         const { data } = await api.get("/inventory/getProducts", {
@@ -18,7 +25,6 @@ export default function Inventory() {
             },
         });
 
-        // Asegurar array consistente
         return data.message ? [] : data;
     };
 
@@ -27,7 +33,6 @@ export default function Inventory() {
         queryFn: getProducts,
     });
 
-    // ✅ Guardar datos originales cuando llegan del backend
     useEffect(() => {
         setInventory(items);
         setFilteredInventory(items);
@@ -108,10 +113,23 @@ export default function Inventory() {
                                 <td>{item.product?.codigo ?? "-"}</td>
                                 <td>{item.product?.tipo ?? "-"}</td>
                                 <td>{item.product?.descripcion?.texto ?? "-"}</td>
-                                <td>{item.product?.precioUnitario != null ? `$${item.product.precioUnitario}` : "-"}</td>
+
+                                {/* ✅ Aquí se aplica el formato de precio */}
+                                <td>
+                                    {item.product?.precioUnitario != null
+                                        ? `$${formatPrice(item.product.precioUnitario)}`
+                                        : "-"
+                                    }
+                                </td>
+
                                 <td>{item.cantidad ?? 0}</td>
-                                <td>{item.createdAt ? new Date(item.createdAt.replace("Z", "")).toLocaleString("es-CO", { hour12: true })
-                                    : "-"}</td>
+
+                                <td>
+                                    {item.createdAt
+                                        ? new Date(item.createdAt.replace("Z", "")).toLocaleString("es-CO", { hour12: true })
+                                        : "-"
+                                    }
+                                </td>
                             </tr>
                         ))
                     ) : (
@@ -126,3 +144,4 @@ export default function Inventory() {
         </div>
     );
 }
+
