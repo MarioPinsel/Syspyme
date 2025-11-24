@@ -87,7 +87,7 @@ export const updateProductService = async (pool, {
             unchangedFields.push("quantity");
         } else {
             await updateInventoryQuantity(pool, id, quantity);
-            changedFields.quantity = quantity;
+
         }
     }
 
