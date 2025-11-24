@@ -8,7 +8,7 @@ import { useState } from "react";
 
 export default function CreateProductView() {
   const navigate = useNavigate();
-  const [isSubmitting, setIsSubmitting] = useState(false); // loading + evitar doble submit
+  const [isSubmitting, setIsSubmitting] = useState(false); 
 
   const initialValues = {
     type: "",
@@ -22,53 +22,64 @@ export default function CreateProductView() {
     defaultValues: initialValues,
   });
 
-  const handleCreate = async (formData) => {
-    if (isSubmitting) return; // evita doble submit
-    setIsSubmitting(true);
+const handleCreate = async (formData) => {
+  if (isSubmitting) return;
+  setIsSubmitting(true);
 
-    
-    const finalData = {
-      ...formData,
-      description: {
-        texto: formData.description?.texto || ""
-      }
-    };
-
-    try {
-      const token = Cookies.get("token");
-
-      const { data } = await api.post("/inventory/createProduct",
-        finalData,
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
-
-      const newToken = data?.token;
-      if (newToken) {
-        Cookies.set("token", newToken, {
-          expires: 1 / 96,
-          path: "/auth",
-          secure: true,
-          sameSite: "lax",
-        });
-      }
-
-      toast.success(data.message);
-      navigate("/inventory/");
-
-    } catch (error) {
-      const backendError =
-        error?.response?.data?.error ||
-        error?.response?.data?.message ||
-        "Ocurrió un error inesperado";
-
-      toast.error(backendError);
-
-    } finally {
-      setIsSubmitting(false); 
+  const finalData = {
+    ...formData,
+    description: {
+      texto: formData.description?.texto || ""
     }
   };
+
+  try {
+    const token = Cookies.get("token");
+
+    const { data } = await api.post(
+      "/inventory/createProduct",
+      finalData,
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+
+  
+    const newToken = data?.token;
+    if (newToken) {
+      Cookies.set("token", newToken, {
+        expires: 1 / 96,
+        path: "/auth",
+        secure: true,
+        sameSite: "lax",
+      });
+    }
+
+    toast.success(data.message || "Operación exitosa");
+    navigate("/inventory/");
+
+  } catch(error) {
+
+  if (isAxiosError(error) && error.response) {
+    const res = error.response.data;
+
+
+    if (res.errors) {
+      return toast.error(res.errors[0].msg);
+    }
+
+   
+    if (res.message) {
+      return toast.error(res.message);
+    }
+
+
+    }
+  }
+
+  toast.error("Error inesperado");
+}
+
 
 
   return (
