@@ -17,6 +17,7 @@ export default function AgregarProducto() {
     }, [metodo, setValue]);
 
     const onSubmit = async (formData) => {
+        setLoading(true);
         const token = Cookies.get("token");
 
         if (!token) {
@@ -45,7 +46,9 @@ export default function AgregarProducto() {
         err.response?.data?.message;
 
     toast.error(backendError || "Error agregando producto");
-}
+} finally {
+        setLoading(false);     
+    }
 
 
     };

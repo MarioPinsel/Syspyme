@@ -63,7 +63,9 @@ export default function EliminarProducto() {
         err.response?.data?.message;
 
     toast.error(backendError || "Error eliminando el producto");
-}
+} finally {
+        setLoading(false);  
+    }
 
     };
 

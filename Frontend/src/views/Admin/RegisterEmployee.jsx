@@ -19,6 +19,8 @@ export default function RegisterView() {
     });
 
     const handleRegister = async (formData) => {
+
+        setIsSubmitting(true);
         try {
             const token = Cookies.get("token")
 
@@ -38,16 +40,21 @@ export default function RegisterView() {
                  // 🟣 express-validator
       if (error.response.data.errors) {
         toast.error(error.response.data.errors[0].msg);
+        setIsSubmitting(false);
         return;
       }
 
       // 🟢 backend (controladores)
       if (error.response.data.error) {
         toast.error(error.response.data.error);
+        setIsSubmitting(false);
         return;
       }
             }
+        }finally {
+            setIsSubmitting(false); 
         }
+
     };
 
     return (

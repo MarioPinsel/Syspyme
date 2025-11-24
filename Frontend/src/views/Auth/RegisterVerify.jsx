@@ -11,6 +11,7 @@ export default function VerificationCode() {
     const [code, setCode] = useState(Array(6).fill(""));
     const inputsRef = useRef([]);
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (value, index) => {
         if (value.length > 1) return;
@@ -46,6 +47,7 @@ export default function VerificationCode() {
 
     const handleVerify = async (e) => {
         e.preventDefault();
+        setLoading(true);
 
         const fullCode = code.join("");
 

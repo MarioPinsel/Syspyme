@@ -16,7 +16,6 @@ export default function CrearVenta() {
   const [items, setItems] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-
   const handleAddProduct = () => {
     if (!codigo.trim()) return toast.error("Debes ingresar el código del producto");
     if (!cantidad || Number(cantidad) <= 0)
@@ -42,19 +41,46 @@ export default function CrearVenta() {
 
   const handleCreateSale = async () => {
     if (isSubmitting) return;
-  setIsSubmitting(true);
-    if (!clienteId.trim()) return toast.error("Debes ingresar el documento del cliente");
-    if (!/^[0-9]+$/.test(clienteId.trim()))
-      return toast.error("El documento solo puede contener números");
-    if (items.length === 0) return toast.error("Debes agregar al menos un producto");
-    if (!metodoPago) return toast.error("Debes seleccionar un método de pago");
-    if (!tipoPago) return toast.error("Debes seleccionar un tipo de pago");
+    setIsSubmitting(true);
 
-    if (tipoPago === "credito") {
-      if (!cuotas || Number(cuotas) <= 0)
-        return toast.error("Debes ingresar el número de cuotas");
+  
+    if (!clienteId.trim()) {
+      toast.error("Debes ingresar el documento del cliente");
+      setIsSubmitting(false);
+      return;
     }
 
+    if (!/^[0-9]+$/.test(clienteId.trim())) {
+      toast.error("El documento solo puede contener números");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (items.length === 0) {
+      toast.error("Debes agregar al menos un producto");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!metodoPago) {
+      toast.error("Debes seleccionar un método de pago");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!tipoPago) {
+      toast.error("Debes seleccionar un tipo de pago");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (tipoPago === "credito" && (!cuotas || Number(cuotas) <= 0)) {
+      toast.error("Debes ingresar el número de cuotas");
+      setIsSubmitting(false);
+      return;
+    }
+
+  
     const token = Cookies.get("token");
 
     const body = {
@@ -71,27 +97,28 @@ export default function CrearVenta() {
           Authorization: `Bearer ${token}`,
         },
       });
+
       if (!data.success) {
-        return toast.error(data.message || "No se pudo procesar la venta");
+        toast.error(data.message || "No se pudo procesar la venta");
+        return;
       }
+
       toast.success(data.message || "Venta realizada con éxito");
 
+   
       setItems([]);
       setClienteId("");
       setMetodoPago("");
       setTipoPago("");
       setCuotas("");
     } catch (error) {
-
       const backendMsg =
-        error.response?.data?.message ||
-        "Error creando la venta";
+        error.response?.data?.message || "Error creando la venta";
 
       toast.error(backendMsg);
-    }finally {
-    setIsSubmitting(false);  
-  }
-
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -201,16 +228,15 @@ export default function CrearVenta() {
         )}
       </div>
 
-   <div className="acciones">
-  <button
-    className="btn-realizar"
-    onClick={handleCreateSale}
-    disabled={isSubmitting}
-  >
-    {isSubmitting ? <div className="spinner"></div> : "Realizar Venta"}
-  </button>
-</div>
-
+      <div className="acciones">
+        <button
+          className="btn-realizar"
+          onClick={handleCreateSale}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? <div className="spinner"></div> : "Realizar Venta"}
+        </button>
+      </div>
     </div>
   );
 }

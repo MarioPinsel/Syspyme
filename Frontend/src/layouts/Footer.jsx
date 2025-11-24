@@ -70,16 +70,16 @@ export default function Footer() {
                     <div className="footer-col">
                         <h4>Nosotros</h4>
                         <ul>
-                            <li><a href="#">¿Quiénes somos?</a></li>
+                            <li><a href="/">¿Quiénes somos?</a></li>
                             <li><a href="#">Misión y visión</a></li>
-                            <li><a href="#">Sobre el proyecto</a></li>
+                            <li><a href="/">Sobre el proyecto</a></li>
                         </ul>
                     </div>
 
                     <div className="footer-col">
                         <h4>Contacto</h4>
                         <ul>
-                            <li><a href="tel:+573056009060">📞 +57 3004254593</a></li>
+                            <li><a href="tel:+573056009060">📞 +57 3004254592</a></li>
                             <li><a href="mailto:syspymeoficial@gmail.com">📩 syspymeoficial@gmail.com</a></li>
                             <li><a href="#">Soporte</a></li>
                         </ul>
@@ -99,7 +99,7 @@ export default function Footer() {
                         <ul>
                             <li><a href="https://github.com/MarioPinsel/Syspyme" target="_blank">Repositorio GitHub</a></li>
                             <li><a href="https://drive.google.com/drive/folders/1_agEzkFgMQIC2TgRvXuC6QyQwu5MluOv?usp=sharing">Documentación </a></li>
-                            <li><a href="#">Reportar un error</a></li>
+                            <li><a href="mailto:syspymeoficial@gmail.com">Reportar un error</a></li>
                         </ul>
                     </div>
 

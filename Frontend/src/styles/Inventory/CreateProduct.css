@@ -155,12 +155,20 @@ body {
 .btn-primary:hover {
   background: var(--color-boton-hover);
 }
+
 .loader {
-  width: 18px;
-  height: 18px;
-  border: 3px solid #fff;
-  border-top-color: transparent;
+  width: 20px;
+  height: 20px;
+  border: 3px solid #ffffff55;
+  border-top-color: white;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
-  margin: auto;
+  display: inline-block;
 }
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+

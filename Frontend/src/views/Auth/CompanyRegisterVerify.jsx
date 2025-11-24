@@ -47,6 +47,7 @@ export default function VerificationCode() {
 
     const handleVerify = async (e) => {
         e.preventDefault();
+        setIsSubmitting(true);
 
         const fullCode = code.join("");
         const token = Cookies.get("token");
@@ -58,6 +59,7 @@ export default function VerificationCode() {
 
         if (!token) {
             console.error("No se encontró el token");
+            setIsSubmitting(false);
             return;
         }
 
@@ -92,11 +94,13 @@ export default function VerificationCode() {
 
             if (error.response?.data?.errors) {
                 toast.error(error.response.data.errors[0].msg);
+                setIsSubmitting(false);
                 return;
             }
 
             if (error.response?.data?.error) {
                 toast.error(error.response.data.error);
+                setIsSubmitting(false);
                 return;
             }
 

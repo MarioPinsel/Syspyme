@@ -21,6 +21,7 @@ export default function LoginView() {
 
 
   const handleLogin = async (formData) => {
+    setLoading(true);
     try {
       const { data } = await api.post('/auth/login', formData);
       const token = data.token;
