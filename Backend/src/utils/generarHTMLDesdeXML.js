@@ -398,12 +398,14 @@ export async function generarHTMLDesdeXML(xmlString) {
     <div class="totales-izquierda">
       <p><strong>Método de Pago:</strong> ${totales["cbc:PaymentMethod"]}</p>
       <p><strong>Forma de Pago:</strong> ${totales["cbc:PaymentType"]}</p>     
-      <p><strong>Termino:</strong> ${totales["cbc:FinalTerm"]}</p>
+      <p><strong>Plazo:</strong> ${totales["cbc:FinalTerm"]}</p>
     </div>
   
     <div class="totales-derecha">
      <p><strong>Subtotal:</strong> $${formatearNumero(totales["cbc:LineExtensionAmount"]._)}</p>
      <p><strong>IVA (${tasaIVA}%):</strong> $${formatearNumero((parseFloat(totales["cbc:PayableAmount"]._) - parseFloat(totales["cbc:TaxExclusiveAmount"]._)))}</p>
+     <p><strong>R.ICA ($11.04%):</strong> $0}</p>
+     <p><strong>INC ($0%):</strong> $0}</p>
      <p><strong>Total:</strong> $${formatearNumero(totales["cbc:PayableAmount"]._)}</p>
     </div>    
   </div>  

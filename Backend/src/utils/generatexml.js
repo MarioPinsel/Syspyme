@@ -62,6 +62,10 @@ export function generarXMLFactura({
         .ele('cac:TaxCategory')
         .ele('cac:TaxScheme')
         .ele('cbc:ID').txt('01').up()
+        .ele('cbc:Name').txt('Retención ICA (No Aplica)').up()
+        .ele('cbc:ID').txt('02').up()
+        .ele('cbc:Name').txt('INC (No Aplica)').up()
+        .ele('cbc:ID').txt('03').up()
         .ele('cbc:Name').txt('IVA').up()
         .up()
         .up()
@@ -78,7 +82,8 @@ export function generarXMLFactura({
         .ele('cbc:PaymentType').txt(paymentType).up()
         .ele('cbc:FinalTerm').txt(plazoFinal).up()
         .up();
-    // 🔸 Detalles (líneas de productos)
+
+    // Detalles (líneas de productos)
     for (const d of detalles) {
         xml.ele('cac:InvoiceLine')
             .ele('cbc:Code').txt(d.producto_code).up()
