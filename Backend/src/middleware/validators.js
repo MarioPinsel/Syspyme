@@ -106,7 +106,6 @@ export const updateProductValidation = [
 export const deleteProductValidation = [
     body('id')
         .notEmpty().withMessage('El ID del producto es obligatorio')
-        .isInt({ gt: 0 }).withMessage('El ID debe ser un número entero positivo')
 ];
 
 export const createCustomerValidation = [
