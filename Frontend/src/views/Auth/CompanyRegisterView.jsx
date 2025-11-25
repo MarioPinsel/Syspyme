@@ -31,7 +31,7 @@ export default function CompanyRegisterView() {
     setIsSubmitting(true);
 
       const normalizedData = {
-    nombre: formData.nombre.trim(),
+    nombre: formData.nombre.trim().toLowerCase(),
     nit: formData.nit.trim(), 
     correo: formData.correo.trim().toLowerCase(),
     password: formData.password.trim(),
