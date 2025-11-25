@@ -96,12 +96,13 @@ export const updateProductById = (pool, id, fields) => {
     return pool.query(query, [id, ...values]);
 };
 
-export const deleteFromInventory = (pool, inventoryId) => {
+export const deleteFromInventory = (pool, productId) => {
     return pool.query(
-        "DELETE FROM inventario WHERE id = $1",
-        [inventoryId]
+        "DELETE FROM inventario WHERE id_producto = $1",
+        [productId]
     );
 };
+
 
 export const getTotalStockByProductId = (pool, productId) => {
     return pool.query(
