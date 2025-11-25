@@ -495,7 +495,7 @@ export async function generarPDFBuffer(xmlString) {
    doc.fontSize(9)
       .fillColor('#999')
       .font('Helvetica')
-      .text('Software: ', 40, yPos, { width: 530, align: 'center', continued: true });
+      .text('Software: ', 240, yPos, { continued: true });
 
    doc.font('Helvetica-Bold')
       .fillColor(primaryColor)
@@ -503,15 +503,15 @@ export async function generarPDFBuffer(xmlString) {
 
    doc.font('Helvetica')
       .fillColor('#999')
-      .text(' | Fabricante: SYSPYME.ORG', { continued: true });
+      .text(' | Fabricante: SYSPYME.ORG');
 
    // Texto legal centrado
    const textoLegal = 'Haciendo función y cumplimiento de la resolución 000012 del 9 de febrero del 2021, nos permitimos generar esta factura electrónica. También, siguiendo el título V de la resolución 42 del 5 de mayo del 2020, hacemos cumplimiento de los requisitos mínimos para los documentos referentes a la facturación electrónica.';
-
+   yPos += 20;
    doc.fontSize(8)
       .fillColor('#999')
       .font('Helvetica')
-      .text(textoLegal, 50, yPos, { width: 530, align: 'center', lineGap: 2 });
+      .text(textoLegal, 50, yPos, { width: 530, align: 'center'});
 
    yPos += 30;
 
