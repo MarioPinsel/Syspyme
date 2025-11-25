@@ -28,7 +28,7 @@ export function generarXMLFactura({
             'xmlns:cbc': 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2',
             'xmlns:ds': 'http://www.w3.org/2000/09/xmldsig#'
         })
-        .ele('cbc:ID').txt(FV${ receiptId }).up()
+        .ele('cbc:ID').txt(`FV${receiptId}`).up()
         .ele('cbc:IssueDate').txt(fecha).up()
         .ele('cbc:IssueTime').txt(hora).up()
         .ele('cbc:UUID').txt(cufe).up()

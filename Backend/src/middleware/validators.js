@@ -110,7 +110,6 @@ export const deleteProductValidation = [
             if (!value) throw new Error("El campo id es obligatorio");
 
             const onlyNumbers = /^\d+$/.test(value);
-
             if (onlyNumbers) return true;
 
             const alphaNum = /^[A-Za-z0-9_-]+$/.test(value);
