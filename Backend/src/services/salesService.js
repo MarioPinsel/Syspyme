@@ -89,20 +89,23 @@ export const createSaleService = async (pool, correo, empresaNombre, { document,
             d.total
         );
     }
-    const timeParts = new Intl.DateTimeFormat("en-GB", {
-        timeZone: "America/Bogota",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false
-    }).formatToParts(now);
-
-    const horFac = `${timeParts.map(p => p.value).join("")}.${now.getMilliseconds().toString().padStart(3, "0")}`;
-
+    async function getHoraBogotaConMilisegundos() {
+        const now = new Date();
+        const parts = new Intl.DateTimeFormat("en-GB", {
+            timeZone: "America/Bogota",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false
+        }).formatToParts(now);
+        const hora = parts.map(p => p.value).join("");
+        const ms = now.getMilliseconds().toString().padStart(3, "0");
+        return `${hora}.${ms}`;
+    }
     const cufe = generarCUFE({
         numFac: `FV${receiptId}`,
         fecFac: new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota", year: "numeric", month: "2-digit", day: "2-digit" }),
-        horFac: horFac,
+        horFac: await getHoraBogotaConMilisegundos(),
         valFac: subTotal.toFixed(2),
         codImp1: '01',
         valImp1: impuestos.toFixed(2),
