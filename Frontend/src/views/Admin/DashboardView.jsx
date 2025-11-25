@@ -60,7 +60,7 @@ export default function DashboardView() {
               <p>Registrar cliente</p>
              </Link>
 
-            <Link to="/inventory/BuscarFactura" className="action-card">
+            <Link to="/sales/BuscarFactura" className="action-card">
               <Receipt size={28} />
               <p>Buscar Factura</p>
              </Link>

@@ -20,7 +20,7 @@ import Dashboard from "./views/Admin/DashboardView.jsx";
 import BorrarProducto from "./views/Inventory/BorrarProducto.jsx";
 import AgregarProducto from "./views/Inventory/AgregarProducto.jsx";
 import RegistrarEmpleado from "./views/Admin/RegisterEmployee.jsx";
-import BuscarFactura from "./views/Inventory/BuscarFactura.jsx";
+import BuscarFactura from "./views/Sales/BuscarFactura.jsx";
 
 import RequireAuth from "./components/RequireAuth.jsx";
 
@@ -45,7 +45,7 @@ export default function Router() {
           <Route path="companyRegisterVerify" element={<CompanyRegisterVerify />} />
         </Route>
 
-        <Route element={<RequireAuth allowedRoles={["admin", "employee"]} />}>
+        <Route element={<RequireAuth allowedRoles={["admin"]} />}>
           <Route path="/dashboard" element={<Common />}>
             <Route index element={<Dashboard />} />
             <Route path="register-employee" element={<RegistrarEmpleado />} />
@@ -57,7 +57,6 @@ export default function Router() {
             <Route path="actualizarproduct" element={<ActualizarProduct />} />
             <Route path="deleteProduct" element={<BorrarProducto />} />
             <Route path="agregarProduct" element={<AgregarProducto />} />
-            <Route path="BuscarFactura" element={<BuscarFactura />} />
           </Route>
         </Route>
 
@@ -66,6 +65,7 @@ export default function Router() {
           <Route path="/sales" element={<Common />}>
             <Route path="create-sale" element={<CreateSale />} />
             <Route path="register-client" element={<RegisterClient />} />
+            <Route path="BuscarFactura" element={<BuscarFactura />} />
           </Route>
         </Route>
 

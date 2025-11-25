@@ -20,7 +20,7 @@ export default function EmployeeDashboardView() {
         </Link>
 
     
-        <Link to="/inventory/BuscarFactura" className="employee-card">
+        <Link to="/sales/BuscarFactura" className="employee-card">
               <Receipt size={60} />
               <p>Buscar Factura</p>
              </Link>
