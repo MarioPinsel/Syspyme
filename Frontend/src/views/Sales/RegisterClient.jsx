@@ -99,7 +99,7 @@ export default function RegisterClient() {
         </div>
 
         <div className="campo">
-          <label htmlFor="document">Cédula:</label>
+          <label htmlFor="document">Cédula o NIT:</label>
           <input
             type="text"
             id="document"
@@ -110,7 +110,7 @@ export default function RegisterClient() {
                 message: "Solo se permiten números",
               },
             })}
-            placeholder="Ej: 1012345678"
+            placeholder="Ej: 1012345678 ó 9001234567"
           />
           {errors.document && (
             <p className="error-message">{errors.document.message}</p>

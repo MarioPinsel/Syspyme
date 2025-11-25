@@ -23,6 +23,31 @@ function Homepage() {
         </div>
       </section>
 
+          <section className="steps-section">
+        <h2>¿Cómo empezar con <span>SysPyME</span>?</h2>
+        <div className="steps-container">
+          <div className="step-card">
+            <div className="step-number">1</div>
+            <h3>Registra tu empresa</h3>
+            <p>Crea tu cuenta en pocos minutos. Solo necesitas tu información básica y correo electrónico en la parte
+              superior izquierda de la página verás Registro
+            </p>
+          </div>
+
+          <div className="step-card">
+            <div className="step-number">2</div>
+            <h3>Configura tu empresa</h3>
+            <p>Ingresa los datos de tu MiPyME que serán para tu inicio de sesión.</p>
+          </div>
+
+          <div className="step-card">
+            <div className="step-number">3</div>
+            <h3>Comienza a gestionar</h3>
+            <p>Emite facturas, gestiona inventario y lleva el control de tu contabilidad de forma sencilla.</p>
+          </div>
+        </div>
+      </section>
+
       <section className="info-section">
 
         <div className="section-block">
