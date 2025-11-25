@@ -33,6 +33,7 @@ const isExpired = (created_at) => {
 };
 
 export const registerEmpresa = async ({ nombre, nit, correo, password }) => {
+    console.log('Register Empresa:', { nombre, nit, correo, password });
     if ((await findEmpresaByCorreo(correo)).rowCount) throw new Error('EMPRESA_ALREADY_EXISTS');
     if ((await findEmpresaByNombre(nombre)).rowCount) throw new Error('EMPRESA_ALREADY_EXISTS');
     if ((await findTempEmpresaByCorreo(correo)).rowCount) throw new Error('PENDING_VERIFICATION');
