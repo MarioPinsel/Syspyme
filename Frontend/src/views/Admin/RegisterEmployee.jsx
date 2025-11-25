@@ -4,9 +4,11 @@ import { isAxiosError } from "axios";
 import Cookies from "js-cookie";
 import api from "../../config/axios";
 import "../../styles/Layouts/Auth.css";
+import { useState } from "react";
+
 
 export default function RegisterView() {
-
+const [isSubmitting, setIsSubmitting] = useState(false);
     const initialValues = {
         nombre: "",
         correo: "",
