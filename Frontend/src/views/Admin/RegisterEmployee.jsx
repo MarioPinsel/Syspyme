@@ -26,14 +26,19 @@ export default function RegisterView() {
     });
 
     const handleRegister = async (formData) => {
-
         setIsSubmitting(true);
+           const normalizedData = {
+            nombre: formData.nombre.trim(),              
+            correo: formData.correo.trim().toLowerCase(), 
+            handle: formData.handle.trim().toLowerCase(), 
+            password: formData.password.trim(),
+        };
         try {
             const token = Cookies.get("token")
 
             const { data } = await api.post(
                 "/auth/registerUser",
-                formData,
+                normalizedData,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,

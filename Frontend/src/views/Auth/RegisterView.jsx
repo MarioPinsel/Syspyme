@@ -6,6 +6,7 @@ import api from "../../config/axios";
 import "../../styles/Layouts/Auth.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 export default function RegisterView() {
   const navigate = useNavigate();
@@ -30,57 +31,61 @@ export default function RegisterView() {
     defaultValues: initialValues,
   });
 
-const handleRegister = async (formData) => {
-  if (isLoading) return; 
-  setIsLoading(true);
+  const handleRegister = async (formData) => {
+    if (isLoading) return;
+    setIsLoading(true);
+    const normalizedData = {
+      nombre: formData.nombre.trim().toLowerCase(),
+      correo: formData.correo.trim().toLowerCase(),
+      handle: formData.handle.trim().toLowerCase(),
+      password: formData.password.trim(),  
+    };
+    try {
+      const token = Cookies.get("token");
 
-  try {
-    const token = Cookies.get("token");
-
-    const { data } = await api.post("/auth/registerUser", formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const newToken = data?.token;
-
-    if (newToken) {
-      Cookies.set("token", newToken, {
-        expires: 1 / 96,
-        path: "/auth",
-        secure: true,
-        sameSite: "lax",
+      const { data } = await api.post("/auth/registerUser", normalizedData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
-    }
 
-    toast.success(data.message);
-    navigate("/auth/registerVerify");
-    window.location.reload();
+      const newToken = data?.token;
 
-  } catch (error) {
-    if (isAxiosError(error) && error.response) {
-
-   // 🟣 express-validator
-      if (error.response.data.errors) {
-        toast.error(error.response.data.errors[0].msg);
-        return;
+      if (newToken) {
+        Cookies.set("token", newToken, {
+          expires: 1 / 96,
+          path: "/auth",
+          secure: true,
+          sameSite: "lax",
+        });
       }
 
-      // 🟢 backend (controladores)
-      if (error.response.data.error) {
-        toast.error(error.response.data.error);
-        return;
-      }
-    }
+      toast.success(data.message);
+      navigate("/auth/registerVerify");
+      window.location.reload();
 
-  
-    toast.error("Error registrando el usuario");
-  }
-  finally {
-    setIsLoading(false);
-  }
-};
+    } catch (error) {
+      if (isAxiosError(error) && error.response) {
+
+        // 🟣 express-validator
+        if (error.response.data.errors) {
+          toast.error(error.response.data.errors[0].msg);
+          return;
+        }
+
+        // 🟢 backend (controladores)
+        if (error.response.data.error) {
+          toast.error(error.response.data.error);
+          return;
+        }
+      }
+
+      toast.error("Error registrando el usuario");
+    }
+    finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="auth-container">
@@ -88,7 +93,7 @@ const handleRegister = async (formData) => {
         <h2>Registrar Administrador</h2>
 
         <form onSubmit={handleSubmit(handleRegister)}>
-         
+
           <label>Nombre del Administrador</label>
           <input
             type="text"
@@ -103,7 +108,6 @@ const handleRegister = async (formData) => {
             <p className="error-message">{errors.nombre.message}</p>
           )}
 
-      
           <label>Correo del Administrador</label>
           <input
             type="email"
@@ -116,7 +120,6 @@ const handleRegister = async (formData) => {
           {errors.correo && (
             <p className="error-message">{errors.correo.message}</p>
           )}
-
 
           <label>Handle o Identificador</label>
           <input
@@ -132,11 +135,13 @@ const handleRegister = async (formData) => {
             <p className="error-message">{errors.handle.message}</p>
           )}
 
-   
           <label>Contraseña del Administrador</label>
+
+         
           <div className="password-field">
+
             <input
-              type={showPassword ? "text" : "password"}
+              type={showPassword ? "text" : "password"} 
               {...register("password", {
                 required: "La contraseña es obligatoria",
                 pattern: {
@@ -147,23 +152,28 @@ const handleRegister = async (formData) => {
               })}
               placeholder="********"
             />
+
+            
             <button
               type="button"
               className="toggle-password"
               onClick={() => setShowPassword(!showPassword)}
             >
-              {showPassword ? "Ocultar" : "Ver"}
+              {showPassword ? (
+                <AiOutlineEyeInvisible /> 
+              ) : (
+                <AiOutlineEye /> 
+              )}
             </button>
           </div>
+
           {errors.password && (
             <p className="error-message">{errors.password.message}</p>
           )}
 
-          
           <button type="submit" disabled={isLoading} className="submit-btn">
-  {isLoading ? (
-    <div className="loader"></div> ) : ("Registrar" )}
-        </button>
+            {isLoading ? <div className="loader"></div> : "Registrar"}
+          </button>
         </form>
       </div>
     </div>

@@ -23,7 +23,7 @@ export default function CrearVenta() {
 
     const newItem = {
       code: codigo.trim(),
-      quantity: Number(cantidad),
+      quantity: Number(cantidad.trim()),
     };
 
     setItems([...items, newItem]);

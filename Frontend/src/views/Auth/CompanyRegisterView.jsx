@@ -6,10 +6,12 @@ import api from "../../config/axios.js";
 import { useNavigate, Link } from "react-router-dom";
 import "../../styles/Layouts/Auth.css";
 import { useState } from "react";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 export default function CompanyRegisterView() {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const initialValues = {
     nombre: "",
@@ -25,48 +27,52 @@ export default function CompanyRegisterView() {
   } = useForm({ defaultValues: initialValues, mode: "onChange" });
 
   const handleRegister = async (formData) => {
-  if (isSubmitting) return;
-  setIsSubmitting(true);
+    if (isSubmitting) return;
+    setIsSubmitting(true);
 
-  try {
-    const { data } = await api.post("/auth/registerEmpresa", formData);
+      const normalizedData = {
+    nombre: formData.nombre.trim(),
+    nit: formData.nit.trim(), 
+    correo: formData.correo.trim().toLowerCase(),
+    password: formData.password.trim(),
+  };
 
-    const token = data.token;
+    try {
+      const { data } = await api.post("/auth/registerEmpresa", normalizedData);
 
-    Cookies.set("token", token, {
-      expires: 1 / 96,
-      path: "/",
-      secure: true,
-      sameSite: "lax",
-    });
+      const token = data.token;
 
-    toast.success(data.message);
-    navigate("/auth/companyRegisterVerify");
+      Cookies.set("token", token, {
+        expires: 1 / 96,
+        path: "/",
+        secure: true,
+        sameSite: "lax",
+      });
 
-  } catch (error) {
+      toast.success(data.message);
+      navigate("/auth/companyRegisterVerify");
 
-    if (isAxiosError(error) && error.response) {
+    } catch (error) {
+      if (isAxiosError(error) && error.response) {
+        // 🟣 express-validator
+        if (error.response.data.errors) {
+          toast.error(error.response.data.errors[0].msg);
+          return;
+        }
 
-      // 🟣 express-validator
-      if (error.response.data.errors) {
-        toast.error(error.response.data.errors[0].msg);
-        return;
+        // 🟢 backend (controladores)
+        if (error.response.data.error) {
+          toast.error(error.response.data.error);
+          return;
+        }
       }
 
-      // 🟢 backend (controladores)
-      if (error.response.data.error) {
-        toast.error(error.response.data.error);
-        return;
-      }
+      toast.error("Error al registrar la empresa");
+
+    } finally {
+      setIsSubmitting(false);
     }
-
-    toast.error("Error al registrar la empresa");
-
-  } finally {
-    setIsSubmitting(false);
-  }
-};
-
+  };
 
   return (
     <div className="auth-container">
@@ -74,7 +80,7 @@ export default function CompanyRegisterView() {
         <h2>Registro de Empresa</h2>
 
         <form onSubmit={handleSubmit(handleRegister)}>
- 
+
           <label>Nombre de la Empresa</label>
           <input
             type="text"
@@ -87,11 +93,8 @@ export default function CompanyRegisterView() {
             })}
             placeholder="Ejemplo S.A.S"
           />
-          {errors.nombre && (
-            <p className="error-message">{errors.nombre.message}</p>
-          )}
+          {errors.nombre && <p className="error-message">{errors.nombre.message}</p>}
 
-    
           <label>NIT</label>
           <input
             type="text"
@@ -104,11 +107,8 @@ export default function CompanyRegisterView() {
             })}
             placeholder="1234567890"
           />
-          {errors.nit && (
-            <p className="error-message">{errors.nit.message}</p>
-          )}
+          {errors.nit && <p className="error-message">{errors.nit.message}</p>}
 
-   
           <label>Correo Electrónico</label>
           <input
             type="email"
@@ -121,32 +121,42 @@ export default function CompanyRegisterView() {
             })}
             placeholder="empresa@ejemplo.com"
           />
-          {errors.correo && (
-            <p className="error-message">{errors.correo.message}</p>
-          )}
+          {errors.correo && <p className="error-message">{errors.correo.message}</p>}
 
-   
           <label>Contraseña</label>
-          <input
-            type="password"
-            {...register("password", {
-              required: "La contraseña es obligatoria",
-              pattern: {
-                value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$/,
-                message:
-                  "La contraseña debe tener mínimo 8 caracteres, incluir mayúscula, minúscula, número y símbolo",
-              },
-            })}
-            placeholder="********"
-          />
-          {errors.password && (
-            <p className="error-message">{errors.password.message}</p>
-          )}
 
-     
-        <button type="submit" disabled={isSubmitting}>
-                        {isSubmitting ? <div className="spinner"></div> : "Registrar Empresa"}
-                    </button>
+        
+          <div className="password-field">
+            <input
+              type={showPassword ? "text" : "password"} 
+              {...register("password", {
+                required: "La contraseña es obligatoria",
+                pattern: {
+                  value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$/,
+                  message:
+                    "La contraseña debe tener mínimo 8 caracteres, incluir mayúscula, minúscula, número y símbolo",
+                },
+              })}
+              placeholder="********"
+            />
+            <button
+              type="button"
+              className="toggle-password"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? (
+                <AiOutlineEyeInvisible /> 
+              ) : (
+                <AiOutlineEye /> 
+              )}
+            </button>
+          </div>
+
+          {errors.password && <p className="error-message">{errors.password.message}</p>}
+
+          <button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? <div className="spinner"></div> : "Registrar Empresa"}
+          </button>
         </form>
 
         <p className="auth-redirect">

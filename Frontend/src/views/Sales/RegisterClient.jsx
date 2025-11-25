@@ -30,12 +30,20 @@ export default function RegisterClient() {
   const handleRegisterClient = async (formData) => {
     if (isSubmitting) return;
     setIsSubmitting(true);
-    
+
+      const normalizedData = {
+    name: formData.name.trim().toLowerCase(),
+    email: formData.email.trim().toLowerCase(),
+    document: formData.document.trim(),
+    phone: formData.phone.trim(),
+  };
+
+
     try {
       const token = Cookies.get("token")
       const { role } = jwtDecode(token);
 
-      const { data } = await api.post("/customers/createCustomer", formData, {
+      const { data } = await api.post("/customers/createCustomer", normalizedData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
