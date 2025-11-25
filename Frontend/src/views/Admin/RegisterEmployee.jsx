@@ -28,7 +28,7 @@ export default function RegisterView() {
     const handleRegister = async (formData) => {
         setIsSubmitting(true);
            const normalizedData = {
-            nombre: formData.nombre.trim(),              
+            nombre: formData.nombre.trim().toLowerCase(),             
             correo: formData.correo.trim().toLowerCase(), 
             handle: formData.handle.trim().toLowerCase(), 
             password: formData.password.trim(),
