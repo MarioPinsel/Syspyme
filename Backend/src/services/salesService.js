@@ -90,7 +90,7 @@ export const createSaleService = async (pool, correo, empresaNombre, { document,
         );
     }
 
-    const cufe = generarCUFE({
+    const cufe = await generarCUFE({
         numFac: `FV${receiptId}`,
         fecFac: new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota", year: "numeric", month: "2-digit", day: "2-digit" }),
         horFac: new Date().toLocaleTimeString("en-GB", { timeZone: "America/Bogota", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }),
@@ -108,7 +108,7 @@ export const createSaleService = async (pool, correo, empresaNombre, { document,
         tipoAmbiente: '1'
     });
 
-    const facturaXML = generarXMLFactura({
+    const facturaXML = await generarXMLFactura({
         receiptId,
         empresa,
         cliente,
