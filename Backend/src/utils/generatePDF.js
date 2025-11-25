@@ -417,7 +417,7 @@ export async function generarPDFBuffer(xmlString) {
    totalesY += 16; 
 
    doc.font('Helvetica-Bold')
-      .text(`R. ICA (11.04%):`, totalesDerX, totalesY, { width: 80, align: 'left' });
+      .text(`R. ICA (11.04%):`, totalesDerX, totalesY, { width: 120, align: 'left' });
 
    doc.font('Helvetica')
       .text(`$0`, totalesDerX + 85, totalesY, { width: 145, align: 'right' });
@@ -495,15 +495,15 @@ export async function generarPDFBuffer(xmlString) {
    doc.fontSize(9)
       .fillColor('#999')
       .font('Helvetica')
-      .text('Software: ', { continued: true, align: 'center' });
+      .text('Software: ', 32, ypos);
 
    doc.font('Helvetica-Bold')
       .fillColor(primaryColor)
-      .text('SysPyME', { continued: true });
+      .text('SysPyME', 43, ypos);
 
    doc.font('Helvetica')
       .fillColor('#999')
-      .text(' | Fabricante: SYSPYME.ORG', 40, yPos, { width: 530, align: 'center' });
+      .text(' | Fabricante: SYSPYME.ORG', 54, yPos, { width: 530});
 
    yPos += 15;
 
@@ -513,7 +513,7 @@ export async function generarPDFBuffer(xmlString) {
    doc.fontSize(8)
       .fillColor('#999')
       .font('Helvetica')
-      .text(textoLegal, 40, yPos, { width: 530, align: 'center', lineGap: 2 });
+      .text(textoLegal, 50, yPos, { width: 530, align: 'center', lineGap: 2 });
 
    yPos += 30;
 
