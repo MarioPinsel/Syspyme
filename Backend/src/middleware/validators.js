@@ -104,9 +104,22 @@ export const updateProductValidation = [
 
 
 export const deleteProductValidation = [
-    body('id')
-        .notEmpty().withMessage('El ID del producto es obligatorio')
+    body("id")
+        .notEmpty().withMessage("El campo id es obligatorio")
+        .custom(value => {
+            if (!value) throw new Error("El campo id es obligatorio");
+
+            const onlyNumbers = /^\d+$/.test(value);
+
+            if (onlyNumbers) return true;
+
+            const alphaNum = /^[A-Za-z0-9_-]+$/.test(value);
+            if (alphaNum) return true;
+
+            throw new Error("El id debe ser un número o un código alfanumérico");
+        })
 ];
+
 
 export const createCustomerValidation = [
     body("name")

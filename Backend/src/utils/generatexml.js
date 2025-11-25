@@ -2,7 +2,6 @@ import { create } from 'xmlbuilder2';
 import writtenNumber from 'written-number';
 
 writtenNumber.defaults.lang = 'es';
-
 export function generarXMLFactura({
     receiptId,
     empresa,
@@ -29,7 +28,7 @@ export function generarXMLFactura({
             'xmlns:cbc': 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2',
             'xmlns:ds': 'http://www.w3.org/2000/09/xmldsig#'
         })
-        .ele('cbc:ID').txt(`FV${receiptId}`).up()
+        .ele('cbc:ID').txt(FV${ receiptId }).up()
         .ele('cbc:IssueDate').txt(fecha).up()
         .ele('cbc:IssueTime').txt(hora).up()
         .ele('cbc:UUID').txt(cufe).up()
@@ -54,50 +53,24 @@ export function generarXMLFactura({
         .ele('cbc:Phone').txt(cliente.telefono).up()
         .up()
 
-        // ⚠️ IMPUESTOS CORREGIDOS - Ahora con estructura correcta
+        // Impuestos
         .ele('cac:TaxTotal')
         .ele('cbc:TaxAmount', { currencyID: 'COP' }).txt(Number(impuestos).toFixed(2)).up()
-        
-        // IVA (Impuesto principal)
         .ele('cac:TaxSubtotal')
         .ele('cbc:TaxableAmount', { currencyID: 'COP' }).txt(Number(subTotal).toFixed(2)).up()
         .ele('cbc:TaxAmount', { currencyID: 'COP' }).txt(Number(impuestos).toFixed(2)).up()
         .ele('cac:TaxCategory')
-        .ele('cbc:Percent').txt('19').up()
         .ele('cac:TaxScheme')
         .ele('cbc:ID').txt('01').up()
+        .ele('cbc:Name').txt('Retención ICA (No Aplica)').up()
+        .ele('cbc:ID').txt('02').up()
+        .ele('cbc:Name').txt('INC').up()
+        .ele('cbc:ID').txt('03').up()
         .ele('cbc:Name').txt('IVA').up()
         .up()
         .up()
         .up()
-        
-        // Retención ICA (No Aplica)
-        .ele('cac:TaxSubtotal')
-        .ele('cbc:TaxableAmount', { currencyID: 'COP' }).txt(Number(subTotal).toFixed(2)).up()
-        .ele('cbc:TaxAmount', { currencyID: 'COP' }).txt('0.00').up()
-        .ele('cac:TaxCategory')
-        .ele('cbc:Percent').txt('0').up()
-        .ele('cac:TaxScheme')
-        .ele('cbc:ID').txt('07').up()
-        .ele('cbc:Name').txt('Retención ICA').up()
         .up()
-        .up()
-        .up()
-        
-        // INC (No Aplica)
-        .ele('cac:TaxSubtotal')
-        .ele('cbc:TaxableAmount', { currencyID: 'COP' }).txt(Number(subTotal).toFixed(2)).up()
-        .ele('cbc:TaxAmount', { currencyID: 'COP' }).txt('0.00').up()
-        .ele('cac:TaxCategory')
-        .ele('cbc:Percent').txt('0').up()
-        .ele('cac:TaxScheme')
-        .ele('cbc:ID').txt('22').up()
-        .ele('cbc:Name').txt('INC').up()
-        .up()
-        .up()
-        .up()
-        
-        .up() // Cierra TaxTotal
 
         // Totales
         .ele('cac:LegalMonetaryTotal')
@@ -120,7 +93,7 @@ export function generarXMLFactura({
             .ele('cbc:Description').txt(d.descripcion).up()
             .ele('cbc:Name').txt(d.tipo_producto).up()
             .ele('cac:SellersItemIdentification')
-            .ele('cbc:ID').txt(d.codigo).up() 
+            .ele('cbc:ID').txt(d.codigo).up()
             .up()
             .up()
             .ele('cac:Price')
