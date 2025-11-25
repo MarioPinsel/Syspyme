@@ -22,7 +22,7 @@ export default function EliminarProducto() {
     }, [metodo, setValue]);
 
     const onSubmit = async (formData) => {
-         if (loading) return;
+        if (loading) return;
         setLoading(true);
         const token = Cookies.get("token");
 
@@ -41,10 +41,11 @@ export default function EliminarProducto() {
                 });
 
                 toast.success("Producto eliminado por ID");
+                navigate("/inventory")
             }
 
             if (formData.metodo === "codigo") {
-                const body = { codigo: formData.codigo };
+                const body = { id: formData.codigo };
 
                 await api.delete("/inventory/deleteProducts", {
                     headers: { Authorization: `Bearer ${token}` },
@@ -56,16 +57,16 @@ export default function EliminarProducto() {
             }
 
         } catch (err) {
-    console.error("❌ Error delete:", err);
+            console.error("❌ Error delete:", err);
 
-    const backendError =
-        err.response?.data?.error ||
-        err.response?.data?.message;
+            const backendError =
+                err.response?.data?.error ||
+                err.response?.data?.message;
 
-    toast.error(backendError || "Error eliminando el producto");
-} finally {
-        setLoading(false);  
-    }
+            toast.error(backendError || "Error eliminando el producto");
+        } finally {
+            setLoading(false);
+        }
 
     };
 
