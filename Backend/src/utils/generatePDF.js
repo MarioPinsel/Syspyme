@@ -495,11 +495,11 @@ export async function generarPDFBuffer(xmlString) {
    doc.fontSize(9)
       .fillColor('#999')
       .font('Helvetica')
-      .text('Software: ', 32, ypos);
+      .text('Software: ', 32, yPos);
 
    doc.font('Helvetica-Bold')
       .fillColor(primaryColor)
-      .text('SysPyME', 43, ypos);
+      .text('SysPyME', 43, yPos);
 
    doc.font('Helvetica')
       .fillColor('#999')
