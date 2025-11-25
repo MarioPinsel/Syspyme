@@ -1,7 +1,7 @@
 import { createReceipt, createDetailReceipt, addXMLAndCUFEToReceipt, getReceiptById } from '../repositories/sale/salesRepository.js'
 import { findCustomerByDocument } from '../repositories/customer/customersRepository.js'
 import { findUsuarioByCorreo } from '../repositories/user/userRepository.js'
-import { getTotalStockByProductId, findProductByCode, getInventoryByProductId, updateInventoryQuantity, deleteFromInventory } from '../repositories/inventory/inventoryRepository.js'
+import { getTotalStockByProductId, findProductByCode, getInventoryByProductId, updateInventoryQuantity, deleteFromInventoryById } from '../repositories/inventory/inventoryRepository.js'
 import { getFirmaDigital } from '../utils/firmaDigital.js'
 import { generarCUFE } from '../utils/cufeUtils.js';
 import { findEmpresaByNombre } from '../repositories/enterprise/companyRepository.js';
@@ -46,7 +46,7 @@ export const createSaleService = async (pool, correo, empresaNombre, { document,
             if (restante <= 0) break;
 
             if (cantidadFila <= restante) {
-                await deleteFromInventory(pool, row.id);
+                await deleteFromInventoryById(pool, row.id);
                 restante -= cantidadFila;
             } else {
                 await updateInventoryQuantity(pool, row.id, cantidadFila - restante);

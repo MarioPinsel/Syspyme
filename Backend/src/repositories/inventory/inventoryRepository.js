@@ -103,6 +103,13 @@ export const deleteFromInventory = (pool, productId) => {
     );
 };
 
+export const deleteFromInventoryById = (pool, id) => {
+    return pool.query(
+        "DELETE FROM inventario WHERE id = $1",
+        [id]
+    );
+};
+
 
 export const getTotalStockByProductId = (pool, productId) => {
     return pool.query(
