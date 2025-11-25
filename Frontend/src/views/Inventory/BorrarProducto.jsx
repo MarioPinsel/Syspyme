@@ -89,7 +89,7 @@ export default function EliminarProducto() {
 
                 {metodo === "id" && (
                     <div className="campo">
-                        <label>ID del Inventario</label>
+                        <label>ID del producto</label>
                         <input type="number" {...register("id")} />
                     </div>
                 )}

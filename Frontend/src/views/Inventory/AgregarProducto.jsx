@@ -70,7 +70,7 @@ export default function AgregarProducto() {
 
                 {metodo === "id" && (
                     <div className="campo">
-                        <label>ID</label>
+                        <label>ID del producto</label>
                         <input type="number" {...register("id")} />
                     </div>
                 )}

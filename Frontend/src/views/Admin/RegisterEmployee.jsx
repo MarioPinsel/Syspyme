@@ -5,10 +5,15 @@ import Cookies from "js-cookie";
 import api from "../../config/axios";
 import "../../styles/Layouts/Auth.css";
 import { useState } from "react";
-
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 export default function RegisterView() {
-const [isSubmitting, setIsSubmitting] = useState(false);
+
+  
+    const [showPassword, setShowPassword] = useState(false);
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const initialValues = {
         nombre: "",
         correo: "",
@@ -39,22 +44,21 @@ const [isSubmitting, setIsSubmitting] = useState(false);
             toast.success(data.message);
         } catch (error) {
             if (isAxiosError(error) && error.response) {
-                 // 🟣 express-validator
-      if (error.response.data.errors) {
-        toast.error(error.response.data.errors[0].msg);
-        setIsSubmitting(false);
-        return;
-      }
 
-      // 🟢 backend (controladores)
-      if (error.response.data.error) {
-        toast.error(error.response.data.error);
-        setIsSubmitting(false);
-        return;
-      }
+                if (error.response.data.errors) {
+                    toast.error(error.response.data.errors[0].msg);
+                    setIsSubmitting(false);
+                    return;
+                }
+
+                if (error.response.data.error) {
+                    toast.error(error.response.data.error);
+                    setIsSubmitting(false);
+                    return;
+                }
             }
-        }finally {
-            setIsSubmitting(false); 
+        } finally {
+            setIsSubmitting(false);
         }
 
     };
@@ -102,13 +106,31 @@ const [isSubmitting, setIsSubmitting] = useState(false);
                     )}
 
                     <label>Contraseña del empleado</label>
-                    <input
-                        type="password"
-                        {...register("password", {
-                            required: "La contraseña del empleado es obligatoria",
-                        })}
-                        placeholder="********"
-                    />
+
+                    
+                    <div className="password-field">
+                        <input
+                            type={showPassword ? "text" : "password"} 
+                            {...register("password", {
+                                required: "La contraseña del empleado es obligatoria",
+                            })}
+                            placeholder="********"
+                        />
+
+                      
+                        <button
+                            type="button"
+                            className="toggle-password"
+                            onClick={() => setShowPassword(!showPassword)} 
+                        >
+                            {showPassword ? (
+                                <AiOutlineEyeInvisible /> 
+                            ) : (
+                                <AiOutlineEye /> 
+                            )}
+                        </button>
+                    </div>
+
                     {errors.password && (
                         <p className="error-message">{errors.password.message}</p>
                     )}
