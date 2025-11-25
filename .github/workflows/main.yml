@@ -56,6 +56,6 @@ jobs:
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
-          app-name: 'SyspymeBack'
+          app-name: 'SyspymeBackend'
           slot-name: 'Production'
           package: .
