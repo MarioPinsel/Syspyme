@@ -411,15 +411,18 @@ export async function generarPDFBuffer(xmlString) {
    doc.font('Helvetica-Bold')
       .text(`IVA (${tasaIVA}%):`, totalesDerX, totalesY, { width: 80, align: 'left' });
 
-
    doc.font('Helvetica')
       .text(`$${formatearNumero(parseFloat(totales["cbc:PayableAmount"]._) - parseFloat(totales["cbc:TaxExclusiveAmount"]._))}`, totalesDerX + 85, totalesY, { width: 145, align: 'right' });
 
+   totalesY += 16; 
+
    doc.font('Helvetica-Bold')
-      .text(`R. ICA (11.04%:)`, totalesDerX, totalesY, { width: 80, align: 'left' });
+      .text(`R. ICA (11.04%):`, totalesDerX, totalesY, { width: 80, align: 'left' });
 
    doc.font('Helvetica')
       .text(`$0`, totalesDerX + 85, totalesY, { width: 145, align: 'right' });
+
+   totalesY += 16; 
 
    doc.font('Helvetica-Bold')
       .text(`INC:`, totalesDerX, totalesY, { width: 80, align: 'left' });
