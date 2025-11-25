@@ -29,15 +29,15 @@ function Homepage() {
           <div className="step-card">
             <div className="step-number">1</div>
             <h3>Registra tu empresa</h3>
-            <p>Crea tu cuenta en pocos minutos. Solo necesitas tu información básica y correo electrónico en la parte
-              superior izquierda de la página verás Registro
+            <p>Crea tu cuenta en pocos minutos. Solo necesitas tu información básica y correo electrónico, en la parte
+              superior izquierda de la página verás Registra tu empresa 
             </p>
           </div>
 
           <div className="step-card">
             <div className="step-number">2</div>
             <h3>Configura tu empresa</h3>
-            <p>Ingresa los datos de tu MiPyME que serán para tu inicio de sesión.</p>
+            <p>Ingresa los datos de tu MiPyme que serán para tu inicio de sesión.</p>
           </div>
 
           <div className="step-card">
