@@ -90,18 +90,18 @@ export const createSaleService = async (pool, correo, empresaNombre, { document,
         );
     }
     async function getHoraBogotaConMilisegundos() {
-        const now = new Date();
-        const parts = new Intl.DateTimeFormat("en-GB", {
+        const now = new Date();        
+        const horaBogota = now.toLocaleTimeString("en-GB", {
             timeZone: "America/Bogota",
             hour: "2-digit",
             minute: "2-digit",
             second: "2-digit",
             hour12: false
-        }).formatToParts(now);
-        const hora = parts.map(p => p.value).join("");
+        });        
         const ms = now.getMilliseconds().toString().padStart(3, "0");
-        return `${hora}.${ms}`;
+        return `${horaBogota}.${ms}`;
     }
+
     const cufe = generarCUFE({
         numFac: `FV${receiptId}`,
         fecFac: new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota", year: "numeric", month: "2-digit", day: "2-digit" }),
