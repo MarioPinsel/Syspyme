@@ -3,14 +3,12 @@ import Common from './layouts/Common.jsx';
 import Main from './layouts/main.jsx';
 
 import LoginView from './views/Auth/LoginView.jsx';
-import RegisterView from './views/Auth/RegisterView.jsx';
 import RegisterVerify from './views/Auth/RegisterVerify.jsx';
 import CompanyRegisterView from './views/Auth/CompanyRegisterView';
 import CompanyRegisterVerify from './views/Auth/CompanyRegisterVerify.jsx';
 import Homepage from './views/Homepage';
 import LoginVerify from './views/Auth/LoginVerify.jsx';
 import EmployeeDashboard from "./views/Admin/EmployeeDashboardView.jsx";
-import NewCompanyRegisterView from "./views/Auth/NewCompanyRegisterView.jsx"
 import DianLoginView from "./views/Dian/DianLoginView.jsx";
 import DianDashboard from "./views/Dian/DianDashboard.jsx"
 import DianCompany from "./views/Dian/DianCompany.jsx";
