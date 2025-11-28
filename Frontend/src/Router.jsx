@@ -10,6 +10,12 @@ import CompanyRegisterVerify from './views/Auth/CompanyRegisterVerify.jsx';
 import Homepage from './views/Homepage';
 import LoginVerify from './views/Auth/LoginVerify.jsx';
 import EmployeeDashboard from "./views/Admin/EmployeeDashboardView.jsx";
+import NewCompanyRegisterView from "./views/Auth/NewCompanyRegisterView.jsx"
+import DianLoginView from "./views/Dian/DianLoginView.jsx";
+import DianDashboard from "./views/Dian/DianDashboard.jsx"
+import DianCompany from "./views/Dian/DianCompany.jsx";
+import DianReports from "./views/Dian/DIANReports.jsx";
+import DianVerification from "./views/Dian/DianVerification.jsx"
 
 import Inventory from "./views/Inventory/Inventory.jsx";
 import CreateProductView from "./views/Inventory/CreateProduct.jsx";
@@ -23,7 +29,6 @@ import RegistrarEmpleado from "./views/Admin/RegisterEmployee.jsx";
 import BuscarFactura from "./views/Sales/BuscarFactura.jsx";
 
 import RequireAuth from "./components/RequireAuth.jsx";
-
 import NotFound from "./components/NotFound.jsx"; 
 
 export default function Router() {
@@ -31,7 +36,6 @@ export default function Router() {
     <BrowserRouter>
       <Routes>
 
-     
         <Route path="/" element={<Main />}>
           <Route index element={<Homepage />} />
         </Route>
@@ -40,9 +44,11 @@ export default function Router() {
           <Route path="login" element={<LoginView />} />
           <Route path="loginVerify" element={<LoginVerify />} />
           <Route path="register" element={<RegisterView />} />
+          <Route path="newregister" element={<NewCompanyRegisterView/>} />
           <Route path="companyRegister" element={<CompanyRegisterView />} />
           <Route path="registerVerify" element={<RegisterVerify />} />
           <Route path="companyRegisterVerify" element={<CompanyRegisterVerify />} />
+          <Route path="login-dian" element={<DianLoginView/>} />
         </Route>
 
         <Route element={<RequireAuth allowedRoles={["admin"]} />}>
@@ -60,7 +66,6 @@ export default function Router() {
           </Route>
         </Route>
 
-   
         <Route element={<RequireAuth allowedRoles={["employee", "admin"]} />}>
           <Route path="/sales" element={<Common />}>
             <Route path="create-sale" element={<CreateSale />} />
@@ -69,15 +74,30 @@ export default function Router() {
           </Route>
         </Route>
 
-      
         <Route element={<RequireAuth allowedRoles={["employee"]} />}>
           <Route path="/employee" element={<Common />}>
             <Route index element={<EmployeeDashboard />} />
           </Route>
         </Route>
 
-          <Route path="*" element={<NotFound />} />
-    
+     
+        <Route element={<RequireAuth allowedRoles={["dian"]} />}>
+          <Route path="/dian" element={<Common />}>
+            <Route index element={<DianDashboard />} />
+            <Route path="companies" element={<DianCompany/>} />
+            <Route path="reports" element={<DianReports />} />
+            <Route path ="verification" element={<DianVerification />} />
+          </Route>
+        </Route>
+        
+      {/* <Route path="/dian" element={<Common />}>
+  <Route index element={<DianDashboard />} />
+  <Route path="companies" element={<DianCompany/>} />
+  <Route path="reports" element={<DianReports />} />
+  <Route path ="verification" element={<DianVerification />} />
+</Route>*/}
+
+        <Route path="*" element={<NotFound />} />
 
       </Routes>
     </BrowserRouter>

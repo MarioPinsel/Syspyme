@@ -1,11 +1,9 @@
-
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
 import "../../styles/Layouts/Verify.css";
 import api from "../../config/axios";
-import { jwtDecode } from "jwt-decode";
 
 export default function VerificationCode() {
     const [code, setCode] = useState(Array(6).fill(""));
@@ -37,8 +35,6 @@ export default function VerificationCode() {
         if (paste.length === 6 && /^[0-9]+$/.test(paste)) {
             const newCode = paste.split("");
             setCode(newCode);
-
-            // Enfocar el último input
             inputsRef.current[5].focus();
         }
 
@@ -51,9 +47,9 @@ export default function VerificationCode() {
 
         const fullCode = code.join("");
 
-
         if (fullCode.length < 6) {
             toast.error("Debes ingresar el código completo de verificación");
+            setLoading(false);
             return;
         }
 
@@ -61,6 +57,7 @@ export default function VerificationCode() {
 
         if (!token) {
             toast.error("No se encontró el token");
+            setLoading(false);
             return;
         }
 
@@ -71,43 +68,25 @@ export default function VerificationCode() {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
-            const newToken = data?.token;
+            // ✅ El backend devuelve: { message: '...' }
+            // ✅ Redirigir directamente a la página de confirmación DIAN
+            navigate("/auth/company-verification-success", { 
+                state: { message: data.message } 
+            });
 
-            if (newToken) {
-                Cookies.set("token", newToken, {
-                    expires: 1,
-                    path: "/",
-                    secure: true,
-                    sameSite: "lax",
-                });
+            toast.success("Código verificado correctamente");
 
-                const decoded = jwtDecode(newToken);
+        } catch (error) {
+            console.error("❌ Error en la verificación:", error);
 
-                Cookies.set("role", decoded.isAdmin ? "admin" : "employee", {
-                    expires: 1,
-                    path: "/",
-                    secure: true,
-                    sameSite: "lax",
-                });
+            if (error.response?.data?.errors) {
+                toast.error(error.response.data.errors[0].msg);
+            } else if (error.response?.data?.error) {
+                toast.error(error.response.data.error);
+            } else {
+                toast.error("Código incorrecto");
             }
-
-            toast.success(data.message);
-            navigate("/dashboard/");
-            window.location.reload();
-       } catch (error) {
-    console.error("❌ Error en la verificación:", error);
-
-    if (error.response?.data?.errors) {
-        return toast.error(error.response.data.errors[0].msg);
-    }
-
-    if (error.response?.data?.error) {
-        return toast.error(error.response.data.error);
-    }
-
-    // fallback genérico
-    return toast.error("Código incorrecto");
-}finally {
+        } finally {
             setLoading(false);
         }
     };
@@ -141,7 +120,7 @@ export default function VerificationCode() {
                         ))}
                     </div>
 
-                       <button type="submit" disabled={loading} className={loading ? "loading" : ""}>
+                    <button type="submit" disabled={loading} className={loading ? "loading" : ""}>
                         {loading ? (
                             <>
                                 <span className="spinner"></span> Verificando...

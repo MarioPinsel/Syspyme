@@ -1,8 +1,16 @@
 import "../styles/Layouts/Footer.css";
+import { useNavigate } from "react-router-dom";
 
 export default function Footer() {
+    const navigate = useNavigate();
+
+    const handleDianAccess = () => {
+        console.log("Redirigiendo a DIAN login...");
+        navigate("/auth/login-dian");
+    };
+
     return (
-        <footer>
+        <footer style={{ position: 'relative' }}>
             <div className="background">
                 <svg
                     version="1.1"
@@ -63,7 +71,7 @@ export default function Footer() {
                 </svg>
             </div>
 
-            <section className="footer-content">
+            <section className="footer-content" style={{ position: 'relative' }}>
 
                 <div className="footer-columns">
                     
@@ -106,6 +114,37 @@ export default function Footer() {
                 </div>
 
                 <p className="legal">© 2025 All rights reserved</p>
+
+                {/* 🔐 ACCESO OCULTO A DIAN - Versión mejorada */}
+                <div 
+                    className="hidden-dian-access" 
+                    onClick={handleDianAccess}
+                    style={{
+                        cursor: 'pointer',
+                        position: 'absolute',
+                        bottom: '15px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        opacity: '0.2',
+                        transition: 'opacity 0.3s, background-color 0.3s',
+                        fontSize: '14px',
+                        padding: '5px 10px',
+                        borderRadius: '3px',
+                        backgroundColor: 'transparent',
+                        zIndex: 1000
+                    }}
+                    onMouseEnter={(e) => {
+                        e.target.style.opacity = '1';
+                        e.target.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                    }}
+                    onMouseLeave={(e) => {
+                        e.target.style.opacity = '0.2';
+                        e.target.style.backgroundColor = 'transparent';
+                    }}
+                    title="Acceso DIAN (Click aquí)"
+                >
+                    © DIAN
+                </div>
 
                 <a
                     className="github-link"
