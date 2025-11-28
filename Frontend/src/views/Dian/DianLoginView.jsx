@@ -44,7 +44,7 @@ export default function LoginDIAN() {
       });
 
       toast.success(data.message);
-      navigate("/dian/Diandashboard"); 
+      navigate("/dian");
       window.location.reload();
     } catch (error) {
       if (isAxiosError(error) && error.response) {

@@ -161,7 +161,7 @@ export default function VerificationCode() {
             <div className="verification-box">
                 <h2>Código de Verificación</h2>
                 <p className="verification-instructions">
-                    Revisa tu correo electrónico por el código.
+                    Revisa el correo del representante por el código.
                 </p>
 
                 <form onSubmit={handleVerify}>
