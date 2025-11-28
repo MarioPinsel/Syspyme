@@ -62,6 +62,10 @@ export function generarXMLFactura({
         .ele('cac:TaxCategory')
         .ele('cac:TaxScheme')
         .ele('cbc:ID').txt('01').up()
+        .ele('cbc:Name').txt('Retención ICA (No Aplica)').up()
+        .ele('cbc:ID').txt('02').up()
+        .ele('cbc:Name').txt('INC').up()
+        .ele('cbc:ID').txt('03').up()
         .ele('cbc:Name').txt('IVA').up()
         .up()
         .up()
@@ -78,7 +82,8 @@ export function generarXMLFactura({
         .ele('cbc:PaymentType').txt(paymentType).up()
         .ele('cbc:FinalTerm').txt(plazoFinal).up()
         .up();
-    // 🔸 Detalles (líneas de productos)
+
+    // Detalles (líneas de productos)
     for (const d of detalles) {
         xml.ele('cac:InvoiceLine')
             .ele('cbc:Code').txt(d.producto_code).up()
@@ -88,7 +93,7 @@ export function generarXMLFactura({
             .ele('cbc:Description').txt(d.descripcion).up()
             .ele('cbc:Name').txt(d.tipo_producto).up()
             .ele('cac:SellersItemIdentification')
-            .ele('cbc:ID').txt(d.codigo).up() 
+            .ele('cbc:ID').txt(d.codigo).up()
             .up()
             .up()
             .ele('cac:Price')
@@ -99,6 +104,10 @@ export function generarXMLFactura({
 
     // 🔐 Firma digital
     xml.ele('ds:Signature')
+        .ele('ds:SignatureValue').txt(firma_digital).up()
+        .ele('ds:TechProvider').txt('Syspyme').up()
+        .ele('ds:Software').txt('Syspyme').up()
+        .ele('ds:SignatureInfoContent').txt('Haciendo función y cumplimiento de la resolución 000012 del 9 de febrero del 2021 y la resolición 000165 del 1 de noviembre del 2023, nos permitimos generar esta factura electrónica. También, siguiendo el título V de la resolución 42 del 5 de mayo del 2020, hacemos cumplimiento de los requisitos mínimos para los documentos referentes a la facturación electrónica.').up()
         .ele('ds:SignatureValue').txt(firma_digital).up()
         .up();
 
