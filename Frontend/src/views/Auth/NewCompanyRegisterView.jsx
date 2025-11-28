@@ -22,16 +22,16 @@ export default function RegisterCompany() {
 
   const initialValues = {
     tipoEmpresa: "empresa",
-    nombre: "",               
+    nombre: "",
     nit: "",
-    correo: "",               
+    correo: "",
     password: "",
     direccion: "",
     telefono: "",
-    regimen: "",              
-    nombreAdmin: "",        
-    correoAdmin: "",         
-    telefonoAdmin: "",        
+    regimen: "",
+    nombre_admin: "",
+    correo_admin: "",
+    telefono_admin: "",
   };
 
   const {
@@ -62,12 +62,12 @@ export default function RegisterCompany() {
 
   const handleRegister = async (formData) => {
     if (isSubmitting) return;
-    
+
     if (!acceptedTerms) {
       toast.error("Debes aceptar los términos y condiciones para continuar");
       return;
     }
-    
+
     setIsSubmitting(true);
 
     const normalizedData = {
@@ -75,13 +75,14 @@ export default function RegisterCompany() {
       nombre: formData.nombre.trim(),
       nit: formData.nit.trim(),
       correo: formData.correo.trim().toLowerCase(),
+      password: formData.password.trim(),
       direccion: formData.direccion.trim(),
       telefono: formData.telefono.trim(),
       regimen: formData.regimen,
 
-      nombreAdmin: formData.nombreAdmin.trim(),
-      correoAdmin: formData.correoAdmin.trim().toLowerCase(),
-      telefonoAdmin: formData.telefonoAdmin.trim(),
+      nombre_admin: formData.nombreAdmin.trim(),
+      correo_admin: formData.correoAdmin.trim().toLowerCase(),
+      telefono_admin: formData.telefonoAdmin.trim(),
     };
 
     try {
@@ -204,13 +205,13 @@ export default function RegisterCompany() {
 
           <div className="form-field">
             <label>Dirección *</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               {...register("direccion", {
                 required: "La dirección es obligatoria",
                 minLength: { value: 5, message: "La dirección debe tener al menos 5 caracteres" }
-              })} 
-              placeholder="Calle 123 #45-67" 
+              })}
+              placeholder="Calle 123 #45-67"
             />
             {errors.direccion && <p className="error-message">{errors.direccion.message}</p>}
           </div>
@@ -254,12 +255,12 @@ export default function RegisterCompany() {
           <div className="form-row">
             <div className="form-field">
               <label>Nombre *</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 {...register("nombreAdmin", {
                   required: "El nombre del representante es obligatorio"
-                })} 
-                placeholder="Juan Pérez" 
+                })}
+                placeholder="Juan Pérez"
               />
               {errors.nombreAdmin && <p className="error-message">{errors.nombreAdmin.message}</p>}
             </div>
@@ -300,8 +301,8 @@ export default function RegisterCompany() {
 
         {/* Botón para ver términos y condiciones */}
         <div className="terms-section">
-          <button 
-            type="button" 
+          <button
+            type="button"
             className="btn-terms-view"
             onClick={() => setShowTerms(true)}
           >
@@ -310,15 +311,15 @@ export default function RegisterCompany() {
 
           <div className="terms-acceptance">
             <label className="terms-checkbox">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 checked={acceptedTerms}
                 onChange={(e) => setAcceptedTerms(e.target.checked)}
               />
               <span>He leído y acepto los términos y condiciones</span>
             </label>
           </div>
-          
+
           {!acceptedTerms && (
             <p className="terms-warning">
               Debes aceptar los términos y condiciones para continuar
@@ -326,9 +327,9 @@ export default function RegisterCompany() {
           )}
         </div>
 
-        <button 
-          type="submit" 
-          className="btn-submit" 
+        <button
+          type="submit"
+          className="btn-submit"
           disabled={isSubmitting || !acceptedTerms}
         >
           {isSubmitting ? <div className="spinner"></div> : "Registrar Empresa"}
@@ -348,37 +349,37 @@ export default function RegisterCompany() {
           <div className="terms-modal">
             <div className="terms-modal-header">
               <h3>Términos y Condiciones - SysPyme</h3>
-              <button 
+              <button
                 className="terms-modal-close"
                 onClick={() => setShowTerms(false)}
               >
                 ×
               </button>
             </div>
-            
+
             <div className="terms-modal-content">
               <p>
-                Al registrarse en <strong>SysPyme</strong>, usted acepta expresamente 
+                Al registrarse en <strong>SysPyme</strong>, usted acepta expresamente
                 los siguientes términos y condiciones:
               </p>
 
               <h4>📋 Aceptación de Términos</h4>
               <p>
-                El uso de nuestros servicios implica la aceptación plena de estos términos 
+                El uso de nuestros servicios implica la aceptación plena de estos términos
                 y condiciones, así como de nuestras políticas de privacidad.
               </p>
 
               <h4>🔐 Protección de Datos</h4>
               <p>
-                Nos comprometemos a proteger sus datos según la <strong>Ley 1581 de 2012</strong> 
-                y el <strong>Decreto 1377 de 2013</strong>. Sus datos serán utilizados 
+                Nos comprometemos a proteger sus datos según la <strong>Ley 1581 de 2012</strong>
+                y el <strong>Decreto 1377 de 2013</strong>. Sus datos serán utilizados
                 exclusivamente para los fines del servicio.
               </p>
 
               <h4>📊 Facturación Electrónica</h4>
               <p>
-                Nuestro servicio cumple con la normativa de la DIAN, específicamente 
-                la <strong>Resolución 020 de 2019</strong> y <strong>Resolución 042 de 2020</strong> 
+                Nuestro servicio cumple con la normativa de la DIAN, específicamente
+                la <strong>Resolución 020 de 2019</strong> y <strong>Resolución 042 de 2020</strong>
                 sobre facturación electrónica.
               </p>
 
@@ -395,33 +396,33 @@ export default function RegisterCompany() {
 
               <h4>📄 Propiedad de la Información</h4>
               <p>
-                Usted conserva la propiedad completa de sus datos comerciales y contables. 
+                Usted conserva la propiedad completa de sus datos comerciales y contables.
                 SysPyme actúa como procesador de esta información.
               </p>
 
               <h4>🚫 Uso Prohibido</h4>
               <p>
-                No está permitido utilizar el servicio para actividades ilegales, 
+                No está permitido utilizar el servicio para actividades ilegales,
                 fraudulentas o que violen la normativa colombiana.
               </p>
 
               <h4>🔍 Verificación DIAN</h4>
               <p>
-                Toda empresa registrada será sometida a verificación ante la DIAN. 
+                Toda empresa registrada será sometida a verificación ante la DIAN.
                 El proceso puede tomar de 24 a 72 horas hábiles.
               </p>
 
               <div className="legal-notice">
                 <p>
-                  <strong>Nota Legal:</strong> Este servicio se rige por las leyes de la 
-                  República de Colombia. Cualquier disputa será resuelta en los tribunales 
+                  <strong>Nota Legal:</strong> Este servicio se rige por las leyes de la
+                  República de Colombia. Cualquier disputa será resuelta en los tribunales
                   competentes de Bogotá, D.C.
                 </p>
               </div>
             </div>
 
             <div className="terms-modal-footer">
-              <button 
+              <button
                 className="btn-terms-accept"
                 onClick={() => {
                   setAcceptedTerms(true);
@@ -430,7 +431,7 @@ export default function RegisterCompany() {
               >
                 Aceptar Términos
               </button>
-              <button 
+              <button
                 className="btn-terms-close"
                 onClick={() => setShowTerms(false)}
               >
