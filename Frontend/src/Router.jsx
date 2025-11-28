@@ -9,7 +9,7 @@ import CompanyRegisterVerify from './views/Auth/CompanyRegisterVerify.jsx';
 import Homepage from './views/Homepage';
 import LoginVerify from './views/Auth/LoginVerify.jsx';
 import EmployeeDashboard from "./views/Admin/EmployeeDashboardView.jsx";
-import DianLoginView from "./views/Dian/DianLoginView.jsx";
+import LoginDIAN from "./views/Dian/DianLoginView.jsx";
 import DIANDashboard from "./views/Dian/DianDashboard.jsx"
 import DianCompany from "./views/Dian/DianCompany.jsx";
 import DianReports from "./views/Dian/DianReports.jsx";
@@ -44,7 +44,7 @@ export default function Router() {
           <Route path="companyRegister" element={<CompanyRegisterView />} />
           <Route path="registerVerify" element={<RegisterVerify />} />
           <Route path="companyRegisterVerify" element={<CompanyRegisterVerify />} />
-          <Route path="login-dian" element={<DianLoginView />} />
+          <Route path="login-dian" element={<LoginDIAN />} />
         </Route>
 
         <Route element={<RequireAuth allowedRoles={["admin"]} />}>
