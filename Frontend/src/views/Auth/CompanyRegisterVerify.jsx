@@ -103,18 +103,52 @@ export default function VerificationCode() {
         }
     };
 
-    // ✔ Si ya hay mensaje, mostramos pantalla estática
     if (successMessage) {
         return (
             <div className="verification-container">
-                <div className="verification-box">
-                    <h2>Verificación exitosa</h2>
+                <div className="verification-box" style={{ maxWidth: "600px", padding: "2.5rem" }}>
+                    <div style={{
+                        width: "64px",
+                        height: "64px",
+                        margin: "0 auto 1.5rem",
+                        borderRadius: "50%",
+                        background: "#4CAF50",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
+                    }}>
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
 
-                    <p className="verification-instructions" style={{ textAlign: "left" }}>
-                        {successMessage}
-                    </p>
+                    <h2 style={{ marginBottom: "1.5rem", fontSize: "1.75rem" }}>
+                        ✓ Verificación exitosa
+                    </h2>
 
-                    <button onClick={() => navigate("/")}>
+                    <div style={{
+                        background: "#f8f9fa",
+                        padding: "1.5rem",
+                        borderRadius: "8px",
+                        marginBottom: "2rem",
+                        border: "1px solid #e9ecef"
+                    }}>
+                        <p style={{
+                            textAlign: "left",
+                            lineHeight: "1.8",
+                            fontSize: "1rem",
+                            color: "#495057",
+                            margin: 0,
+                            whiteSpace: "pre-wrap"
+                        }}>
+                            {successMessage}
+                        </p>
+                    </div>
+
+                    <button
+                        onClick={() => navigate("/")}
+                        style={{ width: "100%", padding: "0.875rem" }}
+                    >
                         Volver al inicio
                     </button>
                 </div>

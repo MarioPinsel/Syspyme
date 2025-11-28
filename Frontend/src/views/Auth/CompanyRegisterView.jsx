@@ -72,15 +72,15 @@ export default function RegisterCompany() {
 
     const normalizedData = {
       tipoEmpresa: formData.tipoEmpresa,
-      nombre: formData.nombre.trim(),
+      nombre: formData.nombre.trim().toLowerCase(),
       nit: formData.nit.trim(),
       correo: formData.correo.trim().toLowerCase(),
       password: formData.password.trim(),
-      direccion: formData.direccion.trim(),
+      direccion: formData.direccion.trim().toLowerCase(),
       telefono: formData.telefono.trim(),
-      regimen: formData.regimen,
+      regimen: formData.regimen.toLowerCase(),
 
-      nombre_admin: formData.nombreAdmin.trim(),
+      nombre_admin: formData.nombreAdmin.trim().toLowerCase(),
       correo_admin: formData.correoAdmin.trim().toLowerCase(),
       telefono_admin: formData.telefonoAdmin.trim(),
     };
