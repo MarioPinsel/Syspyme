@@ -5,9 +5,13 @@ import Cookies from "js-cookie";
 import api from "../../config/axios";
 import "../../styles/Layouts/Auth.css";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 export default function RegisterView() {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const initialValues = {
     nombre: "",
@@ -16,25 +20,36 @@ export default function RegisterView() {
     password: "",
   };
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const passwordRegex =
+    /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     defaultValues: initialValues,
   });
 
   const handleRegister = async (formData) => {
+    if (isLoading) return;
+    setIsLoading(true);
+    const normalizedData = {
+      nombre: formData.nombre.trim().toLowerCase(),
+      correo: formData.correo.trim().toLowerCase(),
+      handle: formData.handle.trim().toLowerCase(),
+      password: formData.password.trim(),  
+    };
     try {
-      const token = Cookies.get("token")
+      const token = Cookies.get("token");
 
-      const { data } = await api.post(
-        "/auth/registerUser",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const { data } = await api.post("/auth/registerUser", normalizedData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       const newToken = data?.token;
-
 
       if (newToken) {
         Cookies.set("token", newToken, {
@@ -47,10 +62,28 @@ export default function RegisterView() {
 
       toast.success(data.message);
       navigate("/auth/registerVerify");
+      window.location.reload();
+
     } catch (error) {
       if (isAxiosError(error) && error.response) {
-        toast.error(error.response.data.error);
+
+        // 🟣 express-validator
+        if (error.response.data.errors) {
+          toast.error(error.response.data.errors[0].msg);
+          return;
+        }
+
+        // 🟢 backend (controladores)
+        if (error.response.data.error) {
+          toast.error(error.response.data.error);
+          return;
+        }
       }
+
+      toast.error("Error registrando el usuario");
+    }
+    finally {
+      setIsLoading(false);
     }
   };
 
@@ -60,11 +93,14 @@ export default function RegisterView() {
         <h2>Registrar Administrador</h2>
 
         <form onSubmit={handleSubmit(handleRegister)}>
+
           <label>Nombre del Administrador</label>
           <input
             type="text"
             {...register("nombre", {
               required: "El nombre del administrador es obligatorio",
+              minLength: { value: 3, message: "Debe tener al menos 3 caracteres" },
+              maxLength: { value: 50, message: "Máximo 50 caracteres" },
             })}
             placeholder="Ej: Juan Pérez"
           />
@@ -77,6 +113,7 @@ export default function RegisterView() {
             type="email"
             {...register("correo", {
               required: "El correo del administrador es obligatorio",
+              maxLength: { value: 50, message: "Máximo 50 caracteres" },
             })}
             placeholder="Ej: admin@empresa.com"
           />
@@ -89,6 +126,8 @@ export default function RegisterView() {
             type="text"
             {...register("handle", {
               required: "El identificador es obligatorio",
+              minLength: { value: 3, message: "Mínimo 3 caracteres" },
+              maxLength: { value: 20, message: "Máximo 20 caracteres" },
             })}
             placeholder="Ej: admin123"
           />
@@ -97,18 +136,44 @@ export default function RegisterView() {
           )}
 
           <label>Contraseña del Administrador</label>
-          <input
-            type="password"
-            {...register("password", {
-              required: "La contraseña del administrador es obligatoria",
-            })}
-            placeholder="********"
-          />
+
+         
+          <div className="password-field">
+
+            <input
+              type={showPassword ? "text" : "password"} 
+              {...register("password", {
+                required: "La contraseña es obligatoria",
+                pattern: {
+                  value: passwordRegex,
+                  message:
+                    "Debe tener 8+ caracteres, una mayúscula, una minúscula, un número y un símbolo",
+                },
+              })}
+              placeholder="********"
+            />
+
+            
+            <button
+              type="button"
+              className="toggle-password"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? (
+                <AiOutlineEyeInvisible /> 
+              ) : (
+                <AiOutlineEye /> 
+              )}
+            </button>
+          </div>
+
           {errors.password && (
             <p className="error-message">{errors.password.message}</p>
           )}
 
-          <button type="submit">Registrar</button>
+          <button type="submit" disabled={isLoading} className="submit-btn">
+            {isLoading ? <div className="loader"></div> : "Registrar"}
+          </button>
         </form>
       </div>
     </div>

@@ -4,9 +4,12 @@ import Cookies from "js-cookie";
 import api from "../../config/axios";
 import { useNavigate } from "react-router-dom";
 import "../../styles/Inventory/CreateProduct.css"
+import { useState } from "react";
+import { isAxiosError } from "axios";
 
 export default function CreateProductView() {
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false); 
 
   const initialValues = {
     type: "",
@@ -16,45 +19,76 @@ export default function CreateProductView() {
     code: ""
   };
 
-  const { register, handleSubmit, formState: { errors } } = useForm({ defaultValues: initialValues, });
-  const handleCreate = async (formData) => {
-    console.log("FORM DATA ENVIADO:", formData);
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    defaultValues: initialValues,
+  });
 
-    try {
-      const token = Cookies.get("token");
+const handleCreate = async (formData) => {
+  if (isSubmitting) return;
+  setIsSubmitting(true);
 
-      const { data } = await api.post("/inventory/createProduct",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const newToken = data?.token;
-      if (newToken) {
-        Cookies.set("token", newToken, {
-          expires: 1 / 96,
-          path: "/auth",
-          secure: true,
-          sameSite: "lax",
-        });
-      }
-
-      toast.success(data.message);
-      navigate("/inventory/");
-
-    } catch (error) {
-      const backendError =
-        error?.response?.data?.error ||
-        error?.response?.data?.message ||
-        "Ocurrió un error inesperado";
-
-      toast.error(backendError);
+  const finalData = {
+    ...formData,
+    description: {
+      texto: formData.description?.texto || ""
     }
   };
 
+  try {
+    const token = Cookies.get("token");
+
+    const { data } = await api.post(
+      "/inventory/createProduct",
+      finalData,
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+
+  
+    const newToken = data?.token;
+    if (newToken) {
+      Cookies.set("token", newToken, {
+        expires: 1 / 96,
+        path: "/auth",
+        secure: true,
+        sameSite: "lax",
+      });
+    }
+
+    toast.success(data.message || "Operación exitosa");
+    navigate("/inventory/");
+
+ } catch (error) {
+
+  if (isAxiosError(error) && error.response) {
+    const res = error.response.data;
+
+   
+    if (res.errors) {
+      toast.error(res.errors[0].msg);
+    }
+
+  
+    else if (res.message) {
+      toast.error(res.message);
+    }
+
+    else if (res.error) {
+      toast.error(res.error);
+    }
+
+    else {
+      toast.error("Error inesperado");
+    }
+  } else {
+    toast.error("Error inesperado");
+  }
+
+} finally {
+  setIsSubmitting(false);  
+}
+}
 
   return (
     <main className="page">
@@ -69,9 +103,15 @@ export default function CreateProductView() {
           <label htmlFor="code">Código</label>
           <input
             id="code"
-            {...register("code", { required: "El código es obligatorio" })}
+            {...register("code", {
+              required: "El código es obligatorio",
+              pattern: {
+                value: /^[a-zA-Z0-9]+$/,
+                message: "El código debe ser alfanumérico",
+              },
+            })}
             type="text"
-            placeholder="EJ: P-0001"
+            placeholder="Ej: ABC123"
           />
           {errors.code && <p className="error">{errors.code.message}</p>}
         </div>
@@ -80,9 +120,9 @@ export default function CreateProductView() {
           <label htmlFor="type">Tipo de producto</label>
           <input
             id="type"
-            {...register("type", { required: "El nombre es obligatorio" })}
+            {...register("type", { required: "El tipo es obligatorio" })}
             type="text"
-            placeholder="Nombre del producto"
+            placeholder="Ej: Herramienta"
           />
           {errors.type && <p className="error">{errors.type.message}</p>}
         </div>
@@ -98,6 +138,7 @@ export default function CreateProductView() {
                 {...register("unitPrice", {
                   required: "El precio es obligatorio",
                   valueAsNumber: true,
+                  min: { value: 51, message: "Debe ser mayor a 50" },
                 })}
                 type="number"
                 min="0"
@@ -115,10 +156,9 @@ export default function CreateProductView() {
               {...register("quantity", {
                 required: "La cantidad es obligatoria",
                 valueAsNumber: true,
+                min: { value: 1, message: "Debe ser mayor a 0" }
               })}
               type="number"
-              min="0"
-              step="1"
               placeholder="0"
             />
             {errors.quantity && <p className="error">{errors.quantity.message}</p>}
@@ -129,23 +169,25 @@ export default function CreateProductView() {
           <label htmlFor="description">Descripción</label>
           <textarea
             id="description"
-            {...register("description.texto", { required: "La descripción es obligatoria" })}
+            {...register("description.texto", {
+              required: "La descripción es obligatoria"
+            })}
             placeholder="Descripción corta del producto"
             rows={3}
           />
           {errors.description?.texto && (
             <p className="error">{errors.description.texto.message}</p>
           )}
-
-          {errors.description && <p className="error">{errors.description.message}</p>}
         </div>
 
         <div className="form-actions">
           <button type="button" className="btn btn-secondary">
             Cancelar
           </button>
-          <button type="submit" className="btn btn-primary">
-            Guardar producto
+
+          <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+            {isSubmitting ? <span className="loader"></span> : "Guardar producto"}
+
           </button>
         </div>
       </form>

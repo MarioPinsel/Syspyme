@@ -4,8 +4,15 @@ import { isAxiosError } from "axios";
 import Cookies from "js-cookie";
 import api from "../../config/axios";
 import "../../styles/Layouts/Auth.css";
+import { useState } from "react";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 export default function RegisterView() {
+
+  
+    const [showPassword, setShowPassword] = useState(false);
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const initialValues = {
         nombre: "",
@@ -19,12 +26,19 @@ export default function RegisterView() {
     });
 
     const handleRegister = async (formData) => {
+        setIsSubmitting(true);
+           const normalizedData = {
+            nombre: formData.nombre.trim().toLowerCase(),             
+            correo: formData.correo.trim().toLowerCase(), 
+            handle: formData.handle.trim().toLowerCase(), 
+            password: formData.password.trim(),
+        };
         try {
             const token = Cookies.get("token")
 
             const { data } = await api.post(
                 "/auth/registerUser",
-                formData,
+                normalizedData,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -35,9 +49,23 @@ export default function RegisterView() {
             toast.success(data.message);
         } catch (error) {
             if (isAxiosError(error) && error.response) {
-                toast.error(error.response.data.error);
+
+                if (error.response.data.errors) {
+                    toast.error(error.response.data.errors[0].msg);
+                    setIsSubmitting(false);
+                    return;
+                }
+
+                if (error.response.data.error) {
+                    toast.error(error.response.data.error);
+                    setIsSubmitting(false);
+                    return;
+                }
             }
+        } finally {
+            setIsSubmitting(false);
         }
+
     };
 
     return (
@@ -83,13 +111,31 @@ export default function RegisterView() {
                     )}
 
                     <label>Contraseña del empleado</label>
-                    <input
-                        type="password"
-                        {...register("password", {
-                            required: "La contraseña del empleado es obligatoria",
-                        })}
-                        placeholder="********"
-                    />
+
+                    
+                    <div className="password-field">
+                        <input
+                            type={showPassword ? "text" : "password"} 
+                            {...register("password", {
+                                required: "La contraseña del empleado es obligatoria",
+                            })}
+                            placeholder="********"
+                        />
+
+                      
+                        <button
+                            type="button"
+                            className="toggle-password"
+                            onClick={() => setShowPassword(!showPassword)} 
+                        >
+                            {showPassword ? (
+                                <AiOutlineEyeInvisible /> 
+                            ) : (
+                                <AiOutlineEye /> 
+                            )}
+                        </button>
+                    </div>
+
                     {errors.password && (
                         <p className="error-message">{errors.password.message}</p>
                     )}

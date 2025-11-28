@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Cookies from "js-cookie";
@@ -5,6 +6,7 @@ import api from "../../config/axios";
 import "../../styles/Inventory/ActualizarProducto.css";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+
 
 export default function EliminarProducto() {
     const navigate = useNavigate()
@@ -14,12 +16,14 @@ export default function EliminarProducto() {
     });
 
     const [metodo, setMetodo] = useState("");
-
+    const [loading, setLoading] = useState(false);
     useEffect(() => {
         setValue("metodo", metodo);
     }, [metodo, setValue]);
 
     const onSubmit = async (formData) => {
+        if (loading) return;
+        setLoading(true);
         const token = Cookies.get("token");
 
         if (!token) {
@@ -37,10 +41,11 @@ export default function EliminarProducto() {
                 });
 
                 toast.success("Producto eliminado por ID");
+                navigate("/inventory")
             }
 
             if (formData.metodo === "codigo") {
-                const body = { codigo: formData.codigo };
+                const body = { id: formData.codigo };
 
                 await api.delete("/inventory/deleteProducts", {
                     headers: { Authorization: `Bearer ${token}` },
@@ -53,8 +58,18 @@ export default function EliminarProducto() {
 
         } catch (err) {
             console.error("❌ Error delete:", err);
-            toast.error("Error eliminando el producto");
+
+            const backendError =
+                err.response?.data?.error ||
+                err.response?.data?.message ||
+                err.response?.data?.errors?.[0]?.msg;
+
+            toast.error(backendError || "Error eliminando el producto");
+
+        } finally {
+            setLoading(false);
         }
+
     };
 
     return (
@@ -77,7 +92,7 @@ export default function EliminarProducto() {
 
                 {metodo === "id" && (
                     <div className="campo">
-                        <label>ID del Inventario</label>
+                        <label>ID del producto</label>
                         <input type="number" {...register("id")} />
                     </div>
                 )}
@@ -89,8 +104,13 @@ export default function EliminarProducto() {
                     </div>
                 )}
 
-                <button type="submit" className="btn-enviar" style={{ background: "#e74c3c" }}>
-                    Eliminar
+                <button
+                    type="submit"
+                    className="btn-enviar"
+                    style={{ background: "#e74c3c" }}
+                    disabled={loading}
+                >
+                    {loading ? <span className="loader"></span> : "Eliminar"}
                 </button>
             </form>
         </div>

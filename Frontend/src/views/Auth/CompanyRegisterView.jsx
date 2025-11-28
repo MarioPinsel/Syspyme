@@ -2,12 +2,16 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { isAxiosError } from "axios";
 import Cookies from "js-cookie";
-import api from "../../config/axios.js"
+import api from "../../config/axios.js";
 import { useNavigate, Link } from "react-router-dom";
 import "../../styles/Layouts/Auth.css";
+import { useState } from "react";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 export default function CompanyRegisterView() {
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const initialValues = {
     nombre: "",
@@ -16,28 +20,57 @@ export default function CompanyRegisterView() {
     password: "",
   };
 
-  const { register, handleSubmit, formState: { errors }, } = useForm({ defaultValues: initialValues });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ defaultValues: initialValues, mode: "onChange" });
 
   const handleRegister = async (formData) => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
+      const normalizedData = {
+    nombre: formData.nombre.trim().toLowerCase(),
+    nit: formData.nit.trim(), 
+    correo: formData.correo.trim().toLowerCase(),
+    password: formData.password.trim(),
+  };
+
     try {
-      const { data } = await api.post("/auth/registerEmpresa", formData);
+      const { data } = await api.post("/auth/registerEmpresa", normalizedData);
+
       const token = data.token;
 
       Cookies.set("token", token, {
         expires: 1 / 96,
-        path: "/auth",
+        path: "/",
         secure: true,
         sameSite: "lax",
       });
 
       toast.success(data.message);
       navigate("/auth/companyRegisterVerify");
+
     } catch (error) {
       if (isAxiosError(error) && error.response) {
-        toast.error(error.response.data.error);
-      } else {
-        toast.error("Error al registrar la empresa");
+        // 🟣 express-validator
+        if (error.response.data.errors) {
+          toast.error(error.response.data.errors[0].msg);
+          return;
+        }
+
+        // 🟢 backend (controladores)
+        if (error.response.data.error) {
+          toast.error(error.response.data.error);
+          return;
+        }
       }
+
+      toast.error("Error al registrar la empresa");
+
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -47,55 +80,83 @@ export default function CompanyRegisterView() {
         <h2>Registro de Empresa</h2>
 
         <form onSubmit={handleSubmit(handleRegister)}>
+
           <label>Nombre de la Empresa</label>
           <input
             type="text"
             {...register("nombre", {
               required: "El nombre de la empresa es obligatorio",
+              maxLength: {
+                value: 50,
+                message: "El nombre no puede tener más de 50 caracteres",
+              },
             })}
             placeholder="Ejemplo S.A.S"
           />
-          {errors.nombre && (
-            <p className="error-message">{errors.nombre.message}</p>
-          )}
+          {errors.nombre && <p className="error-message">{errors.nombre.message}</p>}
 
           <label>NIT</label>
           <input
             type="text"
             {...register("nit", {
               required: "El NIT es obligatorio",
+              pattern: {
+                value: /^[0-9]{10}$/,
+                message: "El NIT debe tener exactamente 10 números",
+              },
             })}
-            placeholder="123456789-0"
+            placeholder="1234567890"
           />
-          {errors.nit && (
-            <p className="error-message">{errors.nit.message}</p>
-          )}
+          {errors.nit && <p className="error-message">{errors.nit.message}</p>}
 
           <label>Correo Electrónico</label>
           <input
             type="email"
             {...register("correo", {
               required: "El correo electrónico es obligatorio",
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: "El correo no tiene un formato válido",
+              },
             })}
             placeholder="empresa@ejemplo.com"
           />
-          {errors.correo && (
-            <p className="error-message">{errors.correo.message}</p>
-          )}
+          {errors.correo && <p className="error-message">{errors.correo.message}</p>}
 
           <label>Contraseña</label>
-          <input
-            type="password"
-            {...register("password", {
-              required: "La contraseña es obligatoria",
-            })}
-            placeholder="********"
-          />
-          {errors.password && (
-            <p className="error-message">{errors.password.message}</p>
-          )}
 
-          <button type="submit">Registrar Empresa</button>
+        
+          <div className="password-field">
+            <input
+              type={showPassword ? "text" : "password"} 
+              {...register("password", {
+                required: "La contraseña es obligatoria",
+                pattern: {
+                  value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$/,
+                  message:
+                    "La contraseña debe tener mínimo 8 caracteres, incluir mayúscula, minúscula, número y símbolo",
+                },
+              })}
+              placeholder="********"
+            />
+            <button
+              type="button"
+              className="toggle-password"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? (
+                <AiOutlineEyeInvisible /> 
+              ) : (
+                <AiOutlineEye /> 
+              )}
+            </button>
+          </div>
+
+          {errors.password && <p className="error-message">{errors.password.message}</p>}
+
+          <button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? <div className="spinner"></div> : "Registrar Empresa"}
+          </button>
         </form>
 
         <p className="auth-redirect">

@@ -11,12 +11,13 @@ export default function AgregarProducto() {
     });
 
     const [metodo, setMetodo] = useState("");
-
+     const [loading, setLoading] = useState(false);
     useEffect(() => {
         setValue("metodo", metodo);
     }, [metodo, setValue]);
 
     const onSubmit = async (formData) => {
+        setLoading(true);
         const token = Cookies.get("token");
 
         if (!token) {
@@ -37,11 +38,19 @@ export default function AgregarProducto() {
             });
 
             toast.success("Producto agregado correctamente");
-        } catch (err) {
-            console.error("Error:", err);
-            const msg = err.response?.data?.message;
-            toast.error(msg || "Error agregando producto");
-        }
+     } catch (err) {
+    console.error("Error:", err);
+
+    const backendError =
+        err.response?.data?.error ||
+        err.response?.data?.message;
+
+    toast.error(backendError || "Error agregando producto");
+} finally {
+        setLoading(false);     
+    }
+
+
     };
 
     return (
@@ -61,7 +70,7 @@ export default function AgregarProducto() {
 
                 {metodo === "id" && (
                     <div className="campo">
-                        <label>ID</label>
+                        <label>ID del producto</label>
                         <input type="number" {...register("id")} />
                     </div>
                 )}
@@ -78,8 +87,8 @@ export default function AgregarProducto() {
                     <input type="number" {...register("cantidad")} />
                 </div>
 
-                <button type="submit" className="btn-enviar" >
-                    Agregar
+                <button type="submit" className="btn-enviar" disabled={loading}>
+                    {loading ? <span className="loader"></span> : "Agregar"}
                 </button>
             </form>
         </div>

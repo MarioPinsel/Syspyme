@@ -9,8 +9,7 @@ export default function HeaderEmployee() {
         <header className="header employee-header">
             <div className="role-badge">EMPLEADO</div>
             <nav className="header-links">
-                <Link to="/sales/register-client">Registro de clientes</Link>
-                <Link to="/sales">Realizar Venta</Link>
+                <Link to="/employee">Dashboard</Link>
                 <button onClick={logout}>Cerrar Sesión</button>
             </nav>
 

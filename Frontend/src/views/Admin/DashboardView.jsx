@@ -3,7 +3,7 @@ import api from "../../config/axios";
 import Cookies from "js-cookie";
 import { Link } from "react-router-dom";
 import "../../styles/Views/DashboardView.css";
-import { Package, PlusSquare, Users, FileText } from "lucide-react";
+import { Package, PlusSquare, Users, FileText, PlusCircle, Receipt } from "lucide-react";
 
 export default function DashboardView() {
 
@@ -46,7 +46,7 @@ export default function DashboardView() {
               <p>Agregar producto</p>
             </Link>
 
-            <Link to="/sales/register-client" className="action-card">
+            <Link to="/sales/create-sale" className="action-card">
               <FileText size={28} />
               <p>Crear una venta</p>
             </Link>
@@ -55,6 +55,16 @@ export default function DashboardView() {
               <Users size={28} />
               <p>Crear nuevo empleado</p>
             </Link>
+           <Link to="/sales/register-client" className="action-card">
+              <PlusCircle size={28} />
+              <p>Registrar cliente</p>
+             </Link>
+
+            <Link to="/sales/BuscarFactura" className="action-card">
+              <Receipt size={28} />
+              <p>Buscar Factura</p>
+             </Link>
+          
           </div>
 
           <div className="dashboard-stats">

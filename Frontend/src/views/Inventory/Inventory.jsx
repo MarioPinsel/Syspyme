@@ -1,12 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import api from "../../config/axios";
 import Cookies from "js-cookie";
 import { Link } from "react-router-dom";
-import "../../styles/Inventory/InventoryForm.css"
+import "../../styles/Inventory/InventoryForm.css";
 
 export default function Inventory() {
     const [search, setSearch] = useState("");
+    const [inventory, setInventory] = useState([]);
+    const [filteredInventory, setFilteredInventory] = useState([]);
+
+    // ✅ Formateador de precio con puntos de miles
+    const formatPrice = (value) => {
+        return new Intl.NumberFormat("es-CO", {
+            minimumFractionDigits: 0
+        }).format(value);
+    };
 
     const getProducts = async () => {
         const token = Cookies.get("token");
@@ -15,7 +24,8 @@ export default function Inventory() {
                 Authorization: `Bearer ${token}`,
             },
         });
-        return data.message ? data.message : data;
+
+        return data.message ? [] : data;
     };
 
     const { data: items = [], isLoading, isError, error } = useQuery({
@@ -23,16 +33,31 @@ export default function Inventory() {
         queryFn: getProducts,
     });
 
-    const filteredItems = Array.isArray(items)
-        ? items.filter((item) => {
-            const codigo = item.product?.codigo || "";
-            const descripcion = item.product?.descripcion?.texto || "";
+    useEffect(() => {
+        setInventory(items);
+        setFilteredInventory(items);
+    }, [items]);
+
+    // ✅ Búsqueda sin duplicar
+    const handleSearch = (value) => {
+        setSearch(value);
+
+        if (!value.trim()) {
+            setFilteredInventory(inventory);
+            return;
+        }
+
+        const filtered = inventory.filter((item) => {
+            const codigo = item.product?.codigo?.toLowerCase() ?? "";
+            const descripcion = item.product?.descripcion?.texto?.toLowerCase() ?? "";
             return (
-                codigo.toLowerCase().includes(search.toLowerCase()) ||
-                descripcion.toLowerCase().includes(search.toLowerCase())
+                codigo.includes(value.toLowerCase()) ||
+                descripcion.includes(value.toLowerCase())
             );
-        })
-        : [];
+        });
+
+        setFilteredInventory(filtered);
+    };
 
     return (
         <div className="inventory-container">
@@ -43,7 +68,7 @@ export default function Inventory() {
                     type="text"
                     placeholder="Buscar por código o descripción..."
                     value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                    onChange={(e) => handleSearch(e.target.value)}
                 />
             </div>
 
@@ -80,17 +105,31 @@ export default function Inventory() {
                                 {error.response?.data?.message || `Error: ${error.message}`}
                             </td>
                         </tr>
-                    ) : filteredItems.length > 0 ? (
-                        filteredItems.map((item) => (
-                            <tr key={item.inventoryId ?? item.product?.id}>
+                    ) : filteredInventory.length > 0 ? (
+                        filteredInventory.map((item) => (
+                            <tr key={`${item.product?.id}-${item.inventoryId ?? "none"}`}>
                                 <td>{item.inventoryId ?? "-"}</td>
                                 <td>{item.product?.id ?? "-"}</td>
                                 <td>{item.product?.codigo ?? "-"}</td>
                                 <td>{item.product?.tipo ?? "-"}</td>
                                 <td>{item.product?.descripcion?.texto ?? "-"}</td>
-                                <td>{item.product?.precioUnitario != null ? `$${item.product.precioUnitario}` : "-"}</td>
-                                <td>{item.cantidad ?? "-"}</td>
-                                <td>{item.createdAt ? new Date(item.createdAt).toLocaleString() : "-"}</td>
+
+                                {/* ✅ Aquí se aplica el formato de precio */}
+                                <td>
+                                    {item.product?.precioUnitario != null
+                                        ? `$${formatPrice(item.product.precioUnitario)}`
+                                        : "-"
+                                    }
+                                </td>
+
+                                <td>{item.cantidad ?? 0}</td>
+
+                                <td>
+                                    {item.createdAt
+                                        ? new Date(item.createdAt.replace("Z", "")).toLocaleString("es-CO", { hour12: true })
+                                        : "-"
+                                    }
+                                </td>
                             </tr>
                         ))
                     ) : (
@@ -105,3 +144,4 @@ export default function Inventory() {
         </div>
     );
 }
+

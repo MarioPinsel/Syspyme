@@ -1,0 +1,105 @@
+:root {
+  --color-fondo: #ffffff;
+  --color-cuadro: #ffffff;
+  --color-borde: #cccccc;
+  --color-boton: #225EA8;
+  --color-boton-hover: #28E0DE;
+  --fuente-principal: 'Titillium Web', sans-serif;
+  --fuente-secundaria: 'Inter', sans-serif;
+}
+
+.buscarFactura-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background-color: var(--color-fondo);
+}
+
+
+.buscarFactura-box {
+  width: 100%;
+  max-width: 420px;
+  padding: 3rem;
+  background: var(--color-cuadro);
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.buscarFactura-box h2 {
+  margin-bottom: 20px;
+  font-family: var(--fuente-secundaria);
+  font-size: 1.6rem;
+}
+
+
+.buscarFactura-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.buscarFactura-form input {
+  padding: 0.9rem;
+  font-size: 1.05rem;
+  border: 1px solid var(--color-borde);
+  border-radius: 8px;
+  outline: none;
+  transition: border 0.2s ease;
+}
+
+.buscarFactura-form input:focus {
+  border-color: var(--color-boton);
+}
+
+
+.buscarFactura-form button {
+  padding: 0.95rem;
+  background: var(--color-boton);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-family: var(--fuente-secundaria);
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.buscarFactura-form button:hover {
+  background: var(--color-boton-hover);
+  transform: translateY(-2px);
+}
+
+.buscarFactura-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+.factura-info {
+  margin-top: 2rem;
+  text-align: left;
+  font-size: 15px;
+}
+
+.factura-info h3 {
+  margin-bottom: 10px;
+}
+
+.loader {
+    width: 18px;
+    height: 18px;
+    border: 3px solid #fff;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin: auto;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
