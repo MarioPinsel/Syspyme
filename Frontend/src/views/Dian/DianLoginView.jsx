@@ -38,7 +38,7 @@ export default function LoginDIAN() {
 
       Cookies.set("token", token, {
         expires: expiration,
-        path: "/dian",
+        path: "/",
         secure: true,
         sameSite: "lax"
       });
