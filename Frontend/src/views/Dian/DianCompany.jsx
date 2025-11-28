@@ -18,13 +18,13 @@ export default function DIANCompanies() {
                 Authorization: `Bearer ${token}`,
             },
         });
-        
+
         return data.data || [];
     };
 
     const updateCompanyStatus = async (companyData) => {
         const token = Cookies.get("token");
-        const { data } = await api.post("/dian/register", companyData, {
+        const { data } = await api.post("/dian/registerCompany", companyData, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -45,17 +45,17 @@ export default function DIANCompanies() {
     const handleAceptar = async (companyCorreo) => {
         try {
             await updateCompanyStatus({
-                action: "accept",
+                action: "aceptar",
                 companyCorreo: companyCorreo,
                 estado: "aceptado",
                 motivo: ""
             });
-            
+
             // Ocultar motivo si estaba visible
             setMostrarMotivo(prev => ({ ...prev, [companyCorreo]: false }));
             refetch();
             alert("Empresa aceptada exitosamente");
-            
+
         } catch (error) {
             console.error("Error al aceptar empresa:", error);
             alert("Error al aceptar empresa");
@@ -64,7 +64,7 @@ export default function DIANCompanies() {
 
     const handleRechazar = async (companyCorreo) => {
         const motivo = motivos[companyCorreo] || "";
-        
+
         if (!motivo.trim()) {
             alert("Por favor ingresa un motivo para rechazar");
             return;
@@ -72,18 +72,18 @@ export default function DIANCompanies() {
 
         try {
             await updateCompanyStatus({
-                action: "reject",
+                action: "rechazar",
                 companyCorreo: companyCorreo,
                 estado: "rechazado",
                 motivo: motivo.trim()
             });
-            
+
             // Limpiar y ocultar motivo después de rechazar
             setMotivos(prev => ({ ...prev, [companyCorreo]: "" }));
             setMostrarMotivo(prev => ({ ...prev, [companyCorreo]: false }));
             refetch();
             alert("Empresa rechazada exitosamente");
-            
+
         } catch (error) {
             console.error("Error al rechazar empresa:", error);
             alert("Error al rechazar empresa");
@@ -96,7 +96,7 @@ export default function DIANCompanies() {
             ...prev,
             [companyCorreo]: !prev[companyCorreo]
         }));
-        
+
         // Si se oculta, limpiar el motivo
         if (mostrarMotivo[companyCorreo]) {
             setMotivos(prev => ({ ...prev, [companyCorreo]: "" }));
@@ -123,7 +123,7 @@ export default function DIANCompanies() {
             const nit = company.nit?.toLowerCase() ?? "";
             const correo = company.correo?.toLowerCase() ?? "";
             const regimen = company.regimen?.toLowerCase() ?? "";
-            
+
             return (
                 nombre.includes(value.toLowerCase()) ||
                 nit.includes(value.toLowerCase()) ||
@@ -137,7 +137,7 @@ export default function DIANCompanies() {
 
     const formatDate = (dateString) => {
         if (!dateString) return "-";
-        return new Date(dateString).toLocaleString("es-CO", { 
+        return new Date(dateString).toLocaleString("es-CO", {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
@@ -198,9 +198,9 @@ export default function DIANCompanies() {
                                 <td>{company.telefono ?? "-"}</td>
                                 <td>{company.direccion ?? "-"}</td>
                                 <td>{company.regimen ?? "-"}</td>
-                                <td>{company.nombreAdmin ?? "-"}</td>
-                                <td>{company.correoAdmin ?? "-"}</td>
-                                <td>{company.telefonoAdmin ?? "-"}</td>
+                                <td>{company.nombre_admin ?? "-"}</td>
+                                <td>{company.correo_admin ?? "-"}</td>
+                                <td>{company.telefono_admin ?? "-"}</td>
                                 <td>{formatDate(company.created_at)}</td>
                                 <td>
                                     {mostrarMotivo[company.correo] ? (
@@ -217,20 +217,20 @@ export default function DIANCompanies() {
                                 </td>
                                 <td>
                                     <div className="action-buttons">
-                                        <button 
+                                        <button
                                             onClick={() => handleAceptar(company.correo)}
                                             className="btn-accept"
                                         >
                                             Aceptar
                                         </button>
-                                        <button 
+                                        <button
                                             onClick={() => toggleMotivo(company.correo)}
                                             className="btn-reject"
                                         >
                                             {mostrarMotivo[company.correo] ? "Cancelar" : "Rechazar"}
                                         </button>
                                         {mostrarMotivo[company.correo] && (
-                                            <button 
+                                            <button
                                                 onClick={() => handleRechazar(company.correo)}
                                                 className="btn-confirm-reject"
                                                 disabled={!motivos[company.correo]?.trim()}
