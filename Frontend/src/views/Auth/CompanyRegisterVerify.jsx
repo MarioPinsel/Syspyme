@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
@@ -9,12 +8,12 @@ import api from "../../config/axios";
 export default function VerificationCode() {
     const [code, setCode] = useState(Array(6).fill(""));
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [successMessage, setSuccessMessage] = useState(null);
     const inputRefs = useRef([]);
     const navigate = useNavigate();
 
     const handleChange = (value, index) => {
         if (value.length > 1) return;
-
         const newCode = [...code];
         newCode[index] = value;
         setCode(newCode);
@@ -32,7 +31,6 @@ export default function VerificationCode() {
 
     const handlePaste = (e) => {
         const paste = e.clipboardData.getData("text").trim();
-
         if (/^\d{6}$/.test(paste)) {
             const digits = paste.split("");
             setCode(digits);
@@ -53,7 +51,8 @@ export default function VerificationCode() {
         const token = Cookies.get("token");
 
         if (fullCode.length !== 6) {
-            toast.error("Debes ingresar el código de verificación completo");
+            toast.error("Debes ingresar el código completo");
+            setIsSubmitting(false);
             return;
         }
 
@@ -68,9 +67,7 @@ export default function VerificationCode() {
                 "/auth/verify",
                 { codigo: fullCode },
                 {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+                    headers: { Authorization: `Bearer ${token}` },
                 }
             );
 
@@ -85,37 +82,52 @@ export default function VerificationCode() {
                 });
             }
 
-            console.log("✅ Verificación exitosa:", data);
-            navigate("/auth/register");
-            window.location.reload();
+            // ✔ Recibir mensaje del backend
+            if (data.message) {
+                setSuccessMessage(data.message);
+            }
 
         } catch (error) {
             console.error("❌ Error en la verificación:", error);
 
             if (error.response?.data?.errors) {
                 toast.error(error.response.data.errors[0].msg);
-                setIsSubmitting(false);
-                return;
-            }
-
-            if (error.response?.data?.error) {
+            } else if (error.response?.data?.error) {
                 toast.error(error.response.data.error);
-                setIsSubmitting(false);
-                return;
+            } else {
+                toast.error("Código incorrecto");
             }
 
-            toast.error("Código incorrecto");
         } finally {
             setIsSubmitting(false);
-         }
+        }
     };
+
+    // ✔ Si ya hay mensaje, mostramos pantalla estática
+    if (successMessage) {
+        return (
+            <div className="verification-container">
+                <div className="verification-box">
+                    <h2>Verificación exitosa</h2>
+
+                    <p className="verification-instructions" style={{ textAlign: "left" }}>
+                        {successMessage}
+                    </p>
+
+                    <button onClick={() => navigate("/")}>
+                        Volver al inicio
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="verification-container">
             <div className="verification-box">
                 <h2>Código de Verificación</h2>
                 <p className="verification-instructions">
-                    Revisa la bandeja de tu correo electrónico por el código de verificación.
+                    Revisa tu correo electrónico por el código.
                 </p>
 
                 <form onSubmit={handleVerify}>
@@ -137,7 +149,7 @@ export default function VerificationCode() {
                         ))}
                     </div>
 
-                     <button type="submit" disabled={isSubmitting}>
+                    <button type="submit" disabled={isSubmitting}>
                         {isSubmitting ? <div className="spinner"></div> : "Verificar"}
                     </button>
                 </form>

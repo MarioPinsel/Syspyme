@@ -29,7 +29,7 @@ import RegistrarEmpleado from "./views/Admin/RegisterEmployee.jsx";
 import BuscarFactura from "./views/Sales/BuscarFactura.jsx";
 
 import RequireAuth from "./components/RequireAuth.jsx";
-import NotFound from "./components/NotFound.jsx"; 
+import NotFound from "./components/NotFound.jsx";
 
 export default function Router() {
   return (
@@ -43,12 +43,10 @@ export default function Router() {
         <Route path="/auth" element={<Main />}>
           <Route path="login" element={<LoginView />} />
           <Route path="loginVerify" element={<LoginVerify />} />
-          <Route path="register" element={<RegisterView />} />
-          <Route path="newregister" element={<NewCompanyRegisterView/>} />
           <Route path="companyRegister" element={<CompanyRegisterView />} />
           <Route path="registerVerify" element={<RegisterVerify />} />
           <Route path="companyRegisterVerify" element={<CompanyRegisterVerify />} />
-          <Route path="login-dian" element={<DianLoginView/>} />
+          <Route path="login-dian" element={<DianLoginView />} />
         </Route>
 
         <Route element={<RequireAuth allowedRoles={["admin"]} />}>
@@ -80,17 +78,17 @@ export default function Router() {
           </Route>
         </Route>
 
-     
+
         <Route element={<RequireAuth allowedRoles={["dian"]} />}>
           <Route path="/dian" element={<Common />}>
             <Route index element={<DianDashboard />} />
-            <Route path="companies" element={<DianCompany/>} />
+            <Route path="companies" element={<DianCompany />} />
             <Route path="reports" element={<DianReports />} />
-            <Route path ="verification" element={<DianVerification />} />
+            <Route path="verification" element={<DianVerification />} />
           </Route>
         </Route>
-        
-      {/* <Route path="/dian" element={<Common />}>
+
+        {/* <Route path="/dian" element={<Common />}>
   <Route index element={<DianDashboard />} />
   <Route path="companies" element={<DianCompany/>} />
   <Route path="reports" element={<DianReports />} />
