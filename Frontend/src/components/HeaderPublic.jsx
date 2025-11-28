@@ -8,7 +8,7 @@ export default function HeaderPublic() {
             <nav className="header-links">
                 <Link to="/">Inicio</Link>
                 <Link to="/auth/login">Iniciar Sesión</Link>
-                <Link to="/auth/companyRegister">Registra tu empresa</Link>
+                <Link to="/auth/newregister">Registra tu empresa</Link>
             </nav>
         </header>
     );

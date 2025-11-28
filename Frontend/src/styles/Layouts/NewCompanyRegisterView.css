@@ -1,0 +1,487 @@
+:root {
+  --color-fondo: #ffffff;
+  --color-cuadro: #f7f9fc;
+  --color-borde: #d6d6d6;
+  --color-boton: #225EA8;
+  --color-boton-hover: #28E0DE;
+  --color-primario: #225EA8;
+  --color-acento: #28E0DE;
+  --fuente-principal: 'Titillium Web', sans-serif;
+  --fuente-secundaria: 'Inter', sans-serif;
+}
+
+.register-company-container {
+  max-width: 900px;
+  margin: 40px auto;
+  background-color: var(--color-cuadro);
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  font-family: var(--fuente-principal);
+}
+
+.register-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 30px;
+  font-family: var(--fuente-secundaria);
+  font-weight: 700;
+  color: #333;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.form-section {
+  background: var(--color-fondo);
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid var(--color-borde);
+}
+
+.form-section h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #333;
+  font-family: var(--fuente-secundaria);
+  border-bottom: 2px solid var(--color-acento);
+  padding-bottom: 10px;
+}
+
+.radio-group {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.radio-label input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--color-primario);
+}
+
+.form-field {
+  margin-bottom: 18px;
+}
+
+.form-field label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.form-field input,
+.form-field select {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid var(--color-borde);
+  border-radius: 8px;
+  background: var(--color-fondo);
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: var(--fuente-principal);
+}
+
+.form-field input:focus,
+.form-field select:focus {
+  border-color: var(--color-primario);
+  box-shadow: 0 0 0 3px rgba(34, 94, 168, 0.1);
+}
+
+.form-field select {
+  cursor: pointer;
+}
+
+.password-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-field input {
+  padding-right: 45px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  color: #666;
+  font-size: 1.3rem;
+}
+
+.toggle-password:hover {
+  color: var(--color-primario);
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 0.85rem;
+  margin-top: 5px;
+  font-weight: 500;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.btn-submit {
+  width: 100%;
+  background-color: var(--color-boton);
+  color: white;
+  padding: 16px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  font-family: var(--fuente-secundaria);
+  margin-top: 10px;
+}
+
+.btn-submit:hover {
+  background-color: var(--color-boton-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-submit:active {
+  transform: translateY(0);
+}
+
+.btn-submit:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.auth-redirect {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.auth-link {
+  color: var(--color-primario);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.auth-link:hover {
+  color: var(--color-acento);
+  text-decoration: underline;
+}
+
+/* ===== ESTILOS PARA TÉRMINOS Y CONDICIONES ===== */
+.terms-section {
+  background: var(--color-fondo);
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid var(--color-borde);
+  text-align: center;
+  margin-top: 10px;
+}
+
+.btn-terms-view {
+  background: var(--color-primario);
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 20px;
+  transition: background-color 0.3s, transform 0.2s;
+  font-family: var(--fuente-secundaria);
+  width: 100%;
+  max-width: 300px;
+}
+
+.btn-terms-view:hover {
+  background-color: var(--color-boton-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.terms-acceptance {
+  margin: 15px 0;
+}
+
+.terms-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #333;
+}
+
+.terms-checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--color-primario);
+}
+
+.terms-warning {
+  color: #dc3545;
+  font-size: 0.9rem;
+  margin: 10px 0 0 0;
+  font-weight: 500;
+}
+
+/* Modal de Términos */
+.terms-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.terms-modal {
+  background: var(--color-fondo);
+  border-radius: 15px;
+  max-width: 700px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--color-borde);
+}
+
+.terms-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px 30px;
+  border-bottom: 2px solid var(--color-acento);
+  background: var(--color-cuadro);
+  border-radius: 15px 15px 0 0;
+}
+
+.terms-modal-header h3 {
+  color: var(--color-primario);
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: var(--fuente-secundaria);
+}
+
+.terms-modal-close {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #6c757d;
+  padding: 0;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.terms-modal-close:hover {
+  color: #dc3545;
+  background-color: rgba(220, 53, 69, 0.1);
+}
+
+.terms-modal-content {
+  padding: 30px;
+  overflow-y: auto;
+  flex: 1;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.terms-modal-content h4 {
+  color: var(--color-primario);
+  margin-top: 25px;
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  font-family: var(--fuente-secundaria);
+}
+
+.terms-modal-content p {
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.terms-modal-content ul {
+  margin-left: 25px;
+  margin-bottom: 16px;
+}
+
+.terms-modal-content li {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.legal-notice {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 8px;
+  padding: 18px;
+  margin-top: 25px;
+}
+
+.legal-notice p {
+  margin-bottom: 0;
+  color: #856404;
+}
+
+.terms-modal-footer {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+  padding: 20px 30px;
+  border-top: 1px solid var(--color-borde);
+  background: var(--color-cuadro);
+  border-radius: 0 0 15px 15px;
+}
+
+.btn-terms-accept {
+  background: var(--color-primario);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+  font-family: var(--fuente-secundaria);
+}
+
+.btn-terms-accept:hover {
+  background-color: var(--color-boton-hover);
+}
+
+.btn-terms-close {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+  font-family: var(--fuente-secundaria);
+}
+
+.btn-terms-close:hover {
+  background: #5a6268;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .register-company-container {
+    width: 95%;
+    padding: 25px;
+  }
+
+  .register-title {
+    font-size: 1.6rem;
+  }
+
+  .form-section {
+    padding: 20px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .radio-group {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .btn-submit {
+    font-size: 1.1rem;
+    padding: 14px;
+  }
+
+  .terms-modal {
+    margin: 10px;
+    max-height: 90vh;
+  }
+  
+  .terms-modal-header,
+  .terms-modal-content,
+  .terms-modal-footer {
+    padding: 20px;
+  }
+  
+  .terms-modal-footer {
+    flex-direction: column;
+  }
+
+  .terms-modal-header h3 {
+    font-size: 1.3rem;
+  }
+
+  .btn-terms-view {
+    max-width: 100%;
+    padding: 12px 20px;
+  }
+}
