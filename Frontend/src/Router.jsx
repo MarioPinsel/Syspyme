@@ -14,7 +14,7 @@ import NewCompanyRegisterView from "./views/Auth/NewCompanyRegisterView.jsx"
 import DianLoginView from "./views/Dian/DianLoginView.jsx";
 import DianDashboard from "./views/Dian/DianDashboard.jsx"
 import DianCompany from "./views/Dian/DianCompany.jsx";
-import DianReports from "./views/Dian/DIANReports.jsx";
+import DianReports from "./views/Dian/DianReports.jsx";
 import DianVerification from "./views/Dian/DianVerification.jsx"
 
 import Inventory from "./views/Inventory/Inventory.jsx";
