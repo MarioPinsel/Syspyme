@@ -4,10 +4,11 @@ import { createUsuario } from '../repositories/user/userRepository.js';
 import { createDataBase } from '../config/createDataBase.js';
 import { getPool } from '../config/secretManagment.js';
 import { sendResponseDIANAccepted, sendResponseDIANRejected } from '../utils/sendResponseDIAN.js';
+import { findUserDIANByUsuario } from '../repositories/userDIAN/userDIANRepository.js'
 
 export const loginDIANService = async ({ usuario, password }) => {
 
-    const exists = await findUser(usuario);
+    const exists = await findUserDIANByUsuario(usuario);
 
     if (exists.rowCount === 0) {
         return {

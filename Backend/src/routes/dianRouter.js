@@ -7,7 +7,7 @@ import { authToken, isDIAN } from '../middleware/authMiddleware.js';
 const router = Router();
 
 router.post('/login', loginDIANValidation, validate, loginDIANController);
-//router.use(authToken, isDIAN);
+router.use(authToken, isDIAN);
 router.get('/getCompanies', getCompaniesDIANController);
 router.post('/registerCompany', actionValidation, validate, registerCompanyController);
 
