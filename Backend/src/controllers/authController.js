@@ -36,7 +36,6 @@ export const createAccount = async (req, res) => {
 export const verifyAccountController = async (req, res) => {
     try {
         const pool = req.pool;
-        console.log('\n\n\n\n', pool);
         const { codigo } = req.body;
         const { empresaNombre, correo, tipo } = req.user;
         const result = await verifyAccount({ pool, empresaNombre, correo, tipo, codigo });

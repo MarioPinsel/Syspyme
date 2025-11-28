@@ -1,12 +1,12 @@
 import { pool } from '../../config/conectionCore.js';
 
-export const createEmpresa = async ({ nombre, nit, correo, password }) => {
+export const createEmpresa = async (nombre, nit, correo, password, telefono, direccion, regimen) => {
   const query = `
-    INSERT INTO empresas (nombre, nit, correo, password)
-    VALUES ($1, $2, $3, $4)
+    INSERT INTO empresas (nombre, nit, correo, password, telefono, direccion, regimen)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
     RETURNING *;
   `;
-  const values = [nombre, nit, correo, password];
+  const values = [nombre, nit, correo, password, telefono, direccion, regimen];
   return await pool.query(query, values);
 };
 
@@ -20,13 +20,13 @@ export const findEmpresaByNombre = async (nombre) => {
   return await pool.query(query, [nombre]);
 };
 
-export const createTempEmpresa = async ({ nombre, nit, correo, password, code, created_at }) => {
+export const createTempEmpresa = async ({ nombre, nit, correo, password, telefono, direccion, regimen, nombre_admin, correo_admin, telefono_admin, code, created_at }) => {
   const query = `
-    INSERT INTO temp_Empresas (nombre, nit, correo, password, codigo_verificacion, created_at)
-    VALUES ($1, $2, $3, $4, $5, $6)
+    INSERT INTO temp_Empresas (nombre, nit, correo, password, telefono, direccion, regimen, nombre_admin, correo_admin, telefono_admin, codigo_verificacion, created_at)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
     RETURNING *;
   `;
-  const values = [nombre, nit, correo, password, code, created_at];
+  const values = [nombre, nit, correo, password, telefono, direccion, regimen, nombre_admin, correo_admin, telefono_admin, code, created_at];
   return await pool.query(query, values);
 };
 
@@ -34,6 +34,27 @@ export const findTempEmpresaByCorreo = async (correo) => {
   const query = `SELECT * FROM temp_Empresas WHERE correo = $1`;
   return await pool.query(query, [correo]);
 };
+
+export const findTempEmpresaByVerificacion = async () => {
+  const query = `
+    SELECT 
+      nombre,
+      nit,
+      correo,
+      telefono,
+      direccion,
+      regimen,
+      nombreAdmin,
+      correoAdmin,
+      telefonoAdmin,
+      created_at
+    FROM temp_Empresas
+    WHERE verified = true
+  `;
+
+  return await pool.query(query);
+};
+
 
 export const findTempEmpresaByNombre = async (nombre) => {
   const query = `SELECT * FROM temp_Empresas WHERE nombre = $1`;
@@ -50,3 +71,7 @@ export const updateTempEmpresaCodigo = async (correo, newCode, newCreatedAt) => 
   return await pool.query(query, [newCode, newCreatedAt, correo])
 }
 
+export const updateVerifiedTempEmpresa = async (correo) => {
+  const query = `UPDATE temp_Empresas SET verified = true WHERE correo = $1`;
+  return await pool.query(query, [correo]);
+}

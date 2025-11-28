@@ -1,5 +1,6 @@
 import { generateToken } from '../utils/tokenUtils.js';
 import { sendVerificationEmail } from '../utils/mailUtils.js';
+import { sendMessageDIAN } from '../utils/sendMessageDIAN.js';
 import { hashPassword, checkPassword } from '../utils/hashUtils.js';
 import {
     createTempUsuario, findTempUsuarioByCorreo, deleteTempUsuario,
@@ -7,10 +8,8 @@ import {
     findUsuarioByCorreoOHandle, updateTempUsuarioCodigo, findUsuarioByNombre, findTempUsuarioByNombre, findUsuarioByHandle, findTempUsuarioByHandle
 } from '../repositories/user/userRepository.js';
 import {
-    createTempEmpresa, findTempEmpresaByCorreo, deleteTempEmpresa,
-    createEmpresa, findEmpresaByCorreo, findEmpresaByNombre, updateTempEmpresaCodigo, findTempEmpresaByNombre
+    createTempEmpresa, findTempEmpresaByCorreo, findEmpresaByCorreo, findEmpresaByNombre, updateTempEmpresaCodigo, findTempEmpresaByNombre, updateVerifiedTempEmpresa
 } from '../repositories/enterprise/companyRepository.js';
-import { createDataBase } from '../config/createDataBase.js';
 import { getPool } from '../config/secretManagment.js'
 
 const generateCode = () => Math.floor(100000 + Math.random() * 900000);
@@ -32,8 +31,8 @@ const isExpired = (created_at) => {
     return minutesPassed > CODE_EXPIRATION_MINUTES;
 };
 
-export const registerEmpresa = async ({ nombre, nit, correo, password }) => {
-    console.log('Register Empresa:', { nombre, nit, correo, password });
+export const registerEmpresa = async ({ nombre, nit, correo, password, telefono, direccion, regimen, nombre_admin, correo_admin, telefono_admin }) => {
+
     if ((await findEmpresaByCorreo(correo)).rowCount) throw new Error('EMPRESA_ALREADY_EXISTS');
     if ((await findEmpresaByNombre(nombre)).rowCount) throw new Error('EMPRESA_ALREADY_EXISTS');
     if ((await findTempEmpresaByCorreo(correo)).rowCount) throw new Error('PENDING_VERIFICATION');
@@ -42,8 +41,8 @@ export const registerEmpresa = async ({ nombre, nit, correo, password }) => {
     const hashed = await hashPassword(password);
     const code = generateCode();
 
-    await createTempEmpresa({ nombre, nit, correo, password: hashed, code, created_at: new Date() });
-    await sendVerificationEmail(correo, code);
+    await createTempEmpresa({ nombre, nit, correo, password: hashed, telefono, direccion, regimen, nombre_admin, correo_admin, telefono_admin, code, created_at: new Date() });
+    await sendVerificationEmail(correo_admin, code);
 
     const token = generateToken({ correo, tipo: 'empresa', empresaNombre: nombre, created: false }, '15m');
     return { message: 'Código de verificación enviado al correo.', token };
@@ -106,6 +105,7 @@ export const registerUsuario = async ({ pool, userId, empresaNombre, nombre, cor
     };
 };
 
+
 export const verifyAccount = async ({ pool, empresaNombre, correo, tipo, codigo }) => {
     const isEmpresa = tipo === 'empresa';
 
@@ -124,13 +124,12 @@ export const verifyAccount = async ({ pool, empresaNombre, correo, tipo, codigo 
     if (temp.codigo_verificacion !== parseInt(codigo)) throw new Error('INVALID_CODE');
 
     if (isEmpresa) {
-        const result = await createEmpresa({ nombre: temp.nombre, nit: temp.nit, correo, password: temp.password });
-        await deleteTempEmpresa(correo);
+        await updateVerifiedTempEmpresa(correo);
+        await sendMessageDIAN(empresaNombre, process.env.EMAIL_USER);
+        return {
+            message: 'La información de la empresa ha sido enviada a la DIAN para su verificación. Por favor, revise periódicamente el correo electrónico del representante, donde recibirá la notificación del resultado del proceso. El tiempo estimado de respuesta es de 24 a 72 horas. Una vez reciba el correo, siga las instrucciones proporcionadas para completar su registro.'
+        };
 
-        const empresaNombre = result.rows[0].nombre;
-        const finalToken = generateToken({ isAdmin: true, created: true, correo, empresaNombre }, '1d');
-        await createDataBase(empresaNombre);
-        return { message: 'Registro exitoso', token: finalToken };
     } else {
         const result = await createUsuario(pool, {
             nombre: temp.nombre,

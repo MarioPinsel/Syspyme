@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import authRouter from './routes/authRouter.js';
+import dianRouter from './routes/dianRouter.js';
 import inventoryRouter from './routes/inventoryRouter.js'
 import customersRouter from './routes/customersRouter.js';
 import salesRouter from './routes/salesRouter.js'
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use(cors(corsConfig))
 
 app.use('/auth', authRouter)
+app.use('/dian', dianRouter)
 app.use('/inventory', inventoryRouter)
 app.use('/customers', customersRouter)
 app.use('/sales', salesRouter)

@@ -2,13 +2,78 @@ import { body } from 'express-validator';
 
 const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 
+const telefonoColombiaRegex = /^(3\d{9}|[1-9]\d{0,2}\d{7})$/;
+
+const direccionColombiaRegex = /^[a-zA-Z0-9\s#\-\.\,]{5,100}$/;
+
+const nitColombiaRegex = /^\d{9,11}$/;
+
+export const loginDIANValidation = [
+    body('usuario').notEmpty().withMessage('Usuario o correo obligatorio'),
+    body('password').notEmpty().withMessage('Contraseña de usuario obligatoria')
+]
+
+export const actionValidation = [
+    body("correo")
+        .notEmpty().withMessage("El correo es obligatorio.")
+        .isEmail().withMessage("El correo no es válido."),
+
+    body("action")
+        .notEmpty().withMessage("El campo action es obligatorio.")
+        .isIn(["aceptar", "rechazar"])
+        .withMessage("Action debe ser 'aceptar' o 'rechazar'."),
+
+    body("motivo")
+        .custom((value, { req }) => {
+            if (req.body.action === "rechazar" && (!value || value.trim() === "")) {
+                throw new Error("El motivo es obligatorio cuando action = 'rechazar'.");
+            }
+            return true;
+        }),
+
+];
+
 export const registerValidationEmpresa = [
-    body('nombre').notEmpty().withMessage('El nombre no puede ir vacío').isLength({ max: 50 }),
-    body('nit').matches(/\b[0-9]{10}\b/).withMessage('NIT inválido'),
-    body('correo').isEmail().withMessage('Email inválido').normalizeEmail(),
-    body('password')
+
+    body("nombre")
+        .notEmpty().withMessage("El nombre no puede ir vacío")
+        .isLength({ max: 50 }).withMessage("Máximo 50 caracteres"),
+
+    body("nit")
+        .matches(nitColombiaRegex)
+        .withMessage("NIT inválido. Debe ser 9-10 dígitos, con o sin dígito de verificación"),
+
+    body("correo")
+        .isEmail().withMessage("Email inválido")
+        .normalizeEmail(),
+
+    body("password")
         .matches(passwordRegex)
-        .withMessage('La contraseña debe tener mínimo 8 caracteres, incluir mayúscula, minúscula, número y símbolo')
+        .withMessage("La contraseña debe tener mínimo 8 caracteres, incluir mayúscula, minúscula, número y símbolo"),
+
+    body("telefono")
+        .matches(telefonoColombiaRegex)
+        .withMessage("Teléfono inválido. Solo números. Celular 10 dígitos o fijo con indicativo"),
+
+    body("direccion")
+        .matches(direccionColombiaRegex)
+        .withMessage("Dirección inválida. Debe tener mínimo 5 caracteres y solo usar letras, números o #,-,."),
+
+    body("regimen")
+        .notEmpty().withMessage("El régimen no puede ir vacío"),
+
+    body("nombre_admin")
+        .notEmpty().withMessage("El nombre del administrador no puede estar vacío")
+        .isLength({ max: 50 }).withMessage("Máximo 50 caracteres"),
+
+    body("correo_admin")
+        .isEmail().withMessage("Correo de administrador inválido")
+        .normalizeEmail(),
+
+    body("telefono_admin")
+        .matches(telefonoColombiaRegex)
+        .withMessage("Teléfono del administrador inválido"),
+
 ];
 
 export const registerValidation = [

@@ -9,8 +9,7 @@ export const authToken = async (req, res, next) => {
         const decoded = verifyToken(token);
 
         req.user = decoded;
-        console.log(decoded)
-        if (decoded.created === true) {            
+        if (decoded.created === true) {
             req.pool = await getPool(decoded.empresaNombre);
 
         }
@@ -28,4 +27,9 @@ export const isAdmin = (req, res, next) => {
     return res.status(403).json({ error: 'Solo una empresa o administrador puede realizar esta acción.' });
 };
 
+export const isDIAN = (req, res, next) => {
+    const { isDIAN } = req.user || {};
+    if (isDIAN) return next();
+    return res.status(403).json({ error: 'Solo la DIAN puede hacer esta acción.' });
+};
 
