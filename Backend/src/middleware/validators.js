@@ -40,6 +40,7 @@ export const registerValidationEmpresa = [
         .isLength({ max: 50 }).withMessage("Máximo 50 caracteres"),
 
     body("nit")
+        .notEmpty().withMessage("El régimen no puede ir vacío")
         .matches(nitColombiaRegex)
         .withMessage("NIT inválido. Debe ser 9-10 dígitos, con o sin dígito de verificación"),
 
@@ -48,10 +49,12 @@ export const registerValidationEmpresa = [
         .normalizeEmail(),
 
     body("password")
+        .notEmpty().withMessage("El régimen no puede ir vacío")
         .matches(passwordRegex)
         .withMessage("La contraseña debe tener mínimo 8 caracteres, incluir mayúscula, minúscula, número y símbolo"),
 
     body("telefono")
+        .notEmpty().withMessage("El régimen no puede ir vacío")
         .matches(telefonoColombiaRegex)
         .withMessage("Teléfono inválido. Solo números. Celular 10 dígitos o fijo con indicativo"),
 
@@ -71,6 +74,7 @@ export const registerValidationEmpresa = [
         .normalizeEmail(),
 
     body("telefono_admin")
+        .notEmpty().withMessage("El régimen no puede ir vacío")
         .matches(telefonoColombiaRegex)
         .withMessage("Teléfono del administrador inválido"),
 
