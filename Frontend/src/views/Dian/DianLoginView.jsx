@@ -3,10 +3,11 @@ import { toast } from "sonner";
 import { isAxiosError } from "axios";
 import Cookies from "js-cookie";
 import api from "../../config/axios";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../../styles/Layouts/Auth.css";
 import { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { jwtDecode } from "jwt-decode";
 
 export default function LoginDIAN() {
   const navigate = useNavigate();
@@ -18,7 +19,11 @@ export default function LoginDIAN() {
     password: "",
   };
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     defaultValues: initialValues,
   });
 
@@ -31,21 +36,43 @@ export default function LoginDIAN() {
     };
 
     try {
-      const { data } = await api.post('/dian/login', normalizedData);
+      const { data } = await api.post("/dian/login", normalizedData);
       const token = data.token;
 
+      // Guardar el token temporalmente (15 min)
       const expiration = new Date(new Date().getTime() + 15 * 60 * 1000);
 
       Cookies.set("token", token, {
         expires: expiration,
         path: "/",
         secure: true,
-        sameSite: "lax"
+        sameSite: "lax",
       });
 
-      toast.success(data.message);
-      navigate("/dian");
-      window.location.reload();
+      // DECODIFICAR TOKEN
+      const decoded = jwtDecode(token);
+
+      // VALIDAR ACCESO DIAN
+      if (decoded.isDIAN === true) {
+        Cookies.set("role", "dian", {
+          expires: expiration,
+          path: "/",
+          secure: true,
+          sameSite: "lax",
+        });
+
+        toast.success(data.message);
+
+        navigate("/dian");
+        window.location.reload();
+        return;
+      }
+
+      // Si llega un token NO DIAN → bloquear
+      toast.error("Acceso no autorizado.");
+      Cookies.remove("token");
+      Cookies.remove("role");
+
     } catch (error) {
       if (isAxiosError(error) && error.response) {
         if (error.response.data.errors) {
@@ -69,7 +96,6 @@ export default function LoginDIAN() {
         <h2>Iniciar Sesión - DIAN</h2>
 
         <form onSubmit={handleSubmit(handleLogin)}>
-
           <label>Usuario</label>
           <input
             type="text"
@@ -96,7 +122,11 @@ export default function LoginDIAN() {
               className="toggle-password"
               onClick={() => setShowPassword(!showPassword)}
             >
-              {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+              {showPassword ? (
+                <AiOutlineEyeInvisible />
+              ) : (
+                <AiOutlineEye />
+              )}
             </button>
           </div>
 
@@ -104,7 +134,11 @@ export default function LoginDIAN() {
             <p className="error-message">{errors.password.message}</p>
           )}
 
-          <button type="submit" disabled={loading} className={loading ? "loading" : ""}>
+          <button
+            type="submit"
+            disabled={loading}
+            className={loading ? "loading" : ""}
+          >
             {loading ? (
               <>
                 <span className="spinner"></span> Cargando...
@@ -113,7 +147,6 @@ export default function LoginDIAN() {
               "Iniciar Sesión"
             )}
           </button>
-
         </form>
       </div>
     </div>
