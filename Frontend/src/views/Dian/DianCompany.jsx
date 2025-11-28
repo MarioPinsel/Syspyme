@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import api from "../../config/axios";
 import Cookies from "js-cookie";
+import { toast } from "sonner";
 import "../../styles/Views/DianCompany.css";
 
 export default function DIANCompanies() {
@@ -9,7 +10,7 @@ export default function DIANCompanies() {
     const [companies, setCompanies] = useState([]);
     const [filteredCompanies, setFilteredCompanies] = useState([]);
     const [motivos, setMotivos] = useState({});
-    const [mostrarMotivo, setMostrarMotivo] = useState({}); // Estado para controlar qué empresa muestra el motivo
+    const [mostrarMotivo, setMostrarMotivo] = useState({});
 
     const getCompanies = async () => {
         const token = Cookies.get("token");
@@ -18,18 +19,41 @@ export default function DIANCompanies() {
                 Authorization: `Bearer ${token}`,
             },
         });
-
         return data.data || [];
     };
 
+    // MANEJO DE ERRORES DEL BACKEND AQUÍ
     const updateCompanyStatus = async (companyData) => {
-        const token = Cookies.get("token");
-        const { data } = await api.post("/dian/registerCompany", companyData, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        return data;
+        try {
+            const token = Cookies.get("token");
+            const { data } = await api.post("/dian/registerCompany", companyData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            return data;
+        } catch (error) {
+            console.error("ERROR BACK:", error);
+
+            // Si hubo error de validación (400)
+            if (error.response?.status === 400) {
+                const backend = error.response.data;
+
+                // Error de express-validator → errors: []
+                if (backend.errors) {
+                    backend.errors.forEach((err) => toast.error(err.msg));
+                }
+                // Mensaje normal desde el servicio
+                if (backend.message) toast.error(backend.message);
+
+                throw error;
+            }
+
+            // Error interno del servidor
+            toast.error("Ocurrió un error en el servidor.");
+            throw error;
+        }
     };
 
     const { data: companiesData = [], isLoading, isError, error, refetch } = useQuery({
@@ -44,21 +68,18 @@ export default function DIANCompanies() {
 
     const handleAceptar = async (companyCorreo) => {
         try {
-            await updateCompanyStatus({
+            const res = await updateCompanyStatus({
+                correo: companyCorreo,
                 action: "aceptar",
-                companyCorreo: companyCorreo,
-                estado: "aceptado",
-                motivo: ""
+                motivo: "",
             });
 
-            // Ocultar motivo si estaba visible
+            toast.success(res.message || "Empresa aceptada");
+
             setMostrarMotivo(prev => ({ ...prev, [companyCorreo]: false }));
             refetch();
-            alert("Empresa aceptada exitosamente");
-
         } catch (error) {
-            console.error("Error al aceptar empresa:", error);
-            alert("Error al aceptar empresa");
+            // Ya fue manejado arriba
         }
     };
 
@@ -66,38 +87,34 @@ export default function DIANCompanies() {
         const motivo = motivos[companyCorreo] || "";
 
         if (!motivo.trim()) {
-            alert("Por favor ingresa un motivo para rechazar");
+            toast.error("Debes escribir un motivo");
             return;
         }
 
         try {
-            await updateCompanyStatus({
+            const res = await updateCompanyStatus({
+                correo: companyCorreo,
                 action: "rechazar",
-                companyCorreo: companyCorreo,
-                estado: "rechazado",
-                motivo: motivo.trim()
+                motivo,
             });
 
-            // Limpiar y ocultar motivo después de rechazar
+            toast.success(res.message || "Empresa rechazada");
+
             setMotivos(prev => ({ ...prev, [companyCorreo]: "" }));
             setMostrarMotivo(prev => ({ ...prev, [companyCorreo]: false }));
             refetch();
-            alert("Empresa rechazada exitosamente");
 
         } catch (error) {
-            console.error("Error al rechazar empresa:", error);
-            alert("Error al rechazar empresa");
+            // errores ya mostrados arriba
         }
     };
 
-    // Mostrar/ocultar input de motivo
     const toggleMotivo = (companyCorreo) => {
         setMostrarMotivo(prev => ({
             ...prev,
             [companyCorreo]: !prev[companyCorreo]
         }));
 
-        // Si se oculta, limpiar el motivo
         if (mostrarMotivo[companyCorreo]) {
             setMotivos(prev => ({ ...prev, [companyCorreo]: "" }));
         }
@@ -179,13 +196,13 @@ export default function DIANCompanies() {
                 <tbody>
                     {isLoading ? (
                         <tr>
-                            <td colSpan="12" style={{ textAlign: "center", padding: "20px" }}>
+                            <td colSpan="12" style={{ textAlign: "center" }}>
                                 Cargando empresas...
                             </td>
                         </tr>
                     ) : isError ? (
                         <tr>
-                            <td colSpan="12" style={{ textAlign: "center", padding: "20px" }}>
+                            <td colSpan="12" style={{ textAlign: "center" }}>
                                 Error al cargar empresas: {error.message}
                             </td>
                         </tr>
@@ -206,10 +223,9 @@ export default function DIANCompanies() {
                                     {mostrarMotivo[company.correo] ? (
                                         <input
                                             type="text"
-                                            placeholder="Ingrese el motivo de rechazo"
+                                            placeholder="Ingrese el motivo"
                                             value={motivos[company.correo] || ""}
                                             onChange={(e) => handleMotivoChange(company.correo, e.target.value)}
-                                            className="motivo-input"
                                         />
                                     ) : (
                                         <span>-</span>
@@ -217,18 +233,14 @@ export default function DIANCompanies() {
                                 </td>
                                 <td>
                                     <div className="action-buttons">
-                                        <button
-                                            onClick={() => handleAceptar(company.correo)}
-                                            className="btn-accept"
-                                        >
+                                        <button onClick={() => handleAceptar(company.correo)} className="btn-accept">
                                             Aceptar
                                         </button>
-                                        <button
-                                            onClick={() => toggleMotivo(company.correo)}
-                                            className="btn-reject"
-                                        >
+
+                                        <button onClick={() => toggleMotivo(company.correo)} className="btn-reject">
                                             {mostrarMotivo[company.correo] ? "Cancelar" : "Rechazar"}
                                         </button>
+
                                         {mostrarMotivo[company.correo] && (
                                             <button
                                                 onClick={() => handleRechazar(company.correo)}
@@ -244,7 +256,7 @@ export default function DIANCompanies() {
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="12" style={{ textAlign: "center", padding: "20px" }}>
+                            <td colSpan="12" style={{ textAlign: "center" }}>
                                 No se encontraron empresas.
                             </td>
                         </tr>
