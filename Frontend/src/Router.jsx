@@ -13,7 +13,6 @@ import LoginDIAN from "./views/Dian/DianLoginView.jsx";
 import DIANDashboard from "./views/Dian/DianDashboard.jsx"
 import DianCompany from "./views/Dian/DianCompany.jsx";
 import DianReports from "./views/Dian/DianReports.jsx";
-import DianVerification from "./views/Dian/DianVerification.jsx"
 
 import Inventory from "./views/Inventory/Inventory.jsx";
 import CreateProductView from "./views/Inventory/CreateProduct.jsx";
@@ -82,7 +81,6 @@ export default function Router() {
             <Route index element={<DIANDashboard />} />
             <Route path="companies" element={<DianCompany />} />
             <Route path="reports" element={<DianReports />} />
-            <Route path="verification" element={<DianVerification />} />
           </Route>
         </Route>
 
