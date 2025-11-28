@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS temp_Empresas (
   password VARCHAR(100) NOT NULL,
   telefono VARCHAR(10), 
   direccion VARCHAR(200),
-  regimen VARCHAR(6) NOT NULL,
+  regimen VARCHAR(20) NOT NULL,
   nombre_admin VARCHAR(50) NOT NULL,
   correo_admin VARCHAR(50) NOT NULL,
   telefono_admin VARCHAR(10) NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS empresas (
   password VARCHAR(100) NOT NULL,
   direccion VARCHAR(200),
   telefono VARCHAR(10),
-  regimen VARCHAR(6) NOT NULL,
+  regimen VARCHAR(20) NOT NULL,
   certificado VARCHAR(64),
   certificado_fecha TIMESTAMP, 
   created_at TIMESTAMP DEFAULT NOW()
