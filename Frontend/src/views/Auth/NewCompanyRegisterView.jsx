@@ -48,8 +48,8 @@ export default function RegisterCompany() {
     if (tipoEmpresa === "persona-natural") {
       setNitValidation({
         min: 9,
-        max: 9,
-        message: "El NIT para persona natural debe tener 9 números"
+        max: 10,
+        message: "El NIT para persona natural debe tener entre 9 y 10 números"
       });
     } else {
       setNitValidation({
@@ -160,7 +160,7 @@ export default function RegisterCompany() {
                   message: nitValidation.message,
                 },
               })}
-              placeholder={tipoEmpresa === "persona-natural" ? "9 dígitos" : "10-11 dígitos"}
+              placeholder={tipoEmpresa === "persona-natural" ? "9-10 dígitos" : "10-11 dígitos"}
             />
             {errors.nit && <p className="error-message">{errors.nit.message}</p>}
           </div>
