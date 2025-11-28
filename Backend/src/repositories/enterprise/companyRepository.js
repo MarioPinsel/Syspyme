@@ -44,9 +44,9 @@ export const findTempEmpresaByVerificacion = async () => {
       telefono,
       direccion,
       regimen,
-      nombreAdmin,
-      correoAdmin,
-      telefonoAdmin,
+      nombre_admin,
+      correo_admin,
+      telefono_admin,
       created_at
     FROM temp_Empresas
     WHERE verified = true
