@@ -52,12 +52,23 @@ export const login = async (req, res) => {
     try {
         const { empresa, empresaPassword, usuario, password } = req.body;
         const result = await loginUsuario({ empresa, empresaPassword, usuario, password });
-        res.status(200).json(result);
+        return res.status(200).json(result);
     } catch (error) {
-        if (error.message.includes('COMPANY')) return res.status(400).json({ error: 'Datos de empresa incorrectos.' });
-        if (error.message.includes('USER')) return res.status(400).json({ error: 'Datos de usuario incorrectos.' });
         console.error(error);
-        res.status(500).json({ error: 'Error interno del servidor.' });
+
+        // Manejo de errores específicos
+        switch (error.message) {
+            case 'COMPANY_NOT_FOUND':
+                return res.status(400).json({ error: 'La empresa no existe.' });
+            case 'INVALID_COMPANY_CREDENTIALS':
+                return res.status(400).json({ error: 'Contraseña de empresa incorrecta.' });
+            case 'USER_NOT_FOUND':
+                return res.status(400).json({ error: 'El usuario no existe.' });
+            case 'INVALID_USER_CREDENTIALS':
+                return res.status(400).json({ error: 'Contraseña de usuario incorrecta.' });
+            default:
+                return res.status(500).json({ error: 'Error interno del servidor.' });
+        }
     }
 };
 

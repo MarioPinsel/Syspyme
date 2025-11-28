@@ -35,6 +35,11 @@ export const findTempEmpresaByCorreo = async (correo) => {
   return await pool.query(query, [correo]);
 };
 
+export const findTempEmpresaByNombre = async (nombre) => {
+  const query = `SELECT * FROM temp_Empresas WHERE nombre = $1`;
+  return await pool.query(query, [nombre]);
+};
+
 export const deleteTempEmpresa = async (correo) => {
   const query = `DELETE FROM temp_Empresas WHERE correo = $1`;
   return await pool.query(query, [correo]);

@@ -1,16 +1,17 @@
-import { createReceipt, createDetailReceipt, addXMLAndCUFEToReceipt } from '../repositories/sale/salesRepository.js'
+import { createReceipt, createDetailReceipt, addXMLAndCUFEToReceipt, getReceiptById } from '../repositories/sale/salesRepository.js'
 import { findCustomerByDocument } from '../repositories/customer/customersRepository.js'
 import { findUsuarioByCorreo } from '../repositories/user/userRepository.js'
-import { getTotalStockByProductId, findProductByCode, getInventoryByProductId, updateInventoryQuantity, deleteFromInventory } from '../repositories/inventory/inventoryRepository.js'
+import { getTotalStockByProductId, findProductByCode, getInventoryByProductId, updateInventoryQuantity, deleteFromInventoryById } from '../repositories/inventory/inventoryRepository.js'
 import { getFirmaDigital } from '../utils/firmaDigital.js'
 import { generarCUFE } from '../utils/cufeUtils.js';
 import { findEmpresaByNombre } from '../repositories/enterprise/companyRepository.js';
 import { sendFacturaEmail } from '../utils/sendFacturaEmail.js';
-import {generarXMLFactura} from '../utils/generatexml.js'
+import { generarXMLFactura } from '../utils/generatexml.js'
+import { generarHTMLDesdeXML } from '../utils/generarHTMLDesdeXML.js';
 
 const iva = 0.19;
 
-export const createSaleService = async (pool, correo, empresaNombre, {document, items, paymentMethod, paymentType, creditTerm}) => {
+export const createSaleService = async (pool, correo, empresaNombre, { document, items, paymentMethod, paymentType, creditTerm }) => {
 
     const clienteRes = await findCustomerByDocument(pool, document);
     if (clienteRes.rowCount === 0) {
@@ -36,18 +37,23 @@ export const createSaleService = async (pool, correo, empresaNombre, {document, 
         if (stockRes.rows[0].total_stock < item.quantity)
             return { success: false, message: `Stock insuficiente para producto ${item.code}` };
 
-        let restante = item.quantity;
+        let restante = Number(item.quantity);
         const invRes = await getInventoryByProductId(pool, producto.id);
+
         for (const row of invRes.rows) {
+            const cantidadFila = Number(row.cantidad);
+
             if (restante <= 0) break;
-            if (row.cantidad <= restante) {
-                await deleteFromInventory(pool, row.id);
-                restante -= row.cantidad;
+
+            if (cantidadFila <= restante) {
+                await deleteFromInventoryById(pool, row.id);
+                restante -= cantidadFila;
             } else {
-                await updateInventoryQuantity(pool, row.id, row.cantidad - restante);
+                await updateInventoryQuantity(pool, row.id, cantidadFila - restante);
                 restante = 0;
             }
         }
+
 
         const subtotal = producto.precio_unitario * item.quantity;
         subTotal += subtotal;
@@ -83,11 +89,23 @@ export const createSaleService = async (pool, correo, empresaNombre, {document, 
             d.total
         );
     }
-
+    async function getHoraBogotaConMilisegundos() {
+        const now = new Date();
+        const parts = new Intl.DateTimeFormat("en-GB", {
+            timeZone: "America/Bogota",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false
+        }).formatToParts(now);
+        const hora = parts.map(p => p.value).join("");
+        const ms = now.getMilliseconds().toString().padStart(3, "0");
+        return `${hora}.${ms}`;
+    }
     const cufe = generarCUFE({
         numFac: `FV${receiptId}`,
-        fecFac: new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota", year: "numeric", month: "2-digit", day: "2-digit" }),  
-        horFac: new Date().toLocaleTimeString("en-GB", { timeZone: "America/Bogota", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }),
+        fecFac: new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota", year: "numeric", month: "2-digit", day: "2-digit" }),
+        horFac: await getHoraBogotaConMilisegundos(),
         valFac: subTotal.toFixed(2),
         codImp1: '01',
         valImp1: impuestos.toFixed(2),
@@ -124,8 +142,18 @@ export const createSaleService = async (pool, correo, empresaNombre, {document, 
     return { success: true, message: "Venta creada exitosamente.", receiptId }
 
 }
-export const getSalesService = async () => {
+
+export const getSaleService = async (pool, id) => {
+
+    const result = await getReceiptById(pool, id);
+
+    if (result.rowCount === 0) {
+        return { success: false, message: "Factura no encontrada." };
+    }
+
+    const facturaXML = result.rows[0].factura_xml;
+    const html = await generarHTMLDesdeXML(facturaXML);
+
+    return { success: true, html };
 }
 
-export const deleteSaleService = async () => {
-}

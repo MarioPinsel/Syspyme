@@ -1,7 +1,7 @@
 import Router from 'express';
-import { createSaleController, getSalesController, deleteSaleController } from '../controllers/salesController.js'
+import { createSaleController, getSaleController } from '../controllers/salesController.js'
 import { authToken } from '../middleware/authMiddleware.js';
-import { createSaleValidation, deleteSaleValidation } from '../middleware/validators.js'
+import { createSaleValidation } from '../middleware/validators.js'
 import { validate } from '../middleware/validation.js'
 
 const router = Router();
@@ -9,7 +9,6 @@ const router = Router();
 router.use(authToken)
 
 router.post('/createSale', createSaleValidation, validate, createSaleController)
-router.get('/getSales', getSalesController)
-router.delete('/deleteSale', deleteSaleValidation, validate, deleteSaleController)
+router.get('/getSale/:id', getSaleController)
 
 export default router;

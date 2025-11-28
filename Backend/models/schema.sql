@@ -17,4 +17,3 @@ CREATE TABLE IF NOT EXISTS empresas (
   created_at TIMESTAMP DEFAULT NOW()
 );
 
-

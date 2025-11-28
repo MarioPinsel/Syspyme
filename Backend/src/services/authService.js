@@ -4,11 +4,11 @@ import { hashPassword, checkPassword } from '../utils/hashUtils.js';
 import {
     createTempUsuario, findTempUsuarioByCorreo, deleteTempUsuario,
     createUsuario, findUsuarioByCorreo, updateUsuarioCodigo,
-    findUsuarioByCorreoOHandle, updateTempUsuarioCodigo
+    findUsuarioByCorreoOHandle, updateTempUsuarioCodigo, findUsuarioByNombre, findTempUsuarioByNombre, findUsuarioByHandle, findTempUsuarioByHandle
 } from '../repositories/user/userRepository.js';
 import {
     createTempEmpresa, findTempEmpresaByCorreo, deleteTempEmpresa,
-    createEmpresa, findEmpresaByCorreo, findEmpresaByNombre, updateTempEmpresaCodigo
+    createEmpresa, findEmpresaByCorreo, findEmpresaByNombre, updateTempEmpresaCodigo, findTempEmpresaByNombre
 } from '../repositories/enterprise/companyRepository.js';
 import { createDataBase } from '../config/createDataBase.js';
 import { getPool } from '../config/secretManagment.js'
@@ -33,8 +33,11 @@ const isExpired = (created_at) => {
 };
 
 export const registerEmpresa = async ({ nombre, nit, correo, password }) => {
+    console.log('Register Empresa:', { nombre, nit, correo, password });
     if ((await findEmpresaByCorreo(correo)).rowCount) throw new Error('EMPRESA_ALREADY_EXISTS');
+    if ((await findEmpresaByNombre(nombre)).rowCount) throw new Error('EMPRESA_ALREADY_EXISTS');
     if ((await findTempEmpresaByCorreo(correo)).rowCount) throw new Error('PENDING_VERIFICATION');
+    if ((await findTempEmpresaByNombre(nombre)).rowCount) throw new Error('PENDING_VERIFICATION');
 
     const hashed = await hashPassword(password);
     const code = generateCode();
@@ -49,6 +52,12 @@ export const registerEmpresa = async ({ nombre, nit, correo, password }) => {
 export const registerUsuario = async ({ pool, userId, empresaNombre, nombre, correo, handle, password }) => {
 
     if ((await findUsuarioByCorreo(pool, correo)).rowCount)
+        throw new Error('USUARIO_ALREADY_EXISTS');
+
+    if ((await findUsuarioByNombre(pool, nombre)).rowCount)
+        throw new Error('USUARIO_ALREADY_EXISTS');
+
+    if ((await findUsuarioByHandle(pool, handle)).rowCount)
         throw new Error('USUARIO_ALREADY_EXISTS');
 
     if (userId === 1) {
@@ -69,6 +78,10 @@ export const registerUsuario = async ({ pool, userId, empresaNombre, nombre, cor
     }
 
     if ((await findTempUsuarioByCorreo(pool, correo)).rowCount)
+        throw new Error('PENDING_VERIFICATION');
+    if ((await findTempUsuarioByNombre(pool, nombre)).rowCount)
+        throw new Error('PENDING_VERIFICATION');
+    if ((await findTempUsuarioByHandle(pool, handle)).rowCount)
         throw new Error('PENDING_VERIFICATION');
 
     const hashed = await hashPassword(password);
@@ -137,10 +150,11 @@ export const verifyAccount = async ({ pool, empresaNombre, correo, tipo, codigo 
 };
 
 export const loginUsuario = async ({ empresa, empresaPassword, usuario, password }) => {
-    const pool = await getPool(empresa);
     const empresaResult = await findEmpresaByNombre(empresa);
     if (!empresaResult.rowCount) throw new Error('COMPANY_NOT_FOUND');
     const empresaData = empresaResult.rows[0];
+
+    const pool = await getPool(empresa);
 
     const empresaValid = await checkPassword(empresaPassword, empresaData.password);
     if (!empresaValid) throw new Error('INVALID_COMPANY_CREDENTIALS');

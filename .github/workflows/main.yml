@@ -1,64 +1,61 @@
-name: Frontend
+name: Backend
 
 on:
   push:
     branches:
-      - service-Frontend
+      - service-Backend
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-
+      contents: read 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
           node-version: '22.x'
 
-      - name: clean build 
-        run: rm -rf Frontend/dist
-
-      - name: npm install and build
+      - name: npm install and test
         run: |
-          cd Frontend
+          cd Backend
           npm install
-          npm run build
+          npm run test --if-present
 
-      - name: Upload Frontend artifact (completo con server.js)
+      
+      - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: frontend-complete
-          path: Frontend
+          name: node-app
+          path: Backend
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
     permissions:
-      id-token: write
-      contents: read
+      id-token: write #This is required for requesting the JWT
+      contents: read #This is required for actions/checkout
 
     steps:
-      - name: Download artifact
+      - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: frontend-complete
-          path: Frontend
-
+          name: node-app
+      
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_F_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID}}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID}}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID}}
 
-      - name: Deploy to Azure Web App
+      - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
+        id: deploy-to-webapp
         with:
-          app-name: 'SyspymeOficial'
+          app-name: 'SyspymeBackend'
           slot-name: 'Production'
-          package: Frontend
+          package: .

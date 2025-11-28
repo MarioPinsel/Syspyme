@@ -55,8 +55,15 @@ export const findAllProducts = (pool) => {
             i.fecha_ingreso AS inventory_created_at
         FROM productos p
         LEFT JOIN inventario i ON p.id = i.id_producto
+        ORDER BY
+            CASE WHEN i.fecha_ingreso IS NOT NULL THEN 0 ELSE 1 END,  
+            i.fecha_ingreso DESC,                                     
+            p.id ASC;                                                 
     `);
 };
+
+
+
 
 export const createProduct = (pool, { type, description, unitPrice, code }) => {
     return pool.query(
@@ -95,6 +102,14 @@ export const deleteFromInventory = (pool, productId) => {
         [productId]
     );
 };
+
+export const deleteFromInventoryById = (pool, id) => {
+    return pool.query(
+        "DELETE FROM inventario WHERE id = $1",
+        [id]
+    );
+};
+
 
 export const getTotalStockByProductId = (pool, productId) => {
     return pool.query(
