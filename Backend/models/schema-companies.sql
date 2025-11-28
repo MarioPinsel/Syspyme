@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
   nombre VARCHAR(50) NOT NULL,
   correo VARCHAR(50) NOT NULL UNIQUE,
   handle VARCHAR(30) NOT NULL,
+  telefono VARCHAR(10) NOT NULL,
   password VARCHAR(100) NOT NULL,
   codigo_verificacion INT,
   codigo_fecha TIMESTAMP,
