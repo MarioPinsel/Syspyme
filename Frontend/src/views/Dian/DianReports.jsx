@@ -15,12 +15,12 @@ export default function DianReports() {
 
     const getCompanies = async () => {
         const token = Cookies.get("token");
-        const { data } = await api.get("/dian/getCompanies", {
+        const { data } = await api.get("/dian/companiesPending", {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         });
-        
+
         return data.data || [];
     };
 
@@ -36,7 +36,7 @@ export default function DianReports() {
 
     const acceptCertificate = async (companyName) => {
         const token = Cookies.get("token");
-        const { data } = await api.post("/dian/acceptCertificate", 
+        const { data } = await api.post("/dian/acceptCertificate",
             { companyName: companyName },
             {
                 headers: {
@@ -79,7 +79,7 @@ export default function DianReports() {
 
     const handleRevisar = async () => {
         if (!selectedCompany) return;
-        
+
         try {
             const certificateData = await getCertificate(selectedCompany.nombre);
             setCertificateHtml(certificateData.html || "<p>No se pudo cargar el certificado</p>");
@@ -94,7 +94,7 @@ export default function DianReports() {
 
     const handleAceptar = async () => {
         if (!selectedCompany) return;
-        
+
         try {
             const result = await acceptCertificate(selectedCompany.nombre);
             setMessage(result.message || "Certificado aceptado exitosamente");
@@ -124,16 +124,16 @@ export default function DianReports() {
             <div className="dian-reports-container">
                 <div className="certificate-view">
                     <h1>Certificado de la Empresa: {selectedCompany?.nombre}</h1>
-                    
+
                     <div className="certificate-content">
-                        <div 
-                            dangerouslySetInnerHTML={{ __html: certificateHtml }} 
+                        <div
+                            dangerouslySetInnerHTML={{ __html: certificateHtml }}
                             className="certificate-html"
                         />
                     </div>
 
                     <div className="certificate-actions">
-                        <button 
+                        <button
                             onClick={handleVolverRevision}
                             className="btn-back"
                         >
@@ -144,7 +144,7 @@ export default function DianReports() {
                     {message && (
                         <div className="message-box">
                             <p>{message}</p>
-                            <button 
+                            <button
                                 onClick={handleVolverInicio}
                                 className="btn-home"
                             >
@@ -196,13 +196,13 @@ export default function DianReports() {
                                 </tr>
                             ) : filteredCompanies.length > 0 ? (
                                 filteredCompanies.map((company) => (
-                                    <tr 
-                                        key={company.correo} 
+                                    <tr
+                                        key={company.correo}
                                         className={selectedCompany?.correo === company.correo ? "selected" : ""}
                                     >
                                         <td>{company.nombre ?? "-"}</td>
                                         <td>
-                                            <button 
+                                            <button
                                                 onClick={() => handleSelectCompany(company)}
                                                 className={`btn-select ${selectedCompany?.correo === company.correo ? "selected" : ""}`}
                                             >
@@ -226,13 +226,13 @@ export default function DianReports() {
                     <div className="action-panel">
                         <h3>Empresa Seleccionada: {selectedCompany.nombre}</h3>
                         <div className="action-buttons">
-                            <button 
+                            <button
                                 onClick={handleRevisar}
                                 className="btn-review"
                             >
                                 Revisar Certificado
                             </button>
-                            <button 
+                            <button
                                 onClick={handleAceptar}
                                 className="btn-accept"
                             >
@@ -246,7 +246,7 @@ export default function DianReports() {
             {message && !showCertificate && (
                 <div className="message-box">
                     <p>{message}</p>
-                    <button 
+                    <button
                         onClick={() => setMessage("")}
                         className="btn-close-message"
                     >
