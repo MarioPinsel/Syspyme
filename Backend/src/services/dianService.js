@@ -5,6 +5,7 @@ import { createDataBase } from '../config/createDataBase.js';
 import { getPool } from '../config/secretManagment.js';
 import { sendResponseDIANAccepted, sendResponseDIANRejected } from '../utils/sendResponseDIAN.js';
 import { findUserDIANByUsuario } from '../repositories/userDIAN/userDIANRepository.js'
+import { hashPassword } from '../utils/hashUtils.js';
 
 export const loginDIANService = async ({ usuario, password }) => {
 
@@ -60,7 +61,8 @@ export const registerCompanyServices = async ({ correo, action, motivo }) => {
         await createDataBase(te.nombre);
         await createEmpresa(te.nombre, te.nit, te.correo, te.password, te.telefono, te.direccion, te.regimen)
         const pool = await getPool(te.nombre);
-        await createUsuario(pool, te.nombre_admin, te.correo_admin, 'admin', te.telefono_admin, process.env.ADMIN_PASS);
+        const hashed = await hashPassword(process.env.ADMIN_PASS);
+        await createUsuario(pool, te.nombre_admin, te.correo_admin, 'admin', te.telefono_admin, hashed);
         await sendResponseDIANAccepted(te.correo_admin, te.nombre, 'admin', process.env.ADMIN_PASS);
         await deleteTempEmpresa(correo);
         return {
