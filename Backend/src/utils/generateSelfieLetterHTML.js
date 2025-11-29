@@ -19,12 +19,10 @@ export const generateSelfieLetterHTML = ({ empresa, admin }) => {
       <style>
         body {
           font-family: Arial, sans-serif;
-          padding: 40px;
+          padding: 20px 40px; // ✅ Solo padding lateral
           color: #333;
-          max-width: 800px;
-          margin: 0 auto;
           line-height: 1.6;
-        }
+        }   
         .logo {
           width: 160px;
           margin-bottom: 20px;
