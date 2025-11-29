@@ -66,25 +66,14 @@ export default function VerificationCode() {
     }
 
     try {
-      const { data } = await api.post(
-        "/auth/verify-login",
-        { codigo: fullCode },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const { data } = await api.post("/auth/verify-login", { codigo: fullCode }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-      const newToken = data?.token;
-
+      // Caso normal
+      const newToken = data.token;
       if (newToken) {
-        Cookies.set("token", newToken, {
-          expires: 1,
-          path: "/",
-          secure: true,
-          sameSite: "lax",
-        });
+        Cookies.set("token", newToken, { expires: 1, path: "/", secure: true, sameSite: "lax" });
       }
 
       const decoded = jwtDecode(newToken);
@@ -98,24 +87,43 @@ export default function VerificationCode() {
         navigate("/employee");
         window.location.reload();
       }
+
     } catch (error) {
 
-  console.error("❌ Error en la verificación:", error);
+      // ⚠️ NUEVO: Código 428
+      if (error.response?.status === 428) {
+        const newToken = error.response.data?.token;
 
-  if (error.response?.data?.errors) {
-    toast.error(error.response.data.errors[0].msg);
-    return;
-  }
+        if (newToken) {
+          Cookies.set("token", newToken, { expires: 1, path: "/", secure: true, sameSite: "lax" });
+        }
 
-  if (error.response?.data?.error) {
-    toast.error(error.response.data.error);
-    return;
-  }
+        toast.error(error.response.data.error);
 
-  toast.error("Error en la verificación");
-}  finally {
-            setIsSubmitting(false);
-         }
+        const decoded = jwtDecode(newToken);
+
+        if (decoded.isAdmin) {
+          navigate("/auth/digital-certificate");
+        }
+
+        return;
+      }
+
+      if (error.response?.data?.errors) {
+        toast.error(error.response.data.errors[0].msg);
+        return;
+      }
+
+      if (error.response?.data?.error) {
+        toast.error(error.response.data.error);
+        return;
+      }
+
+      toast.error("Error en la verificación");
+    } finally {
+      setIsSubmitting(false);
+    }
+
 
   };
 
@@ -147,8 +155,8 @@ export default function VerificationCode() {
           </div>
 
           <button type="submit" disabled={isSubmitting}>
-                        {isSubmitting ? <div className="spinner"></div> : "Verificar"}
-                    </button>
+            {isSubmitting ? <div className="spinner"></div> : "Verificar"}
+          </button>
         </form>
       </div>
     </div>
