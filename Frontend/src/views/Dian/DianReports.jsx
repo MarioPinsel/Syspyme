@@ -28,15 +28,16 @@ export default function DianReports() {
 
     const getCertificate = async (companyName) => {
         const token = Cookies.get("token");
-        const { data } = await api.get(
+        const response = await api.get(
             `/dian/getCertificate?companyName=${encodeURIComponent(companyName)}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
+                responseType: 'text', // ✅ Importante: recibir como texto, no JSON
             }
         );
-        return data.html;
+        return response.data; // Ahora response.data es el HTML directamente
     };
 
     const validateCertificate = async (companyName, action, motivo = "") => {
