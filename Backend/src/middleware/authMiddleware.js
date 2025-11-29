@@ -9,9 +9,8 @@ export const authToken = async (req, res, next) => {
         const decoded = verifyToken(token);
 
         req.user = decoded;
-        if (decoded.created === true) {
+        if (decoded.created === true && decoded.empresaNombre) {
             req.pool = await getPool(decoded.empresaNombre);
-
         }
         next();
     } catch (err) {
