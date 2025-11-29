@@ -2,16 +2,15 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../config/axios";
 import Cookies from "js-cookie";
+import { toast } from "sonner";
 import "../../styles/Views/NoDigitalCertificate.css";
 
 export default function DigitalCertificate() {
     const navigate = useNavigate();
-    const [acceptedConditions, setAcceptedConditions] = useState(false);
     const [certificateHtml, setCertificateHtml] = useState("");
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
-    const [message, setMessage] = useState("");
-    const [showSuccess, setShowSuccess] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
 
     // GET automático para obtener el HTML del certificado
     useEffect(() => {
@@ -23,11 +22,11 @@ export default function DigitalCertificate() {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                // ✅ data ya ES el HTML directamente, no data.html
                 setCertificateHtml(data || "<p>No se pudo cargar el certificado digital</p>");
             } catch (error) {
                 console.error("Error al cargar certificado:", error);
                 setCertificateHtml("<p>Error al cargar el certificado digital</p>");
+                toast.error("Error al cargar el certificado");
             } finally {
                 setLoading(false);
             }
@@ -37,12 +36,10 @@ export default function DigitalCertificate() {
     }, []);
 
     const handleContinue = async () => {
-        if (!acceptedConditions) return;
-
         setSubmitting(true);
         try {
             const token = Cookies.get("token");
-            const { data } = await api.post("/auth/certificate/complete",
+            const { data } = await api.patch("/auth/sendCertificate",
                 {},
                 {
                     headers: {
@@ -51,37 +48,73 @@ export default function DigitalCertificate() {
                 }
             );
 
-            setMessage(data.message || "Certificado digital procesado exitosamente");
-            setShowSuccess(true);
+            if (data.message) {
+                setSuccessMessage(data.message);
+            }
 
         } catch (error) {
             console.error("Error al procesar certificado:", error);
-            setMessage("Error al procesar el certificado digital");
-            setShowSuccess(true);
+
+            if (error.response?.data?.message) {
+                toast.error(error.response.data.message);
+            } else if (error.response?.data?.error) {
+                toast.error(error.response.data.error);
+            } else {
+                toast.error("Error al procesar el certificado digital");
+            }
         } finally {
             setSubmitting(false);
         }
     };
 
-    const handleBackToHome = () => {
-        navigate("/dashboard");
-    };
-
-    // Vista de éxito después del POST
-    if (showSuccess) {
+    // Vista de éxito después del PATCH
+    if (successMessage) {
         return (
             <div className="certificate-container">
-                <div className="success-view">
-                    <div className="success-icon">✓</div>
-                    <h1>Proceso Completado</h1>
-                    <div className="message-content">
-                        <p>{message}</p>
+                <div className="certificate-content" style={{ maxWidth: "600px", padding: "2.5rem" }}>
+                    <div style={{
+                        width: "64px",
+                        height: "64px",
+                        margin: "0 auto 1.5rem",
+                        borderRadius: "50%",
+                        background: "#4CAF50",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
+                    }}>
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
                     </div>
+
+                    <h2 style={{ marginBottom: "1.5rem", fontSize: "1.75rem" }}>
+                        ✓ Certificado Enviado
+                    </h2>
+
+                    <div style={{
+                        background: "#f8f9fa",
+                        padding: "1.5rem",
+                        borderRadius: "8px",
+                        marginBottom: "2rem",
+                        border: "1px solid #e9ecef"
+                    }}>
+                        <p style={{
+                            textAlign: "left",
+                            lineHeight: "1.8",
+                            fontSize: "1rem",
+                            color: "#495057",
+                            margin: 0,
+                            whiteSpace: "pre-wrap"
+                        }}>
+                            {successMessage}
+                        </p>
+                    </div>
+
                     <button
-                        onClick={handleBackToHome}
-                        className="btn-home"
+                        onClick={() => navigate("/dashboard")}
+                        style={{ width: "100%", padding: "0.875rem" }}
                     >
-                        Volver al Inicio
+                        Ir al Dashboard
                     </button>
                 </div>
             </div>
@@ -102,7 +135,7 @@ export default function DigitalCertificate() {
                     <div className="explanation-section">
                         <h2>¿Por qué necesito un certificado digital?</h2>
                         <p>
-                            El certificado digital es un documento requerido por la DIAN (según resolución 000165 de 2023 capítulo 2 Requisitos de la factura electronica de venta) para autenticar,firmar y asegurar
+                            El certificado digital es un documento requerido por la DIAN (según resolución 000165 de 2023 capítulo 2 Requisitos de la factura electronica de venta) para autenticar, firmar y asegurar
                             la integridad del documento electronico con el fin de asegurar que los datos no sean alterados y sean de
                             confianza para el emisor y receptor.
                         </p>
@@ -139,7 +172,7 @@ export default function DigitalCertificate() {
                                 Procesando...
                             </>
                         ) : (
-                            "Continuar"
+                            "Enviar Certificado"
                         )}
                     </button>
                 </div>
