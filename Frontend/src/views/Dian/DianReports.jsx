@@ -12,6 +12,9 @@ export default function DianReports() {
     const [certificateHtml, setCertificateHtml] = useState("");
     const [showCertificate, setShowCertificate] = useState(false);
     const [message, setMessage] = useState("");
+    const [showRejectModal, setShowRejectModal] = useState(false);
+    const [rejectReason, setRejectReason] = useState("");
+    const [submitting, setSubmitting] = useState(false);
 
     const getCompanies = async () => {
         const token = Cookies.get("token");
@@ -23,26 +26,28 @@ export default function DianReports() {
         return data.data || [];
     };
 
-    // 🔥 FIX 1: Traer el certificado como TEXTO (HTML)
     const getCertificate = async (companyName) => {
         const token = Cookies.get("token");
-        const response = await api.get(
+        const { data } = await api.get(
             `/dian/getCertificate?companyName=${encodeURIComponent(companyName)}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
-                responseType: "text", // 👈 NECESARIO
             }
         );
-        return response.data; // HTML puro
+        return data.html;
     };
 
-    const acceptCertificate = async (companyName) => {
+    const validateCertificate = async (companyName, action, motivo = "") => {
         const token = Cookies.get("token");
         const { data } = await api.post(
-            "/dian/acceptCertificate",
-            { companyName: companyName },
+            "/dian/validateCertificate",
+            {
+                companyName,
+                action,
+                motivo
+            },
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -87,8 +92,6 @@ export default function DianReports() {
 
         try {
             const html = await getCertificate(selectedCompany.nombre);
-
-            // 🔥 FIX 2: Asignar HTML directo
             setCertificateHtml(html || "<p>No se pudo cargar el certificado</p>");
             setShowCertificate(true);
             setMessage("");
@@ -102,15 +105,51 @@ export default function DianReports() {
     const handleAceptar = async () => {
         if (!selectedCompany) return;
 
+        setSubmitting(true);
         try {
-            const result = await acceptCertificate(selectedCompany.nombre);
+            const result = await validateCertificate(selectedCompany.nombre, 'aceptar');
             setMessage(result.message || "Certificado aceptado exitosamente");
             setSelectedCompany(null);
+            setShowCertificate(false);
             refetch();
         } catch (error) {
             console.error("Error al aceptar certificado:", error);
-            setMessage("Error al aceptar el certificado");
+            setMessage(error.response?.data?.message || "Error al aceptar el certificado");
+        } finally {
+            setSubmitting(false);
         }
+    };
+
+    const handleRechazar = () => {
+        setShowRejectModal(true);
+    };
+
+    const handleConfirmReject = async () => {
+        if (!rejectReason.trim()) {
+            alert("Debe ingresar un motivo del rechazo");
+            return;
+        }
+
+        setSubmitting(true);
+        try {
+            const result = await validateCertificate(selectedCompany.nombre, 'rechazar', rejectReason);
+            setMessage(result.message || "Certificado rechazado exitosamente");
+            setSelectedCompany(null);
+            setShowCertificate(false);
+            setShowRejectModal(false);
+            setRejectReason("");
+            refetch();
+        } catch (error) {
+            console.error("Error al rechazar certificado:", error);
+            setMessage(error.response?.data?.message || "Error al rechazar el certificado");
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    const handleCancelReject = () => {
+        setShowRejectModal(false);
+        setRejectReason("");
     };
 
     const handleVolverRevision = () => {
@@ -125,7 +164,7 @@ export default function DianReports() {
         setCertificateHtml("");
     };
 
-    // Si estamos mostrando el certificado
+    // Vista del certificado
     if (showCertificate) {
         return (
             <div className="dian-reports-container">
@@ -143,8 +182,25 @@ export default function DianReports() {
                         <button
                             onClick={handleVolverRevision}
                             className="btn-back"
+                            disabled={submitting}
                         >
                             Volver a Revisión
+                        </button>
+
+                        <button
+                            onClick={handleAceptar}
+                            className="btn-accept"
+                            disabled={submitting}
+                        >
+                            {submitting ? "Procesando..." : "✓ Aceptar Certificado"}
+                        </button>
+
+                        <button
+                            onClick={handleRechazar}
+                            className="btn-reject"
+                            disabled={submitting}
+                        >
+                            ✗ Rechazar Certificado
                         </button>
                     </div>
 
@@ -160,15 +216,56 @@ export default function DianReports() {
                         </div>
                     )}
                 </div>
+
+                {/* Modal de rechazo */}
+                {showRejectModal && (
+                    <div className="modal-overlay">
+                        <div className="modal-content">
+                            <h3>Rechazar Certificado</h3>
+                            <p>Ingrese el motivo del rechazo:</p>
+                            <textarea
+                                value={rejectReason}
+                                onChange={(e) => setRejectReason(e.target.value)}
+                                placeholder="Ejemplo: La información proporcionada no es clara, faltan datos del representante legal, etc."
+                                rows="5"
+                                style={{
+                                    width: "100%",
+                                    padding: "10px",
+                                    borderRadius: "4px",
+                                    border: "1px solid #ddd",
+                                    fontSize: "14px",
+                                    fontFamily: "Arial, sans-serif",
+                                    resize: "vertical"
+                                }}
+                            />
+                            <div className="modal-actions">
+                                <button
+                                    onClick={handleCancelReject}
+                                    className="btn-cancel"
+                                    disabled={submitting}
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    onClick={handleConfirmReject}
+                                    className="btn-confirm-reject"
+                                    disabled={submitting}
+                                >
+                                    {submitting ? "Enviando..." : "Confirmar Rechazo"}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         );
     }
 
-    // Vista principal
+    // Vista principal de la tabla
     return (
         <div className="dian-reports-container">
             <h1>Revisión de Certificados - DIAN</h1>
-            <p>Selecciona una empresa para revisar o aceptar su certificado</p>
+            <p>Selecciona una empresa para revisar o validar su certificado</p>
 
             <div className="search-bar">
                 <input
@@ -204,15 +301,14 @@ export default function DianReports() {
                             ) : filteredCompanies.length > 0 ? (
                                 filteredCompanies.map((company) => (
                                     <tr
-                                        key={company.nombre} // 🔥 FIX 3: usar nombre como key
+                                        key={company.nombre}
                                         className={selectedCompany?.nombre === company.nombre ? "selected" : ""}
                                     >
                                         <td>{company.nombre ?? "-"}</td>
                                         <td>
                                             <button
                                                 onClick={() => handleSelectCompany(company)}
-                                                className={`btn-select ${selectedCompany?.nombre === company.nombre ? "selected" : ""
-                                                    }`}
+                                                className={`btn-select ${selectedCompany?.nombre === company.nombre ? "selected" : ""}`}
                                             >
                                                 {selectedCompany?.nombre === company.nombre
                                                     ? "✓ Seleccionada"
@@ -224,7 +320,7 @@ export default function DianReports() {
                             ) : (
                                 <tr>
                                     <td colSpan="2" style={{ textAlign: "center", padding: "20px" }}>
-                                        No se encontraron empresas.
+                                        No se encontraron empresas con certificados pendientes.
                                     </td>
                                 </tr>
                             )}
@@ -241,12 +337,6 @@ export default function DianReports() {
                                 className="btn-review"
                             >
                                 Revisar Certificado
-                            </button>
-                            <button
-                                onClick={handleAceptar}
-                                className="btn-accept"
-                            >
-                                Aceptar Certificado
                             </button>
                         </div>
                     </div>
