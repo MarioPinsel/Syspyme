@@ -252,11 +252,11 @@ export default function DIANCompanies() {
                         <th>Dirección</th>
                         <th>Régimen</th>
                         <th>Representante</th>
-                        <th>Correo Rep</th>
-                        <th>Teléfono Rep</th>
+                        <th>Correo Representante</th>
+                        <th>Teléfono Representante</th>
                         <th>Fecha</th>
                         <th>Motivo</th>
-                        <th>Action</th>
+                        <th>Decisión</th>
                     </tr>
                 </thead>
 
