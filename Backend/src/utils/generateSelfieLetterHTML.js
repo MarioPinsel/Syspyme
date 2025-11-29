@@ -101,7 +101,6 @@ export const generateSelfieLetterHTML = ({ empresa, admin }) => {
       <div class="header">
         <img src="data:image/png;base64,${logoBase64}" class="logo" />
         <h2 style="color: #0b3954; margin: 10px 0;">CERTIFICADO DIGITAL</h2>
-        <h3 style="color: #495057; margin: 5px 0; font-weight: normal;">Solicitud de Firma Electrónica</h3>
       </div>
 
       <div class="section">

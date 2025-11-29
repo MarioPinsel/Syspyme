@@ -8,11 +8,11 @@ const logoPath = path.join(__dirname, '../assets/logo-syspyme.png');
 
 // CONFIGURAR TRANSPORTER
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    }
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
 });
 
 
@@ -21,11 +21,11 @@ const transporter = nodemailer.createTransport({
    ======================================================= */
 export const sendResponseDIANAccepted = async (correoAdmin, empresaNombre, handleAdmin, adminPass) => {
 
-    const mailOptions = {
-        from: `"SysPyME - DIAN" <${process.env.EMAIL_USER}>`,
-        to: correoAdmin,
-        subject: `✔ Su empresa "${empresaNombre}" ha sido aprobada por la DIAN`,
-        html: `
+  const mailOptions = {
+    from: `"SysPyME - DIAN" <${process.env.EMAIL_USER}>`,
+    to: correoAdmin,
+    subject: `✔ Su empresa "${empresaNombre}" ha sido aprobada por la DIAN`,
+    html: `
         <!DOCTYPE html>
         <html lang="es">
         <body style="font-family: Arial, sans-serif; background:#f5f7fa; padding:0; margin:0;">
@@ -78,16 +78,16 @@ export const sendResponseDIANAccepted = async (correoAdmin, empresaNombre, handl
         </body>
         </html>
         `,
-        attachments: [
-            {
-                filename: 'logo-syspyme.png',
-                path: logoPath,
-                cid: 'logo'
-            }
-        ]
-    };
+    attachments: [
+      {
+        filename: 'logo-syspyme.png',
+        path: logoPath,
+        cid: 'logo'
+      }
+    ]
+  };
 
-    await transporter.sendMail(mailOptions);
+  await transporter.sendMail(mailOptions);
 };
 
 
@@ -97,11 +97,11 @@ export const sendResponseDIANAccepted = async (correoAdmin, empresaNombre, handl
    ======================================================= */
 export const sendResponseDIANRejected = async (correoAdmin, motivo) => {
 
-    const mailOptions = {
-        from: `"SysPyME - DIAN" <${process.env.EMAIL_USER}>`,
-        to: correoAdmin,
-        subject: '❌ Su registro empresarial ha sido rechazado por la DIAN',
-        html: `
+  const mailOptions = {
+    from: `"SysPyME - DIAN" <${process.env.EMAIL_USER}>`,
+    to: correoAdmin,
+    subject: '❌ Su registro empresarial ha sido rechazado por la DIAN',
+    html: `
         <!DOCTYPE html>
         <html lang="es">
         <body style="font-family: Arial, sans-serif; background:#f5f7fa; padding:0; margin:0;">
@@ -147,36 +147,36 @@ export const sendResponseDIANRejected = async (correoAdmin, motivo) => {
         </body>
         </html>
         `,
-        attachments: [
-            {
-                filename: 'logo-syspyme.png',
-                path: logoPath,
-                cid: 'logo'
-            }
-        ]
-    };
+    attachments: [
+      {
+        filename: 'logo-syspyme.png',
+        path: logoPath,
+        cid: 'logo'
+      }
+    ]
+  };
 
-    await transporter.sendMail(mailOptions);
+  await transporter.sendMail(mailOptions);
 };
 
 export const sendCertificateAcceptedEmail = async (emailDestino, empresaNombre) => {
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS
-        }
-    });
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
+    }
+  });
 
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-    const logoPath = path.join(__dirname, '../assets/logo-syspyme.png');
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  const logoPath = path.join(__dirname, '../assets/logo-syspyme.png');
 
-    const mailOptions = {
-        from: `"SysPyME - DIAN" <${process.env.EMAIL_USER}>`,
-        to: emailDestino,
-        subject: `✅ Certificado Digital Aprobado - ${empresaNombre}`,
-        html: `
+  const mailOptions = {
+    from: `"SysPyME - DIAN" <${process.env.EMAIL_USER}>`,
+    to: emailDestino,
+    subject: `✅ Certificado Digital Aprobado - ${empresaNombre}`,
+    html: `
             <!DOCTYPE html>
             <html lang="es">
             <head>
@@ -227,36 +227,36 @@ export const sendCertificateAcceptedEmail = async (emailDestino, empresaNombre) 
             </body>
             </html>
             `,
-        attachments: [
-            {
-                filename: "logo-syspyme.png",
-                path: logoPath,
-                cid: "logo"
-            }
-        ]
-    };
+    attachments: [
+      {
+        filename: "logo-syspyme.png",
+        path: logoPath,
+        cid: "logo"
+      }
+    ]
+  };
 
-    await transporter.sendMail(mailOptions);
+  await transporter.sendMail(mailOptions);
 };
 
 export const sendCertificateRejectedEmail = async (emailDestino, empresaNombre, motivo) => {
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS
-        }
-    });
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
+    }
+  });
 
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-    const logoPath = path.join(__dirname, '../assets/logo-syspyme.png');
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  const logoPath = path.join(__dirname, '../assets/logo-syspyme.png');
 
-    const mailOptions = {
-        from: `"SysPyME - DIAN" <${process.env.EMAIL_USER}>`,
-        to: emailDestino,
-        subject: `❌ Certificado Digital Rechazado - ${empresaNombre}`,
-        html: `
+  const mailOptions = {
+    from: `"SysPyME - DIAN" <${process.env.EMAIL_USER}>`,
+    to: emailDestino,
+    subject: `❌ Certificado Digital Rechazado - ${empresaNombre}`,
+    html: `
             <!DOCTYPE html>
             <html lang="es">
             <head>
@@ -298,13 +298,6 @@ export const sendCertificateRejectedEmail = async (emailDestino, empresaNombre, 
                       Para reenviar el certificado, inicie sesión en <b>SysPyME</b> con sus credenciales. El sistema lo redirigirá automáticamente al formulario de certificado digital para que pueda completar nuevamente el proceso.
                     </p>
 
-                    <a href="${process.env.FRONTEND_URL}/auth/login" 
-                       style="display:inline-block; margin:20px 0; padding:12px 30px; 
-                              background-color:#0b3954; color:#fff; text-decoration:none; 
-                              border-radius:5px; font-weight:bold;">
-                        Iniciar Sesión
-                    </a>
-
                     <p style="color:#999; font-size:13px; line-height:1.5; margin-top:20px;">
                       Si tiene dudas sobre el motivo del rechazo, puede contactarnos respondiendo a este correo.
                     </p>
@@ -322,14 +315,14 @@ export const sendCertificateRejectedEmail = async (emailDestino, empresaNombre, 
             </body>
             </html>
             `,
-        attachments: [
-            {
-                filename: "logo-syspyme.png",
-                path: logoPath,
-                cid: "logo"
-            }
-        ]
-    };
+    attachments: [
+      {
+        filename: "logo-syspyme.png",
+        path: logoPath,
+        cid: "logo"
+      }
+    ]
+  };
 
-    await transporter.sendMail(mailOptions);
+  await transporter.sendMail(mailOptions);
 };
