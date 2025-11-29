@@ -20,6 +20,11 @@ export const findEmpresaByNombre = async (nombre) => {
   return await pool.query(query, [nombre]);
 };
 
+export const findEmpresasPendientes = async () => {
+  const query = `SELECT nombre FROM empresas WHERE certificado = 'PENDIENTE'`;
+  return await pool.query(query);
+}
+
 export const createTempEmpresa = async ({ nombre, nit, correo, password, telefono, direccion, regimen, nombre_admin, correo_admin, telefono_admin, code, created_at }) => {
   const query = `
     INSERT INTO temp_Empresas (nombre, nit, correo, password, telefono, direccion, regimen, nombre_admin, correo_admin, telefono_admin, codigo_verificacion, created_at)
@@ -74,4 +79,9 @@ export const updateTempEmpresaCodigo = async (correo, newCode, newCreatedAt) => 
 export const updateVerifiedTempEmpresa = async (correo) => {
   const query = `UPDATE temp_Empresas SET verified = true WHERE correo = $1`;
   return await pool.query(query, [correo]);
+}
+
+export const updateCertificadoEmpresa = async (empresaNombre, certificado) => {
+  const query = `UPDATE empresas SET certificado = $1, certificado_fecha = NOW() WHERE nombre = $2`;
+  return await pool.query(query, [certificado, empresaNombre]);
 }

@@ -4,7 +4,9 @@ import {
     createAccount,
     verifyAccountController,
     login,
-    verifyLogin
+    verifyLogin,
+    getCertificateController,
+    sendCertificateController
 } from '../controllers/authController.js';
 import { registerValidationEmpresa, registerValidation, loginValidation } from '../middleware/validators.js';
 import { validate } from '../middleware/validation.js';
@@ -17,5 +19,7 @@ router.post('/registerUser', authToken, isAdmin, registerValidation, validate, c
 router.post('/verify', authToken, verifyAccountController);
 router.post('/login', loginValidation, validate, login);
 router.post('/verify-login', authToken, verifyLogin);
+router.get('/getCertificate', authToken, getCertificateController);
+router.patch('/sendCertificate', authToken, sendCertificateController);
 
 export default router;

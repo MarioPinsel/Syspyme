@@ -1,6 +1,6 @@
 import { generateToken } from '../utils/tokenUtils.js';
 import { sendVerificationEmail } from '../utils/mailUtils.js';
-import { sendMessageDIAN } from '../utils/sendMessageDIAN.js';
+import { sendMessageDIAN, sendMessageDIANCertificate } from '../utils/sendMessageDIAN.js';
 import { hashPassword, checkPassword } from '../utils/hashUtils.js';
 import {
     createTempUsuario, findTempUsuarioByCorreo, deleteTempUsuario,
@@ -8,9 +8,10 @@ import {
     findUsuarioByCorreoOHandle, updateTempUsuarioCodigo, findUsuarioByNombre, findTempUsuarioByNombre, findUsuarioByHandle, findTempUsuarioByHandle
 } from '../repositories/user/userRepository.js';
 import {
-    createTempEmpresa, findTempEmpresaByCorreo, findEmpresaByCorreo, findEmpresaByNombre, updateTempEmpresaCodigo, findTempEmpresaByNombre, updateVerifiedTempEmpresa
+    createTempEmpresa, findTempEmpresaByCorreo, findEmpresaByCorreo, findEmpresaByNombre, updateTempEmpresaCodigo, findTempEmpresaByNombre, updateVerifiedTempEmpresa, updateCertificadoEmpresa
 } from '../repositories/enterprise/companyRepository.js';
 import { getPool } from '../config/secretManagment.js'
+import { generateSelfieLetterHTML } from "../utils/generateSelfieLetterHTML.js";
 
 const generateCode = () => Math.floor(100000 + Math.random() * 900000);
 const CODE_EXPIRATION_MINUTES = 15;
@@ -186,7 +187,76 @@ export const verifyLoginUsuario = async ({ pool, empresaNombre, correo, codigo }
         throw new Error('INVALID_CODE');
 
     const isAdmin = usuarioData.id === 1;
-    const finalToken = generateToken({ correo, userId: usuarioData.id, isAdmin, created: true, empresaNombre }, '1d');
 
+    const empresaResult = await findEmpresaByNombre(empresaNombre);
+    const certificado = empresaResult.rows[0]?.certificado;
+
+    if (certificado === 'PENDIENTE') {
+        return {
+            certificatePending: true
+        };
+    }
+
+    if (!certificado && isAdmin) {
+        const finalToken = generateToken({ correo, userId: usuarioData.id, isAdmin, created: true, empresaNombre }, '1d');
+        return {
+            requiresCertificate: true,
+            isAdmin,
+            token: finalToken
+        };
+    }
+
+    if (!certificado && !isAdmin) {
+        return {
+            noCertificate: true,
+            isAdmin: false
+        };
+    }
+
+    const finalToken = generateToken({ correo, userId: usuarioData.id, isAdmin, created: true, empresaNombre }, '1d');
     return { message: 'Login exitoso', token: finalToken };
 };
+
+
+export const getCertificateService = async ({ pool, empresaNombre, correo }) => {
+    const empresaResult = await findEmpresaByNombre(empresaNombre);
+    const empresa = empresaResult.rows[0];
+
+    const adminResult = await findUsuarioByCorreo(pool, correo);
+    const admin = adminResult.rows[0];
+
+    const empresaData = {
+        nombre: empresa.nombre,
+        nit: empresa.nit,
+        direccion: empresa.direccion
+    };
+
+    const adminData = {
+        nombre: admin.nombre,
+        telefono: admin.telefono,
+        correo: admin.correo
+    };
+
+    const { html } = generateSelfieLetterHTML({
+        empresa: empresaData,
+        admin: adminData
+    });
+
+    return {
+        status: 200,
+        html
+    };
+};
+
+export const sendCertificateService = async (empresaNombre) => {
+
+    await updateCertificadoEmpresa(empresaNombre, 'PENDIENTE');
+
+    await sendMessageDIANCertificate(empresaNombre, process.env.EMAIL_USER);
+
+    return {
+        status: 200,
+        message: 'Su certificado digital ha sido enviado exitosamente y se encuentra en revisión por parte de la DIAN. Recibirá una notificación por correo electrónico una vez sea aprobado o si requiere correcciones. Este proceso puede tardar entre 24 a 48 horas hábiles.'
+    };
+
+}

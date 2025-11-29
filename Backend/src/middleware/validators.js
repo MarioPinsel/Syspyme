@@ -1,4 +1,4 @@
-import { body } from 'express-validator';
+import { body, query } from 'express-validator';
 
 const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 
@@ -32,6 +32,16 @@ export const actionValidation = [
         }),
 
 ];
+
+export const getCertificateByCompanyValidation = [
+    query("companyName")
+        .notEmpty().withMessage("El nombre de la empresa es obligatorio.")
+]
+
+export const acceptCertificateValidation = [
+    body("companyName")
+        .notEmpty().withMessage("El nombre de la empresa es obligatorio.")
+]
 
 export const registerValidationEmpresa = [
 

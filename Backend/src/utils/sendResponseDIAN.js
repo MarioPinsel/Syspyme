@@ -158,3 +158,83 @@ export const sendResponseDIANRejected = async (correoAdmin, motivo) => {
 
     await transporter.sendMail(mailOptions);
 };
+
+export const sendCertificateAcceptedEmail = async (emailDestino, empresaNombre) => {
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
+        }
+    });
+
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    const logoPath = path.join(__dirname, '../assets/logo-syspyme.png');
+
+    const mailOptions = {
+        from: `"SysPyME - DIAN" <${process.env.EMAIL_USER}>`,
+        to: emailDestino,
+        subject: `✅ Certificado Digital Aprobado - ${empresaNombre}`,
+        html: `
+            <!DOCTYPE html>
+            <html lang="es">
+            <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Certificado Aprobado</title>
+            </head>
+            <body style="margin:0; padding:0; font-family:Arial, sans-serif; background-color:#f5f7fa;">
+
+              <table align="center" width="100%" cellspacing="0" cellpadding="0"
+                     style="max-width:600px; background-color:#ffffff; border-radius:8px; margin:30px auto;
+                     padding:40px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+                
+                <tr>
+                  <td>
+
+                    <img src="cid:logo" alt="SysPyME" width="140" style="margin-bottom:20px;">
+
+                    <h2 style="color:#4CAF50; margin-bottom:10px;">
+                      ✅ Certificado Digital Aprobado
+                    </h2>
+
+                    <p style="color:#444; font-size:15px; line-height:1.5;">
+                      <b>${empresaNombre}</b>, nos complace informarle que su <b>Certificado Digital</b> ha sido <b>aprobado exitosamente</b> por la DIAN.
+                    </p>
+
+                    <p style="color:#444; font-size:15px; line-height:1.5;">
+                      Ya puede iniciar sesión en <b>SysPyME</b> y comenzar a utilizar todos los servicios de nuestro sistema.
+                    </p>
+
+                    <a href="${process.env.FRONTEND_URL}/auth/login" 
+                       style="display:inline-block; margin:20px 0; padding:12px 30px; 
+                              background-color:#4CAF50; color:#fff; text-decoration:none; 
+                              border-radius:5px; font-weight:bold;">
+                        Iniciar Sesión
+                    </a>
+
+                    <div style="border-top:1px solid #eee; margin-top:30px; padding-top:15px;">
+                      <p style="font-size:12px; color:#999; margin:0;">
+                        &copy; ${new Date().getFullYear()} <b>SysPyME</b>. Todos los derechos reservados.
+                      </p>
+                    </div>
+
+                  </td>
+                </tr>
+              </table>
+
+            </body>
+            </html>
+            `,
+        attachments: [
+            {
+                filename: "logo-syspyme.png",
+                path: logoPath,
+                cid: "logo"
+            }
+        ]
+    };
+
+    await transporter.sendMail(mailOptions);
+};

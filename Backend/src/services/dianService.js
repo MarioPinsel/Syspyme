@@ -1,11 +1,13 @@
 import { generateToken } from '../utils/tokenUtils.js';
-import { findTempEmpresaByVerificacion, findTempEmpresaByCorreo, createEmpresa, deleteTempEmpresa } from '../repositories/enterprise/companyRepository.js'
-import { createUsuario } from '../repositories/user/userRepository.js';
+import { findTempEmpresaByVerificacion, findTempEmpresaByCorreo, createEmpresa, deleteTempEmpresa, findEmpresasPendientes, findEmpresaByNombre, updateCertificadoEmpresa } from '../repositories/enterprise/companyRepository.js'
+import { createUsuario, findUsuarioByHandle } from '../repositories/user/userRepository.js';
 import { createDataBase } from '../config/createDataBase.js';
 import { getPool } from '../config/secretManagment.js';
-import { sendResponseDIANAccepted, sendResponseDIANRejected } from '../utils/sendResponseDIAN.js';
+import { sendResponseDIANAccepted, sendResponseDIANRejected, sendCertificateAcceptedEmail } from '../utils/sendResponseDIAN.js';
 import { findUserDIANByUsuario } from '../repositories/userDIAN/userDIANRepository.js'
 import { hashPassword } from '../utils/hashUtils.js';
+import { getFirmaDigital } from '../utils/firmaDigital.js'
+import { generateSelfieLetterHTML } from '../utils/generateSelfieLetterHTML.js';
 
 export const loginDIANService = async ({ usuario, password }) => {
 
@@ -36,7 +38,7 @@ export const loginDIANService = async ({ usuario, password }) => {
 
 };
 
-export const getCompaniesDIANServices = async () => {
+export const getCompaniesDIANService = async () => {
     const result = await findTempEmpresaByVerificacion();
 
     if (result.rowCount === 0) {
@@ -54,7 +56,7 @@ export const getCompaniesDIANServices = async () => {
     };
 };
 
-export const registerCompanyServices = async ({ correo, action, motivo }) => {
+export const registerCompanyService = async ({ correo, action, motivo }) => {
     const tempEmpresaResult = await findTempEmpresaByCorreo(correo);
     const te = tempEmpresaResult.rows[0];
     if (action === 'aceptar') {
@@ -79,3 +81,51 @@ export const registerCompanyServices = async ({ correo, action, motivo }) => {
     }
 };
 
+export const getCompaniesPendingService = async () => {
+    const companies = await findEmpresasPendientes();
+
+    return {
+        companies: companies.rows
+    };
+};
+
+export const getCertificateByCompanyService = async (companyName) => {
+    const pool = await getPool(companyName);
+
+    const empresaResult = await findEmpresaByNombre(companyName);
+    const empresa = empresaResult.rows[0];
+
+    const adminResult = await findUsuarioByHandle(pool, 'admin');
+    const admin = adminResult.rows[0];
+
+
+    const { html } = generateSelfieLetterHTML({
+        empresa: {
+            nombre: empresa.nombre,
+            nit: empresa.nit,
+            direccion: empresa.direccion
+        },
+        admin: {
+            nombre: admin.nombre,
+            telefono: admin.telefono,
+            correo: admin.correo
+        }
+    });
+
+    return {
+        html
+    };
+};
+
+export const acceptCertificateService = async (companyName) => {
+    const pool = await getPool(companyName);
+    const adminResult = await findUsuarioByHandle(pool, 'admin');
+    const admin = adminResult.rows[0];
+    const firma_digital = getFirmaDigital();
+    await updateCertificadoEmpresa(companyName, firma_digital);
+    await sendCertificateAcceptedEmail(admin.correo, companyName);
+
+    return {
+        message: `El certificado de "${companyName}" ha sido aprobado exitosamente. Se ha enviado una notificación por correo electrónico a la empresa.`
+    };
+};
