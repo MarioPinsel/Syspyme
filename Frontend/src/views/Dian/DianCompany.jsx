@@ -47,7 +47,13 @@ export default function DIANCompanies() {
                 throw error;
             }
 
-            toast.error("Ocurrió un error en el servidor.");
+            // Mostrar el mensaje de error del servidor
+            if (error.response?.data?.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error("Ocurrió un error en el servidor.");
+            }
+
             throw error;
         }
     };
@@ -64,6 +70,16 @@ export default function DIANCompanies() {
 
     const handleAceptar = async (correo) => {
         try {
+            // Actualización optimista: eliminar de la lista inmediatamente
+            const updatedCompanies = companies.filter(c => c.correo !== correo);
+            setCompanies(updatedCompanies);
+            setFilteredCompanies(updatedCompanies.filter((c) =>
+                !search.trim() ||
+                (c.nombre || "").toLowerCase().includes(search.toLowerCase()) ||
+                (c.nit || "").toLowerCase().includes(search.toLowerCase()) ||
+                (c.correo || "").toLowerCase().includes(search.toLowerCase())
+            ));
+
             const res = await updateCompanyStatus({
                 correo,
                 action: "aceptar",
@@ -71,9 +87,15 @@ export default function DIANCompanies() {
             });
 
             toast.success(res.message || "Empresa aceptada.");
+
+            // Refetch para asegurar sincronización con el servidor
             refetch();
 
-        } catch (e) { }
+        } catch (e) {
+            // Si falla, revertir el cambio optimista
+            toast.error("Error al aceptar la empresa. Recargando lista...");
+            refetch();
+        }
     };
 
     const handleRechazar = async (correo) => {
@@ -85,6 +107,16 @@ export default function DIANCompanies() {
         }
 
         try {
+            // Actualización optimista: eliminar de la lista inmediatamente
+            const updatedCompanies = companies.filter(c => c.correo !== correo);
+            setCompanies(updatedCompanies);
+            setFilteredCompanies(updatedCompanies.filter((c) =>
+                !search.trim() ||
+                (c.nombre || "").toLowerCase().includes(search.toLowerCase()) ||
+                (c.nit || "").toLowerCase().includes(search.toLowerCase()) ||
+                (c.correo || "").toLowerCase().includes(search.toLowerCase())
+            ));
+
             const res = await updateCompanyStatus({
                 correo,
                 action: "rechazar",
@@ -92,11 +124,27 @@ export default function DIANCompanies() {
             });
 
             toast.success(res.message || "Empresa rechazada.");
-            setMotivos(prev => ({ ...prev, [correo]: "" }));
-            setMostrarMotivo(prev => ({ ...prev, [correo]: false }));
+
+            // Limpiar los estados relacionados
+            setMotivos(prev => {
+                const newMotivos = { ...prev };
+                delete newMotivos[correo];
+                return newMotivos;
+            });
+            setMostrarMotivo(prev => {
+                const newMostrar = { ...prev };
+                delete newMostrar[correo];
+                return newMostrar;
+            });
+
+            // Refetch para asegurar sincronización con el servidor
             refetch();
 
-        } catch (e) { }
+        } catch (e) {
+            // Si falla, revertir el cambio optimista
+            toast.error("Error al rechazar la empresa. Recargando lista...");
+            refetch();
+        }
     };
 
     const toggleMotivo = (correo) => {
