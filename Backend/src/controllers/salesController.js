@@ -3,8 +3,7 @@ import { createSaleService, getSaleService } from '../services/salesService.js'
 export const createSaleController = async (req, res) => {
     try {
         const pool = req.pool;
-        const { correo, empresaNombre } = req.user;
-        console.log(req.body);
+        const { correo, empresaNombre } = req.user;        
         const result = await createSaleService(pool, correo, empresaNombre, req.body);
 
         if (!result.success) {

@@ -48,10 +48,8 @@ export async function sendFacturaEmail(xmlString, clienteEmail) {
       throw new Error("El correo del cliente es obligatorio.");
     }
 
-    console.log("📄 Generando PDF...");
     const pdfBuffer = await generarPDFBuffer(xmlString);
 
-    console.log("📦 Comprimendo ZIP...");
     const zipBuffer = await crearZipBuffer(pdfBuffer, xmlString);
 
     // Valida que existan variables de entorno
@@ -101,8 +99,7 @@ export async function sendFacturaEmail(xmlString, clienteEmail) {
         }
       ]
     };
-
-    console.log("📨 Enviando email...");
+    
     await transporter.sendMail(mailOptions);
 
     console.log(`✅ Factura enviada correctamente a: ${clienteEmail}`);
