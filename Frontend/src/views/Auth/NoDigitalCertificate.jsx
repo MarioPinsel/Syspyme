@@ -18,12 +18,13 @@ export default function DigitalCertificate() {
         const fetchCertificateHtml = async () => {
             try {
                 const token = Cookies.get("token");
-                const { data } = await api.get("/auth/certificate/html", {
+                const { data } = await api.get("/auth/getCertificate", {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                setCertificateHtml(data.html || "<p>No se pudo cargar el certificado digital</p>");
+                // ✅ data ya ES el HTML directamente, no data.html
+                setCertificateHtml(data || "<p>No se pudo cargar el certificado digital</p>");
             } catch (error) {
                 console.error("Error al cargar certificado:", error);
                 setCertificateHtml("<p>Error al cargar el certificado digital</p>");
@@ -37,11 +38,11 @@ export default function DigitalCertificate() {
 
     const handleContinue = async () => {
         if (!acceptedConditions) return;
-        
+
         setSubmitting(true);
         try {
             const token = Cookies.get("token");
-            const { data } = await api.post("/auth/certificate/complete", 
+            const { data } = await api.post("/auth/certificate/complete",
                 {},
                 {
                     headers: {
@@ -49,10 +50,10 @@ export default function DigitalCertificate() {
                     },
                 }
             );
-            
+
             setMessage(data.message || "Certificado digital procesado exitosamente");
             setShowSuccess(true);
-            
+
         } catch (error) {
             console.error("Error al procesar certificado:", error);
             setMessage("Error al procesar el certificado digital");
@@ -76,7 +77,7 @@ export default function DigitalCertificate() {
                     <div className="message-content">
                         <p>{message}</p>
                     </div>
-                    <button 
+                    <button
                         onClick={handleBackToHome}
                         className="btn-home"
                     >
@@ -102,8 +103,8 @@ export default function DigitalCertificate() {
                         <h2>¿Por qué necesito un certificado digital?</h2>
                         <p>
                             El certificado digital es un documento requerido por la DIAN (según resolución 000165 de 2023 capítulo 2 Requisitos de la factura electronica de venta) para autenticar,firmar y asegurar
-                            la integridad del documento electronico con el fin de asegurar que los datos no sean alterados y sean de 
-                            confianza para el emisor y receptor. 
+                            la integridad del documento electronico con el fin de asegurar que los datos no sean alterados y sean de
+                            confianza para el emisor y receptor.
                         </p>
                     </div>
 
@@ -117,8 +118,8 @@ export default function DigitalCertificate() {
                                     <p>Cargando certificado...</p>
                                 </div>
                             ) : (
-                                <div 
-                                    dangerouslySetInnerHTML={{ __html: certificateHtml }} 
+                                <div
+                                    dangerouslySetInnerHTML={{ __html: certificateHtml }}
                                     className="certificate-html"
                                 />
                             )}
@@ -127,7 +128,7 @@ export default function DigitalCertificate() {
                 </div>
 
                 <div className="action-section">
-                    <button 
+                    <button
                         onClick={handleContinue}
                         disabled={submitting}
                         className="btn-continue"
