@@ -238,3 +238,98 @@ export const sendCertificateAcceptedEmail = async (emailDestino, empresaNombre) 
 
     await transporter.sendMail(mailOptions);
 };
+
+export const sendCertificateRejectedEmail = async (emailDestino, empresaNombre, motivo) => {
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
+        }
+    });
+
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    const logoPath = path.join(__dirname, '../assets/logo-syspyme.png');
+
+    const mailOptions = {
+        from: `"SysPyME - DIAN" <${process.env.EMAIL_USER}>`,
+        to: emailDestino,
+        subject: `❌ Certificado Digital Rechazado - ${empresaNombre}`,
+        html: `
+            <!DOCTYPE html>
+            <html lang="es">
+            <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Certificado Rechazado</title>
+            </head>
+            <body style="margin:0; padding:0; font-family:Arial, sans-serif; background-color:#f5f7fa;">
+
+              <table align="center" width="100%" cellspacing="0" cellpadding="0"
+                     style="max-width:600px; background-color:#ffffff; border-radius:8px; margin:30px auto;
+                     padding:40px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+                
+                <tr>
+                  <td>
+
+                    <img src="cid:logo" alt="SysPyME" width="140" style="margin-bottom:20px;">
+
+                    <h2 style="color:#d32f2f; margin-bottom:10px;">
+                      ❌ Certificado Digital Rechazado
+                    </h2>
+
+                    <p style="color:#444; font-size:15px; line-height:1.5;">
+                      <b>${empresaNombre}</b>, lamentamos informarle que su <b>Certificado Digital</b> ha sido <b>rechazado</b> por la DIAN.
+                    </p>
+
+                    <div style="background:#fff3cd; border-left:4px solid #ff9800; padding:15px; margin:20px 0; text-align:left; border-radius:4px;">
+                      <p style="margin:0; color:#856404; font-size:14px;">
+                        <strong>Motivo del rechazo:</strong><br/>
+                        ${motivo}
+                      </p>
+                    </div>
+
+                    <p style="color:#444; font-size:15px; line-height:1.5;">
+                      Por favor, corrija la información según las observaciones indicadas y vuelva a enviar su certificado digital.
+                    </p>
+
+                    <p style="color:#666; font-size:14px; line-height:1.5; margin-top:20px;">
+                      Para reenviar el certificado, inicie sesión en <b>SysPyME</b> con sus credenciales. El sistema lo redirigirá automáticamente al formulario de certificado digital para que pueda completar nuevamente el proceso.
+                    </p>
+
+                    <a href="${process.env.FRONTEND_URL}/auth/login" 
+                       style="display:inline-block; margin:20px 0; padding:12px 30px; 
+                              background-color:#0b3954; color:#fff; text-decoration:none; 
+                              border-radius:5px; font-weight:bold;">
+                        Iniciar Sesión
+                    </a>
+
+                    <p style="color:#999; font-size:13px; line-height:1.5; margin-top:20px;">
+                      Si tiene dudas sobre el motivo del rechazo, puede contactarnos respondiendo a este correo.
+                    </p>
+
+                    <div style="border-top:1px solid #eee; margin-top:30px; padding-top:15px;">
+                      <p style="font-size:12px; color:#999; margin:0;">
+                        &copy; ${new Date().getFullYear()} <b>SysPyME</b>. Todos los derechos reservados.
+                      </p>
+                    </div>
+
+                  </td>
+                </tr>
+              </table>
+
+            </body>
+            </html>
+            `,
+        attachments: [
+            {
+                filename: "logo-syspyme.png",
+                path: logoPath,
+                cid: "logo"
+            }
+        ]
+    };
+
+    await transporter.sendMail(mailOptions);
+};

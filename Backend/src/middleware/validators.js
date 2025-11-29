@@ -38,9 +38,22 @@ export const getCertificateByCompanyValidation = [
         .notEmpty().withMessage("El nombre de la empresa es obligatorio.")
 ]
 
-export const acceptCertificateValidation = [
+export const validateCertificateValidation = [
     body("companyName")
-        .notEmpty().withMessage("El nombre de la empresa es obligatorio.")
+        .notEmpty().withMessage("El nombre de la empresa es obligatorio."),
+
+    body("action")
+        .notEmpty().withMessage("El campo action es obligatorio.")
+        .isIn(["aceptar", "rechazar"])
+        .withMessage("Action debe ser 'aceptar' o 'rechazar'."),
+
+    body("motivo")
+        .custom((value, { req }) => {
+            if (req.body.action === "rechazar" && (!value || value.trim() === "")) {
+                throw new Error("El motivo es obligatorio cuando action = 'rechazar'.");
+            }
+            return true;
+        }),
 ]
 
 export const registerValidationEmpresa = [

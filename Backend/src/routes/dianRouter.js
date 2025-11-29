@@ -12,6 +12,6 @@ router.get('/getCompanies', getCompaniesDIANController);
 router.post('/registerCompany', actionValidation, validate, registerCompanyController);
 router.get('/companiesPending', getCompaniesPendingController);
 router.get('/getCertificate', getCertificateByCompanyValidation, getCertificateByCompanyController);
-router.post('/acceptCertificate', acceptCertificateValidation, acceptCertificateController);
+router.post('/validateCertificate', acceptCertificateValidation, acceptCertificateController);
 
 export default router;

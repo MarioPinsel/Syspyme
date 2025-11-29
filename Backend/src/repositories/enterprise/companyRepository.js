@@ -81,7 +81,7 @@ export const updateVerifiedTempEmpresa = async (correo) => {
   return await pool.query(query, [correo]);
 }
 
-export const updateCertificadoEmpresa = async (empresaNombre, certificado) => {
-  const query = `UPDATE empresas SET certificado = $1, certificado_fecha = NOW() WHERE nombre = $2`;
-  return await pool.query(query, [certificado, empresaNombre]);
+export const updateCertificadoEmpresa = async (empresaNombre, certificado, date) => {
+  const query = `UPDATE empresas SET certificado = $1, certificado_fecha = $2 WHERE nombre = $3`;
+  return await pool.query(query, [certificado, date, empresaNombre]);
 }

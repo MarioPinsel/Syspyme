@@ -79,8 +79,8 @@ export const getCertificateByCompanyController = async (req, res) => {
 
 export const acceptCertificateController = async (req, res) => {
     try {
-        const { companyName } = req.body;
-        const result = await acceptCertificateService(companyName);
+        const { companyName, action, motivo } = req.body;
+        const result = await acceptCertificateService({ companyName, action, motivo });
 
         return res.status(200).json({
             message: result.message

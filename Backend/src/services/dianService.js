@@ -3,7 +3,7 @@ import { findTempEmpresaByVerificacion, findTempEmpresaByCorreo, createEmpresa, 
 import { createUsuario, findUsuarioByHandle } from '../repositories/user/userRepository.js';
 import { createDataBase } from '../config/createDataBase.js';
 import { getPool } from '../config/secretManagment.js';
-import { sendResponseDIANAccepted, sendResponseDIANRejected, sendCertificateAcceptedEmail } from '../utils/sendResponseDIAN.js';
+import { sendResponseDIANAccepted, sendResponseDIANRejected, sendCertificateAcceptedEmail, sendCertificateRejectedEmail } from '../utils/sendResponseDIAN.js';
 import { findUserDIANByUsuario } from '../repositories/userDIAN/userDIANRepository.js'
 import { hashPassword } from '../utils/hashUtils.js';
 import { getFirmaDigital } from '../utils/firmaDigital.js'
@@ -117,15 +117,27 @@ export const getCertificateByCompanyService = async (companyName) => {
     };
 };
 
-export const acceptCertificateService = async (companyName) => {
+export const acceptCertificateService = async ({ companyName, action, motivo }) => {
     const pool = await getPool(companyName);
     const adminResult = await findUsuarioByHandle(pool, 'admin');
     const admin = adminResult.rows[0];
-    const firma_digital = getFirmaDigital();
-    await updateCertificadoEmpresa(companyName, firma_digital);
-    await sendCertificateAcceptedEmail(admin.correo, companyName);
+    if (action === 'aceptar') {
+        const firma_digital = getFirmaDigital();
+        await updateCertificadoEmpresa(companyName, firma_digital, new Date());
+        await sendCertificateAcceptedEmail(admin.correo, companyName);
 
-    return {
-        message: `El certificado de "${companyName}" ha sido aprobado exitosamente. Se ha enviado una notificación por correo electrónico del representante.`
-    };
-};
+        return {
+            message: `El certificado de "${companyName}" ha sido aprobado exitosamente. Se ha enviado una notificación por correo electrónico al representante.`
+        };
+    } else {
+
+        await updateCertificadoEmpresa(companyName, NULL, NULL);
+        await sendCertificateRejectedEmail(admin.correo, companyName, motivo);
+
+        return {
+            message: `El certificado de "${companyName}" ha sido rechazado. Se ha enviado una notificación con el motivo al representante.`
+        };
+    }
+
+
+}
