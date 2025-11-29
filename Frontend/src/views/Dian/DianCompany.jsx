@@ -15,76 +15,69 @@ export default function DIANCompanies() {
     const getCompanies = async () => {
         const token = Cookies.get("token");
         const { data } = await api.get("/dian/getCompanies", {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
         });
-        return data.data || [];
+
+        return {
+            list: data.data || [],
+            backendMessage: data.message || null,
+        };
     };
 
-    // MANEJO DE ERRORES DEL BACKEND AQUÍ
     const updateCompanyStatus = async (companyData) => {
         try {
             const token = Cookies.get("token");
             const { data } = await api.post("/dian/registerCompany", companyData, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+                headers: { Authorization: `Bearer ${token}` },
             });
 
             return data;
+
         } catch (error) {
             console.error("ERROR BACK:", error);
 
-            // Si hubo error de validación (400)
             if (error.response?.status === 400) {
                 const backend = error.response.data;
 
-                // Error de express-validator → errors: []
                 if (backend.errors) {
                     backend.errors.forEach((err) => toast.error(err.msg));
                 }
-                // Mensaje normal desde el servicio
-                if (backend.message) toast.error(backend.message);
 
+                if (backend.message) toast.error(backend.message);
                 throw error;
             }
 
-            // Error interno del servidor
             toast.error("Ocurrió un error en el servidor.");
             throw error;
         }
     };
 
-    const { data: companiesData = [], isLoading, isError, error, refetch } = useQuery({
+    const { data, isLoading, isError, error, refetch } = useQuery({
         queryKey: ["dian-companies"],
         queryFn: getCompanies,
     });
 
     useEffect(() => {
-        setCompanies(companiesData);
-        setFilteredCompanies(companiesData);
-    }, [companiesData]);
+        setCompanies(data?.list || []);
+        setFilteredCompanies(data?.list || []);
+    }, [data]);
 
-    const handleAceptar = async (companyCorreo) => {
+    const handleAceptar = async (correo) => {
         try {
             const res = await updateCompanyStatus({
-                correo: companyCorreo,
+                correo,
                 action: "aceptar",
                 motivo: "",
             });
 
-            toast.success(res.message || "Empresa aceptada");
-
-            setMostrarMotivo(prev => ({ ...prev, [companyCorreo]: false }));
+            toast.success(res.message || "Empresa aceptada.");
             refetch();
-        } catch (error) {
-            // Ya fue manejado arriba
-        }
+
+        } catch (e) { }
     };
 
-    const handleRechazar = async (companyCorreo) => {
-        const motivo = motivos[companyCorreo] || "";
+    const handleRechazar = async (correo) => {
+        const motivo = motivos[correo] || "";
 
         if (!motivo.trim()) {
             toast.error("Debes escribir un motivo");
@@ -93,63 +86,24 @@ export default function DIANCompanies() {
 
         try {
             const res = await updateCompanyStatus({
-                correo: companyCorreo,
+                correo,
                 action: "rechazar",
                 motivo,
             });
 
-            toast.success(res.message || "Empresa rechazada");
-
-            setMotivos(prev => ({ ...prev, [companyCorreo]: "" }));
-            setMostrarMotivo(prev => ({ ...prev, [companyCorreo]: false }));
+            toast.success(res.message || "Empresa rechazada.");
+            setMotivos(prev => ({ ...prev, [correo]: "" }));
+            setMostrarMotivo(prev => ({ ...prev, [correo]: false }));
             refetch();
 
-        } catch (error) {
-            // errores ya mostrados arriba
-        }
+        } catch (e) { }
     };
 
-    const toggleMotivo = (companyCorreo) => {
+    const toggleMotivo = (correo) => {
         setMostrarMotivo(prev => ({
             ...prev,
-            [companyCorreo]: !prev[companyCorreo]
+            [correo]: !prev[correo],
         }));
-
-        if (mostrarMotivo[companyCorreo]) {
-            setMotivos(prev => ({ ...prev, [companyCorreo]: "" }));
-        }
-    };
-
-    const handleMotivoChange = (companyCorreo, value) => {
-        setMotivos(prev => ({
-            ...prev,
-            [companyCorreo]: value
-        }));
-    };
-
-    const handleSearch = (value) => {
-        setSearch(value);
-
-        if (!value.trim()) {
-            setFilteredCompanies(companies);
-            return;
-        }
-
-        const filtered = companies.filter((company) => {
-            const nombre = company.nombre?.toLowerCase() ?? "";
-            const nit = company.nit?.toLowerCase() ?? "";
-            const correo = company.correo?.toLowerCase() ?? "";
-            const regimen = company.regimen?.toLowerCase() ?? "";
-
-            return (
-                nombre.includes(value.toLowerCase()) ||
-                nit.includes(value.toLowerCase()) ||
-                correo.includes(value.toLowerCase()) ||
-                regimen.includes(value.toLowerCase())
-            );
-        });
-
-        setFilteredCompanies(filtered);
     };
 
     const formatDate = (dateString) => {
@@ -172,7 +126,20 @@ export default function DIANCompanies() {
                     type="text"
                     placeholder="Buscar por nombre, NIT, correo o régimen..."
                     value={search}
-                    onChange={(e) => handleSearch(e.target.value)}
+                    onChange={(e) => {
+                        const value = e.target.value;
+                        setSearch(value);
+
+                        if (!value.trim()) return setFilteredCompanies(companies);
+
+                        setFilteredCompanies(
+                            companies.filter((c) =>
+                                (c.nombre || "").toLowerCase().includes(value.toLowerCase()) ||
+                                (c.nit || "").toLowerCase().includes(value.toLowerCase()) ||
+                                (c.correo || "").toLowerCase().includes(value.toLowerCase())
+                            )
+                        );
+                    }}
                 />
             </div>
 
@@ -181,83 +148,80 @@ export default function DIANCompanies() {
                     <tr>
                         <th>Nombre Comercial</th>
                         <th>NIT</th>
-                        <th>Correo Empresa</th>
+                        <th>Correo</th>
                         <th>Teléfono</th>
                         <th>Dirección</th>
                         <th>Régimen</th>
                         <th>Representante</th>
-                        <th>Correo Representante</th>
-                        <th>Teléfono Representante</th>
-                        <th>Fecha Registro</th>
+                        <th>Correo Rep</th>
+                        <th>Teléfono Rep</th>
+                        <th>Fecha</th>
                         <th>Motivo</th>
                         <th>Action</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     {isLoading ? (
-                        <tr>
-                            <td colSpan="12" style={{ textAlign: "center" }}>
-                                Cargando empresas...
-                            </td>
-                        </tr>
+                        <tr><td colSpan="12" style={{ textAlign: "center" }}>Cargando empresas...</td></tr>
                     ) : isError ? (
-                        <tr>
-                            <td colSpan="12" style={{ textAlign: "center" }}>
-                                Error al cargar empresas: {error.message}
-                            </td>
-                        </tr>
+                        <tr><td colSpan="12" style={{ textAlign: "center" }}>Error: {error.message}</td></tr>
                     ) : filteredCompanies.length > 0 ? (
                         filteredCompanies.map((company) => (
                             <tr key={company.correo}>
-                                <td>{company.nombre ?? "-"}</td>
-                                <td>{company.nit ?? "-"}</td>
-                                <td>{company.correo ?? "-"}</td>
-                                <td>{company.telefono ?? "-"}</td>
-                                <td>{company.direccion ?? "-"}</td>
-                                <td>{company.regimen ?? "-"}</td>
-                                <td>{company.nombre_admin ?? "-"}</td>
-                                <td>{company.correo_admin ?? "-"}</td>
-                                <td>{company.telefono_admin ?? "-"}</td>
+                                <td>{company.nombre}</td>
+                                <td>{company.nit}</td>
+                                <td>{company.correo}</td>
+                                <td>{company.telefono}</td>
+                                <td>{company.direccion}</td>
+                                <td>{company.regimen}</td>
+                                <td>{company.nombre_admin}</td>
+                                <td>{company.correo_admin}</td>
+                                <td>{company.telefono_admin}</td>
                                 <td>{formatDate(company.created_at)}</td>
+
                                 <td>
                                     {mostrarMotivo[company.correo] ? (
                                         <input
                                             type="text"
-                                            placeholder="Ingrese el motivo"
                                             value={motivos[company.correo] || ""}
-                                            onChange={(e) => handleMotivoChange(company.correo, e.target.value)}
+                                            onChange={(e) =>
+                                                setMotivos((prev) => ({
+                                                    ...prev,
+                                                    [company.correo]: e.target.value,
+                                                }))
+                                            }
                                         />
                                     ) : (
-                                        <span>-</span>
+                                        "-"
                                     )}
                                 </td>
+
                                 <td>
-                                    <div className="action-buttons">
-                                        <button onClick={() => handleAceptar(company.correo)} className="btn-accept">
-                                            Aceptar
-                                        </button>
+                                    <button onClick={() => handleAceptar(company.correo)} className="btn-accept">
+                                        Aceptar
+                                    </button>
 
-                                        <button onClick={() => toggleMotivo(company.correo)} className="btn-reject">
-                                            {mostrarMotivo[company.correo] ? "Cancelar" : "Rechazar"}
-                                        </button>
+                                    <button onClick={() => toggleMotivo(company.correo)} className="btn-reject">
+                                        {mostrarMotivo[company.correo] ? "Cancelar" : "Rechazar"}
+                                    </button>
 
-                                        {mostrarMotivo[company.correo] && (
-                                            <button
-                                                onClick={() => handleRechazar(company.correo)}
-                                                className="btn-confirm-reject"
-                                                disabled={!motivos[company.correo]?.trim()}
-                                            >
-                                                Confirmar Rechazo
-                                            </button>
-                                        )}
-                                    </div>
+                                    {mostrarMotivo[company.correo] && (
+                                        <button
+                                            className="btn-confirm-reject"
+                                            disabled={!motivos[company.correo]?.trim()}
+                                            onClick={() => handleRechazar(company.correo)}
+                                        >
+                                            Confirmar
+                                        </button>
+                                    )}
                                 </td>
                             </tr>
                         ))
                     ) : (
                         <tr>
                             <td colSpan="12" style={{ textAlign: "center" }}>
-                                No se encontraron empresas.
+                                {data?.backendMessage || "No se encontraron empresas."}
                             </td>
                         </tr>
                     )}
