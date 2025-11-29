@@ -82,7 +82,7 @@ export default function VerificationCode() {
 
       const decoded = jwtDecode(newToken);
       Cookies.set("role", decoded.isAdmin ? "admin" : "employee");
-
+      Cookies.set("role", userRole);
       login(newToken, userRole);
 
       if (decoded.isAdmin) {
