@@ -143,7 +143,7 @@ export default function Footer() {
                     }}
                     title="Acceso DIAN (Click aquí)"
                 >
-                    © DIAN
+                    © DAIN
                 </div>
 
                 <a

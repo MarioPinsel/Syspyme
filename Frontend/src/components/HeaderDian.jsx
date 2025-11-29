@@ -7,7 +7,7 @@ export default function HeaderDian() {
 
     return (
         <header className="header dian-header">
-            <div className="role-badge">DIAN</div>
+            <div className="role-badge">DAIN</div>
             <nav className="header-links">
                 <Link to="/dian">Dashboard</Link>
                 <button onClick={logout}>Cerrar Sesión</button>

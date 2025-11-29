@@ -1,4 +1,4 @@
-
+import { useAuth } from "../../context/useAuth";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
@@ -12,6 +12,7 @@ export default function VerificationCode() {
   const inputRefs = useRef([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [pendingMessage, setPendingMessage] = useState("");
+    const { login } = useAuth();
 
   const navigate = useNavigate();
 
@@ -81,6 +82,8 @@ export default function VerificationCode() {
 
       const decoded = jwtDecode(newToken);
       Cookies.set("role", decoded.isAdmin ? "admin" : "employee");
+
+      login(newToken, userRole);
 
       if (decoded.isAdmin) {
         navigate("/dashboard/");

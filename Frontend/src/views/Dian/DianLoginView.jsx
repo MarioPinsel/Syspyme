@@ -93,7 +93,7 @@ export default function LoginDIAN() {
   return (
     <div className="auth-container">
       <div className="auth-box">
-        <h2>Iniciar Sesión - DIAN</h2>
+        <h2>Iniciar Sesión - DAIN</h2>
 
         <form onSubmit={handleSubmit(handleLogin)}>
           <label>Usuario</label>
