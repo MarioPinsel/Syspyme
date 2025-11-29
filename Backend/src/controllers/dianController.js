@@ -1,4 +1,4 @@
-import { loginDIANService, getCompaniesDIANService, registerCompanyService, getCompaniesPendingService, getCertificateByCompanyService, acceptCertificateService } from '../services/dianService.js';
+import { loginDIANService, getCompaniesDIANService, registerCompanyService, getCompaniesPendingService, getCertificateByCompanyService, validateCertificateService } from '../services/dianService.js';
 
 export const loginDIANController = async (req, res) => {
     try {
@@ -77,10 +77,10 @@ export const getCertificateByCompanyController = async (req, res) => {
     }
 }
 
-export const acceptCertificateController = async (req, res) => {
+export const validateCertificateController = async (req, res) => {
     try {
         const { companyName, action, motivo } = req.body;
-        const result = await acceptCertificateService({ companyName, action, motivo });
+        const result = await validateCertificateService({ companyName, action, motivo });
 
         return res.status(200).json({
             message: result.message

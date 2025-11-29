@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { loginDIANController, getCompaniesDIANController, registerCompanyController, getCompaniesPendingController, getCertificateByCompanyController, acceptCertificateController } from '../controllers/dianController.js';
-import { loginDIANValidation, actionValidation, getCertificateByCompanyValidation, acceptCertificateValidation } from '../middleware/validators.js';
+import { loginDIANController, getCompaniesDIANController, registerCompanyController, getCompaniesPendingController, getCertificateByCompanyController, validateCertificateController } from '../controllers/dianController.js';
+import { loginDIANValidation, actionValidation, getCertificateByCompanyValidation, validateCertificateValidation } from '../middleware/validators.js';
 import { validate } from '../middleware/validation.js';
 import { authToken, isDIAN } from '../middleware/authMiddleware.js';
 
@@ -12,6 +12,6 @@ router.get('/getCompanies', getCompaniesDIANController);
 router.post('/registerCompany', actionValidation, validate, registerCompanyController);
 router.get('/companiesPending', getCompaniesPendingController);
 router.get('/getCertificate', getCertificateByCompanyValidation, getCertificateByCompanyController);
-router.post('/validateCertificate', acceptCertificateValidation, acceptCertificateController);
+router.post('/validateCertificate', validateCertificateValidation, validateCertificateController);
 
 export default router;

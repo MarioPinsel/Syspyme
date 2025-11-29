@@ -117,7 +117,7 @@ export const getCertificateByCompanyService = async (companyName) => {
     };
 };
 
-export const acceptCertificateService = async ({ companyName, action, motivo }) => {
+export const validateCertificateService = async ({ companyName, action, motivo }) => {
     const pool = await getPool(companyName);
     const adminResult = await findUsuarioByHandle(pool, 'admin');
     const admin = adminResult.rows[0];
