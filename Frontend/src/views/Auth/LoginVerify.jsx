@@ -11,6 +11,7 @@ export default function VerificationCode() {
   const [code, setCode] = useState(Array(6).fill(""));
   const inputRefs = useRef([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [pendingMessage, setPendingMessage] = useState("");
 
   const navigate = useNavigate();
 
