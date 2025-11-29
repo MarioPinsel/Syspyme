@@ -74,3 +74,37 @@
 .public-header {
     background: #1a57c8;
 }
+
+.dian-header {
+    background: #1a57c8; 
+}
+
+.dian-header .role-badge {
+    background-color: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.dian-header a {
+    color: #ffffff; 
+    font-weight: 600;
+}
+
+.dian-header a:hover {
+    background-color: rgba(255, 255, 255, 0.15); 
+    transform: translateY(-1px);
+}
+
+.dian-header button {
+    background-color: #ffffff; 
+    border: 2px solid #ffffff;
+    color: #28E0D0;
+    font-weight: 600;
+}
+
+.dian-header button:hover {
+    background-color: transparent;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}

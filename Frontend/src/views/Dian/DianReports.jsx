@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import api from "../../config/axios";
 import Cookies from "js-cookie";
+import { toast } from "sonner"; 
 import "../../styles/Views/DianCompany.css";
 
 export default function DianReports() {
@@ -15,6 +16,7 @@ export default function DianReports() {
     const [showRejectModal, setShowRejectModal] = useState(false);
     const [rejectReason, setRejectReason] = useState("");
     const [submitting, setSubmitting] = useState(false);
+    const [accepting, setAccepting] = useState(false); 
 
     const getCompanies = async () => {
         const token = Cookies.get("token");
@@ -34,10 +36,10 @@ export default function DianReports() {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
-                responseType: 'text', // ✅ Importante: recibir como texto, no JSON
+                responseType: 'text',
             }
         );
-        return response.data; // Ahora response.data es el HTML directamente
+        return response.data;
     };
 
     const validateCertificate = async (companyName, action, motivo = "") => {
@@ -106,18 +108,33 @@ export default function DianReports() {
     const handleAceptar = async () => {
         if (!selectedCompany) return;
 
-        setSubmitting(true);
+        setAccepting(true); // ✅ Activar estado de carga
+        const toastId = toast.loading("Aceptando certificado..."); // ✅ Toast de carga
+
         try {
             const result = await validateCertificate(selectedCompany.nombre, 'aceptar');
+            
+            // ✅ Toast de éxito
+            toast.success(result.message || "✅ Certificado aceptado exitosamente", {
+                id: toastId
+            });
+            
             setMessage(result.message || "Certificado aceptado exitosamente");
             setSelectedCompany(null);
             setShowCertificate(false);
             refetch();
         } catch (error) {
             console.error("Error al aceptar certificado:", error);
-            setMessage(error.response?.data?.message || "Error al aceptar el certificado");
+            const errorMessage = error.response?.data?.message || "Error al aceptar el certificado";
+            
+            // ✅ Toast de error
+            toast.error(errorMessage, {
+                id: toastId
+            });
+            
+            setMessage(errorMessage);
         } finally {
-            setSubmitting(false);
+            setAccepting(false);
         }
     };
 
@@ -127,13 +144,21 @@ export default function DianReports() {
 
     const handleConfirmReject = async () => {
         if (!rejectReason.trim()) {
-            alert("Debe ingresar un motivo del rechazo");
+            toast.error("Debe ingresar un motivo del rechazo"); 
             return;
         }
 
         setSubmitting(true);
+        const toastId = toast.loading("Rechazando certificado..."); 
+
         try {
             const result = await validateCertificate(selectedCompany.nombre, 'rechazar', rejectReason);
+            
+            
+            toast.success(result.message || "✅ Certificado rechazado exitosamente", {
+                id: toastId
+            });
+            
             setMessage(result.message || "Certificado rechazado exitosamente");
             setSelectedCompany(null);
             setShowCertificate(false);
@@ -142,7 +167,14 @@ export default function DianReports() {
             refetch();
         } catch (error) {
             console.error("Error al rechazar certificado:", error);
-            setMessage(error.response?.data?.message || "Error al rechazar el certificado");
+            const errorMessage = error.response?.data?.message || "Error al rechazar el certificado";
+            
+            
+            toast.error(errorMessage, {
+                id: toastId
+            });
+            
+            setMessage(errorMessage);
         } finally {
             setSubmitting(false);
         }
@@ -183,7 +215,7 @@ export default function DianReports() {
                         <button
                             onClick={handleVolverRevision}
                             className="btn-back"
-                            disabled={submitting}
+                            disabled={submitting || accepting}
                         >
                             Volver a Revisión
                         </button>
@@ -191,17 +223,24 @@ export default function DianReports() {
                         <button
                             onClick={handleAceptar}
                             className="btn-accept"
-                            disabled={submitting}
+                            disabled={submitting || accepting}
                         >
-                            {submitting ? "Procesando..." : "✓ Aceptar Certificado"}
+                            {accepting ? (
+                                <>
+                                    <div className="spinner-small"></div>
+                                    Aceptando...
+                                </>
+                            ) : (
+                                "✓ Aceptar Certificado"
+                            )}
                         </button>
 
                         <button
                             onClick={handleRechazar}
                             className="btn-reject"
-                            disabled={submitting}
+                            disabled={submitting || accepting}
                         >
-                            ✗ Rechazar Certificado
+                            {submitting ? "Procesando..." : "✗ Rechazar Certificado"}
                         </button>
                     </div>
 
@@ -252,7 +291,14 @@ export default function DianReports() {
                                     className="btn-confirm-reject"
                                     disabled={submitting}
                                 >
-                                    {submitting ? "Enviando..." : "Confirmar Rechazo"}
+                                    {submitting ? (
+                                        <>
+                                            <div className="spinner-small"></div>
+                                            Enviando...
+                                        </>
+                                    ) : (
+                                        "Confirmar Rechazo"
+                                    )}
                                 </button>
                             </div>
                         </div>

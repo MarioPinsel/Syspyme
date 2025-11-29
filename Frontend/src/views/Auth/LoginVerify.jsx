@@ -84,10 +84,10 @@ export default function VerificationCode() {
 
       if (decoded.isAdmin) {
         navigate("/dashboard/");
-        window.location.reload();
+        
       } else {
         navigate("/employee");
-        window.location.reload();
+        
       }
 
     } catch (error) {
