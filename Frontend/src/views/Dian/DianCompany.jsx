@@ -11,10 +11,17 @@ export default function DIANCompanies() {
     const [filteredCompanies, setFilteredCompanies] = useState([]);
     const [motivos, setMotivos] = useState({});
     const [mostrarMotivo, setMostrarMotivo] = useState({});
+    const [loadingActions, setLoadingActions] = useState({});
 
     const getCompanies = async () => {
         try {
             const token = Cookies.get("token");
+
+            if (!token) {
+                toast.error("No se encontró token de autenticación. Por favor inicia sesión nuevamente.");
+                throw new Error("Token no encontrado");
+            }
+
             const { data } = await api.get("/dian/getCompanies", {
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -24,6 +31,14 @@ export default function DIANCompanies() {
                 backendMessage: data.message || null,
             };
         } catch (error) {
+            // Si es un error de autenticación (401) o token inválido
+            if (error.response?.status === 401 || error.message?.includes("jwt")) {
+                toast.error("Sesión expirada o inválida. Por favor inicia sesión nuevamente.");
+                // Aquí podrías redirigir al login
+                // window.location.href = "/login";
+                throw error;
+            }
+
             // Si es un 400 con mensaje de "no hay empresas", no es un error real
             if (error.response?.status === 400) {
                 return {
@@ -39,6 +54,12 @@ export default function DIANCompanies() {
     const updateCompanyStatus = async (companyData) => {
         try {
             const token = Cookies.get("token");
+
+            if (!token) {
+                toast.error("No se encontró token de autenticación. Por favor inicia sesión nuevamente.");
+                throw new Error("Token no encontrado");
+            }
+
             const { data } = await api.post("/dian/registerCompany", companyData, {
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -48,6 +69,13 @@ export default function DIANCompanies() {
         } catch (error) {
             console.error("ERROR BACK:", error);
             console.error("ERROR RESPONSE:", error.response);
+
+            // Manejar errores de autenticación
+            if (error.response?.status === 401 || error.message?.includes("jwt")) {
+                toast.error("Sesión expirada o inválida. Por favor inicia sesión nuevamente.");
+                // window.location.href = "/login";
+                throw error;
+            }
 
             // Extraer el mensaje de error del backend
             const errorMessage = error.response?.data?.message ||
@@ -80,6 +108,9 @@ export default function DIANCompanies() {
     }, [data]);
 
     const handleAceptar = async (correo) => {
+        // Activar loading
+        setLoadingActions(prev => ({ ...prev, [correo]: 'aceptar' }));
+
         try {
             // Actualización optimista: eliminar de la lista inmediatamente
             const updatedCompanies = companies.filter(c => c.correo !== correo);
@@ -97,15 +128,24 @@ export default function DIANCompanies() {
                 motivo: "",
             });
 
-            toast.success(res.message || "Empresa aceptada.");
+            toast.success(res.message || "Empresa aceptada.", {
+                description: "La empresa ha sido registrada exitosamente en el sistema.",
+            });
 
             // Refetch para asegurar sincronización con el servidor
-            refetch();
+            await refetch();
 
         } catch (e) {
             // Si falla, revertir el cambio optimista
             toast.error("Error al aceptar la empresa. Recargando lista...");
-            refetch();
+            await refetch();
+        } finally {
+            // Desactivar loading
+            setLoadingActions(prev => {
+                const newLoading = { ...prev };
+                delete newLoading[correo];
+                return newLoading;
+            });
         }
     };
 
@@ -243,6 +283,7 @@ export default function DIANCompanies() {
                                     {mostrarMotivo[company.correo] ? (
                                         <input
                                             type="text"
+                                            placeholder="Escribe el motivo del rechazo..."
                                             value={motivos[company.correo] || ""}
                                             onChange={(e) =>
                                                 setMotivos((prev) => ({
@@ -257,21 +298,43 @@ export default function DIANCompanies() {
                                 </td>
 
                                 <td>
-                                    <button onClick={() => handleAceptar(company.correo)} className="btn-accept">
-                                        Aceptar
+                                    <button
+                                        onClick={() => handleAceptar(company.correo)}
+                                        className="btn-accept"
+                                        disabled={loadingActions[company.correo]}
+                                    >
+                                        {loadingActions[company.correo] === 'aceptar' ? (
+                                            <>
+                                                <span className="spinner"></span>
+                                                Procesando...
+                                            </>
+                                        ) : (
+                                            'Aceptar'
+                                        )}
                                     </button>
 
-                                    <button onClick={() => toggleMotivo(company.correo)} className="btn-reject">
+                                    <button
+                                        onClick={() => toggleMotivo(company.correo)}
+                                        className="btn-reject"
+                                        disabled={loadingActions[company.correo]}
+                                    >
                                         {mostrarMotivo[company.correo] ? "Cancelar" : "Rechazar"}
                                     </button>
 
                                     {mostrarMotivo[company.correo] && (
                                         <button
                                             className="btn-confirm-reject"
-                                            disabled={!motivos[company.correo]?.trim()}
+                                            disabled={!motivos[company.correo]?.trim() || loadingActions[company.correo]}
                                             onClick={() => handleRechazar(company.correo)}
                                         >
-                                            Confirmar
+                                            {loadingActions[company.correo] === 'rechazar' ? (
+                                                <>
+                                                    <span className="spinner"></span>
+                                                    Procesando...
+                                                </>
+                                            ) : (
+                                                'Confirmar'
+                                            )}
                                         </button>
                                     )}
                                 </td>

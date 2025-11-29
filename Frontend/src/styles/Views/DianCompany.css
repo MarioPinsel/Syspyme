@@ -74,16 +74,17 @@
     .dian-companies-container {
         padding: 1rem;
     }
-    
+
     .companies-table {
         font-size: 0.8rem;
     }
-    
+
     .companies-table th,
     .companies-table td {
         padding: 0.5rem;
     }
 }
+
 /* Estilos específicos para DianReports */
 .dian-reports-container {
     padding: 2rem;
@@ -206,4 +207,104 @@
     min-width: 80px;
     padding: 6px 12px;
     font-size: 0.85rem;
+}
+
+/* ====== AGREGAR AL FINAL DEL ARCHIVO ====== */
+
+/* Estilos para los botones de acción */
+.btn-accept {
+    background: #10b981;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-accept:hover:not(:disabled) {
+    background: #059669;
+}
+
+.btn-reject {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-reject:hover:not(:disabled) {
+    background: #dc2626;
+}
+
+.btn-confirm-reject {
+    background: #f59e0b;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-confirm-reject:hover:not(:disabled) {
+    background: #d97706;
+}
+
+/* Spinner de carga */
+.spinner {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Estados deshabilitados de los botones */
+.btn-accept:disabled,
+.btn-reject:disabled,
+.btn-confirm-reject:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Estilo para el input de motivo */
+.companies-table input[type="text"] {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    transition: border-color 0.2s;
+}
+
+.companies-table input[type="text"]:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.companies-table input[type="text"]::placeholder {
+    color: #9ca3af;
 }
