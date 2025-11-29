@@ -20,23 +20,28 @@ export default function DianReports() {
                 Authorization: `Bearer ${token}`,
             },
         });
-
         return data.data || [];
     };
 
+    // 🔥 FIX 1: Traer el certificado como TEXTO (HTML)
     const getCertificate = async (companyName) => {
         const token = Cookies.get("token");
-        const { data } = await api.get(`/dian/getCertificate?companyName=${encodeURIComponent(companyName)}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        return data;
+        const response = await api.get(
+            `/dian/getCertificate?companyName=${encodeURIComponent(companyName)}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                responseType: "text", // 👈 NECESARIO
+            }
+        );
+        return response.data; // HTML puro
     };
 
     const acceptCertificate = async (companyName) => {
         const token = Cookies.get("token");
-        const { data } = await api.post("/dian/acceptCertificate",
+        const { data } = await api.post(
+            "/dian/acceptCertificate",
             { companyName: companyName },
             {
                 headers: {
@@ -81,8 +86,10 @@ export default function DianReports() {
         if (!selectedCompany) return;
 
         try {
-            const certificateData = await getCertificate(selectedCompany.nombre);
-            setCertificateHtml(certificateData.html || "<p>No se pudo cargar el certificado</p>");
+            const html = await getCertificate(selectedCompany.nombre);
+
+            // 🔥 FIX 2: Asignar HTML directo
+            setCertificateHtml(html || "<p>No se pudo cargar el certificado</p>");
             setShowCertificate(true);
             setMessage("");
         } catch (error) {
@@ -99,7 +106,7 @@ export default function DianReports() {
             const result = await acceptCertificate(selectedCompany.nombre);
             setMessage(result.message || "Certificado aceptado exitosamente");
             setSelectedCompany(null);
-            refetch(); // Refrescar la lista
+            refetch();
         } catch (error) {
             console.error("Error al aceptar certificado:", error);
             setMessage("Error al aceptar el certificado");
@@ -157,7 +164,7 @@ export default function DianReports() {
         );
     }
 
-    // Vista principal de la tabla
+    // Vista principal
     return (
         <div className="dian-reports-container">
             <h1>Revisión de Certificados - DIAN</h1>
@@ -197,16 +204,19 @@ export default function DianReports() {
                             ) : filteredCompanies.length > 0 ? (
                                 filteredCompanies.map((company) => (
                                     <tr
-                                        key={company.correo}
-                                        className={selectedCompany?.correo === company.correo ? "selected" : ""}
+                                        key={company.nombre} // 🔥 FIX 3: usar nombre como key
+                                        className={selectedCompany?.nombre === company.nombre ? "selected" : ""}
                                     >
                                         <td>{company.nombre ?? "-"}</td>
                                         <td>
                                             <button
                                                 onClick={() => handleSelectCompany(company)}
-                                                className={`btn-select ${selectedCompany?.correo === company.correo ? "selected" : ""}`}
+                                                className={`btn-select ${selectedCompany?.nombre === company.nombre ? "selected" : ""
+                                                    }`}
                                             >
-                                                {selectedCompany?.correo === company.correo ? "✓ Seleccionada" : "Seleccionar"}
+                                                {selectedCompany?.nombre === company.nombre
+                                                    ? "✓ Seleccionada"
+                                                    : "Seleccionar"}
                                             </button>
                                         </td>
                                     </tr>
