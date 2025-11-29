@@ -2,14 +2,11 @@ import { createReceipt, createDetailReceipt, addXMLAndCUFEToReceipt, getReceiptB
 import { findCustomerByDocument } from '../repositories/customer/customersRepository.js'
 import { findUsuarioByCorreo } from '../repositories/user/userRepository.js'
 import { getTotalStockByProductId, findProductByCode, getInventoryByProductId, updateInventoryQuantity, deleteFromInventoryById } from '../repositories/inventory/inventoryRepository.js'
-import { getFirmaDigital } from '../utils/firmaDigital.js'
 import { generarCUFE } from '../utils/cufeUtils.js';
 import { findEmpresaByNombre } from '../repositories/enterprise/companyRepository.js';
 import { sendFacturaEmail } from '../utils/sendFacturaEmail.js';
 import { generarXMLFactura } from '../utils/generatexml.js'
 import { generarHTMLDesdeXML } from '../utils/generarHTMLDesdeXML.js';
-
-const iva = 0.19;
 
 export const createSaleService = async (pool, correo, empresaNombre, { document, items, paymentMethod, paymentType, creditTerm }) => {
 
@@ -27,6 +24,19 @@ export const createSaleService = async (pool, correo, empresaNombre, { document,
 
     let subTotal = 0;
     const detalles = [];
+    if (
+        empresa.certificado === null ||
+        empresa.certificado === undefined ||
+        empresa.certificado.trim() === "" ||
+        empresa.certificado.toUpperCase() === "PENDIENTE"
+    ) {
+        return {
+            success: false,
+            message: "La empresa debe cargar un certificado digital válido antes de emitir facturas."
+        };
+    }
+
+    const firma_digital = empresa.certificado;
 
     for (const item of items) {
         const prodRes = await findProductByCode(pool, item.code);
@@ -69,11 +79,10 @@ export const createSaleService = async (pool, correo, empresaNombre, { document,
         });
     }
 
-
+    const iva = empresa.regimen === "responsable" ? 0.19 : 0;
     const impuestos = subTotal * iva;
     const totalConIva = subTotal + impuestos;
     const plazoFinal = paymentType.toLowerCase() === "contado" ? 0 : creditTerm;
-    const firma_digital = getFirmaDigital();
 
     const receipt = await createReceipt(pool, cliente.id, usuario.id, paymentMethod, paymentType, subTotal, impuestos, plazoFinal, totalConIva, 'aun_nocufe', firma_digital);
     const receiptId = receipt.rows[0].id;
@@ -90,14 +99,14 @@ export const createSaleService = async (pool, correo, empresaNombre, { document,
         );
     }
     async function getHoraBogotaConMilisegundos() {
-        const now = new Date();        
+        const now = new Date();
         const horaBogota = now.toLocaleTimeString("en-GB", {
             timeZone: "America/Bogota",
             hour: "2-digit",
             minute: "2-digit",
             second: "2-digit",
             hour12: false
-        });        
+        });
         const ms = now.getMilliseconds().toString().padStart(3, "0");
         return `${horaBogota}.${ms}`;
     }

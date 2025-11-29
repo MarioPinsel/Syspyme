@@ -46,7 +46,7 @@ export const sendMessageDIAN = async (empresaNombre, emailDestino) => {
 
                 <p style="color:#444; font-size:15px; line-height:1.5;">
                   La empresa <b>${empresaNombre}</b> ha solicitado registro en <b>SysPyME</b>.<br>
-                  Se solicita consultar en el panel administrativo para revisarla y aprobar o rechazar su solicitud, en caso de rechazo, redactar el motivo de la acción tomada para que se tome en cuenta, se de justificación y dar la respuesta a la empresa correspondiente. En caso de aceptar, haremos informar a la empresa que fue aprobada por la DIAN.
+                  Se solicita consultar en el panel administrativo para revisarla y aprobar o rechazar su solicitud, en caso de rechazo, redactar el motivo de la acción tomada para que se tome en cuenta, se de justificación y dar la respuesta a la empresa correspondiente. En caso de aceptar, haremos informar a la empresa que fue aprobada por la DAIN.
                 </p>
 
                 <div style="border-top:1px solid #eee; margin-top:30px; padding-top:15px;">
@@ -121,7 +121,7 @@ export const sendMessageDIANCertificate = async (empresaNombre, emailDestino) =>
 
                 <p style="color:#444; font-size:15px; line-height:1.5;">
                   La empresa <b>${empresaNombre}</b> ha completado y enviado su <b>Certificado Digital</b>.<br><br>
-                  Por favor, acceda al panel administrativo de la DIAN para:
+                  Por favor, acceda al panel administrativo de la DAIN para:
                 </p>
 
                 <ul style="text-align:left; color:#444; font-size:14px; line-height:1.8; max-width:400px; margin:20px auto;">

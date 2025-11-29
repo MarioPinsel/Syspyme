@@ -128,7 +128,7 @@ export const verifyAccount = async ({ pool, empresaNombre, correo, tipo, codigo 
         await updateVerifiedTempEmpresa(correo);
         await sendMessageDIAN(empresaNombre, process.env.EMAIL_USER);
         return {
-            message: 'La información de la empresa ha sido enviada a la DIAN para su verificación. Por favor, revise periódicamente el correo electrónico del representante, donde recibirá la notificación del resultado del proceso. El tiempo estimado de respuesta es de 24 a 72 horas. Una vez reciba el correo, siga las instrucciones proporcionadas para completar su registro.'
+            message: 'La información de la empresa ha sido enviada a la DAIN para su verificación. Por favor, revise periódicamente el correo electrónico del representante, donde recibirá la notificación del resultado del proceso. El tiempo estimado de respuesta es de 24 a 72 horas. Una vez reciba el correo, siga las instrucciones proporcionadas para completar su registro.'
         };
 
     } else {
@@ -256,7 +256,7 @@ export const sendCertificateService = async (empresaNombre) => {
 
     return {
         status: 200,
-        message: 'Su certificado digital ha sido enviado exitosamente y se encuentra en revisión por parte de la DIAN. Recibirá una notificación por correo electrónico una vez sea aprobado o si requiere correcciones. Este proceso puede tardar entre 24 a 48 horas hábiles.'
+        message: 'Su certificado digital ha sido enviado exitosamente y se encuentra en revisión por parte de la DAIN. Recibirá una notificación por correo electrónico una vez sea aprobado o si requiere correcciones. Este proceso puede tardar entre 24 a 48 horas hábiles.'
     };
 
 }

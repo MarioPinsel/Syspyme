@@ -82,7 +82,7 @@ export const verifyLogin = async (req, res) => {
 
         if (result.certificatePending) {
             return res.status(403).json({
-                error: 'Su certificado digital se encuentra actualmente en revisión por parte de la DIAN. Recibirá una notificación por correo electrónico una vez sea aprobado. Este proceso puede tardar entre 24 a 48 horas hábiles.'
+                error: 'Su certificado digital se encuentra actualmente en revisión por parte de la DAIN. Recibirá una notificación por correo electrónico una vez sea aprobado. Este proceso puede tardar entre 24 a 48 horas hábiles.'
             });
         }
 

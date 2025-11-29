@@ -22,9 +22,9 @@ const transporter = nodemailer.createTransport({
 export const sendResponseDIANAccepted = async (correoAdmin, empresaNombre, handleAdmin, adminPass) => {
 
   const mailOptions = {
-    from: `"SysPyME - DIAN" <${process.env.EMAIL_USER}>`,
+    from: `"SysPyME - DAIN" <${process.env.EMAIL_USER}>`,
     to: correoAdmin,
-    subject: `✔ Su empresa "${empresaNombre}" ha sido aprobada por la DIAN`,
+    subject: `✔ Su empresa "${empresaNombre}" ha sido aprobada por la DAIN`,
     html: `
         <!DOCTYPE html>
         <html lang="es">
@@ -41,7 +41,7 @@ export const sendResponseDIANAccepted = async (correoAdmin, empresaNombre, handl
                     <p style="font-size:15px; color:#444; line-height:1.5;">
                         Estimado representante,<br><br>
                         Informamos que la empresa <b>${empresaNombre}</b> ha sido 
-                        <b>verificada y aprobada por la DIAN</b>.
+                        <b>verificada y aprobada por la DAIN</b>.
                     </p>
 
                     <p style="font-size:15px; color:#444; line-height:1.5; margin-top:20px;">
@@ -98,9 +98,9 @@ export const sendResponseDIANAccepted = async (correoAdmin, empresaNombre, handl
 export const sendResponseDIANRejected = async (correoAdmin, motivo) => {
 
   const mailOptions = {
-    from: `"SysPyME - DIAN" <${process.env.EMAIL_USER}>`,
+    from: `"SysPyME - DAIN" <${process.env.EMAIL_USER}>`,
     to: correoAdmin,
-    subject: '❌ Su registro empresarial ha sido rechazado por la DIAN',
+    subject: '❌ Su registro empresarial ha sido rechazado por la DAIN',
     html: `
         <!DOCTYPE html>
         <html lang="es">
@@ -116,7 +116,7 @@ export const sendResponseDIANRejected = async (correoAdmin, motivo) => {
 
                     <p style="font-size:15px; color:#444; line-height:1.5;">
                         Estimado representante,<br><br>
-                        La DIAN ha revisado la información enviada para el registro empresarial, 
+                        La DAIN ha revisado la información enviada para el registro empresarial, 
                         pero lamentablemente <b>no ha sido aprobada</b>.
                     </p>
 
@@ -173,7 +173,7 @@ export const sendCertificateAcceptedEmail = async (emailDestino, empresaNombre) 
   const logoPath = path.join(__dirname, '../assets/logo-syspyme.png');
 
   const mailOptions = {
-    from: `"SysPyME - DIAN" <${process.env.EMAIL_USER}>`,
+    from: `"SysPyME - DAIN" <${process.env.EMAIL_USER}>`,
     to: emailDestino,
     subject: `✅ Certificado Digital Aprobado - ${empresaNombre}`,
     html: `
@@ -200,19 +200,12 @@ export const sendCertificateAcceptedEmail = async (emailDestino, empresaNombre) 
                     </h2>
 
                     <p style="color:#444; font-size:15px; line-height:1.5;">
-                      <b>${empresaNombre}</b>, nos complace informarle que su <b>Certificado Digital</b> ha sido <b>aprobado exitosamente</b> por la DIAN.
+                      <b>${empresaNombre}</b>, nos complace informarle que su <b>Certificado Digital</b> ha sido <b>aprobado exitosamente</b> por la DAIN.
                     </p>
 
                     <p style="color:#444; font-size:15px; line-height:1.5;">
                       Ya puede iniciar sesión en <b>SysPyME</b> y comenzar a utilizar todos los servicios de nuestro sistema.
                     </p>
-
-                    <a href="${process.env.FRONTEND_URL}/auth/login" 
-                       style="display:inline-block; margin:20px 0; padding:12px 30px; 
-                              background-color:#4CAF50; color:#fff; text-decoration:none; 
-                              border-radius:5px; font-weight:bold;">
-                        Iniciar Sesión
-                    </a>
 
                     <div style="border-top:1px solid #eee; margin-top:30px; padding-top:15px;">
                       <p style="font-size:12px; color:#999; margin:0;">
@@ -253,7 +246,7 @@ export const sendCertificateRejectedEmail = async (emailDestino, empresaNombre, 
   const logoPath = path.join(__dirname, '../assets/logo-syspyme.png');
 
   const mailOptions = {
-    from: `"SysPyME - DIAN" <${process.env.EMAIL_USER}>`,
+    from: `"SysPyME - DAIN" <${process.env.EMAIL_USER}>`,
     to: emailDestino,
     subject: `❌ Certificado Digital Rechazado - ${empresaNombre}`,
     html: `
@@ -280,7 +273,7 @@ export const sendCertificateRejectedEmail = async (emailDestino, empresaNombre, 
                     </h2>
 
                     <p style="color:#444; font-size:15px; line-height:1.5;">
-                      <b>${empresaNombre}</b>, lamentamos informarle que su <b>Certificado Digital</b> ha sido <b>rechazado</b> por la DIAN.
+                      <b>${empresaNombre}</b>, lamentamos informarle que su <b>Certificado Digital</b> ha sido <b>rechazado</b> por la DAIN.
                     </p>
 
                     <div style="background:#fff3cd; border-left:4px solid #ff9800; padding:15px; margin:20px 0; text-align:left; border-radius:4px;">
