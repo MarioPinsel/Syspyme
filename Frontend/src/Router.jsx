@@ -13,7 +13,7 @@ import LoginDIAN from "./views/Dian/DianLoginView.jsx";
 import DIANDashboard from "./views/Dian/DianDashboard.jsx"
 import DianCompany from "./views/Dian/DianCompany.jsx";
 import DianReports from "./views/Dian/DianReports.jsx";
-
+import DigitalCertificate from "./views/Auth/NoDigitalCertificate.jsx";
 import Inventory from "./views/Inventory/Inventory.jsx";
 import CreateProductView from "./views/Inventory/CreateProduct.jsx";
 import ActualizarProduct from "./views/Inventory/ActualizarProducto.jsx";
@@ -44,6 +44,7 @@ export default function Router() {
           <Route path="registerVerify" element={<RegisterVerify />} />
           <Route path="companyRegisterVerify" element={<CompanyRegisterVerify />} />
           <Route path="login-dian" element={<LoginDIAN />} />
+          <Route path="digital-certificate" element={<DigitalCertificate />} />
         </Route>
 
         <Route element={<RequireAuth allowedRoles={["admin"]} />}>
