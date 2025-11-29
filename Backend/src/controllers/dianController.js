@@ -82,7 +82,7 @@ export const acceptCertificateController = async (req, res) => {
         const { companyName } = req.body;
         const result = await acceptCertificateService(companyName);
 
-        return res.status(result.status).json({
+        return res.status(200).json({
             message: result.message
         });
 

@@ -28,7 +28,7 @@ export const loginDIANService = async ({ usuario, password }) => {
         };
     }
 
-    const token = generateToken({ isDIAN: true }, '2h');
+    const token = generateToken({ isDIAN: true, created: false }, '2h');
 
     return {
         status: 200,
