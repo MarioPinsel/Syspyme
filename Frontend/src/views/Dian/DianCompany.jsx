@@ -35,23 +35,22 @@ export default function DIANCompanies() {
 
         } catch (error) {
             console.error("ERROR BACK:", error);
+            console.error("ERROR RESPONSE:", error.response);
 
-            if (error.response?.status === 400) {
-                const backend = error.response.data;
+            // Extraer el mensaje de error del backend
+            const errorMessage = error.response?.data?.message ||
+                error.response?.data?.error ||
+                error.message ||
+                "Ocurrió un error en el servidor.";
 
-                if (backend.errors) {
-                    backend.errors.forEach((err) => toast.error(err.msg));
-                }
-
-                if (backend.message) toast.error(backend.message);
-                throw error;
-            }
-
-            // Mostrar el mensaje de error del servidor
-            if (error.response?.data?.message) {
-                toast.error(error.response.data.message);
+            // Manejar errores de validación (si existen)
+            if (error.response?.data?.errors && Array.isArray(error.response.data.errors)) {
+                error.response.data.errors.forEach((err) => {
+                    toast.error(err.msg || err.message || err);
+                });
             } else {
-                toast.error("Ocurrió un error en el servidor.");
+                // Mostrar el mensaje de error principal
+                toast.error(errorMessage);
             }
 
             throw error;
