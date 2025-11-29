@@ -13,15 +13,27 @@ export default function DIANCompanies() {
     const [mostrarMotivo, setMostrarMotivo] = useState({});
 
     const getCompanies = async () => {
-        const token = Cookies.get("token");
-        const { data } = await api.get("/dian/getCompanies", {
-            headers: { Authorization: `Bearer ${token}` },
-        });
+        try {
+            const token = Cookies.get("token");
+            const { data } = await api.get("/dian/getCompanies", {
+                headers: { Authorization: `Bearer ${token}` },
+            });
 
-        return {
-            list: data.data || [],
-            backendMessage: data.message || null,
-        };
+            return {
+                list: data.data || [],
+                backendMessage: data.message || null,
+            };
+        } catch (error) {
+            // Si es un 400 con mensaje de "no hay empresas", no es un error real
+            if (error.response?.status === 400) {
+                return {
+                    list: [],
+                    backendMessage: error.response.data?.message || "No hay empresas pendientes.",
+                };
+            }
+            // Para otros errores, sí lanzamos el error
+            throw error;
+        }
     };
 
     const updateCompanyStatus = async (companyData) => {
