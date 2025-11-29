@@ -126,6 +126,6 @@ export const acceptCertificateService = async (companyName) => {
     await sendCertificateAcceptedEmail(admin.correo, companyName);
 
     return {
-        message: `El certificado de "${companyName}" ha sido aprobado exitosamente. Se ha enviado una notificación por correo electrónico a la empresa.`
+        message: `El certificado de "${companyName}" ha sido aprobado exitosamente. Se ha enviado una notificación por correo electrónico del representante.`
     };
 };
