@@ -114,7 +114,7 @@ export default function DigitalCertificate() {
                         onClick={() => navigate("/dashboard")}
                         style={{ width: "100%", padding: "0.875rem" }}
                     >
-                        Ir al Dashboard
+                        Ir al Inicio
                     </button>
                 </div>
             </div>
