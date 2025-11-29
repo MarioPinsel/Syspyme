@@ -131,7 +131,7 @@ export const validateCertificateService = async ({ companyName, action, motivo }
         };
     } else {
 
-        await updateCertificadoEmpresa(companyName, NULL, NULL);
+        await updateCertificadoEmpresa(companyName, null, null);
         await sendCertificateRejectedEmail(admin.correo, companyName, motivo);
 
         return {
