@@ -110,7 +110,7 @@ export const registerValidation = [
     body('password')
         .matches(passwordRegex)
         .withMessage('La contraseña debe tener mínimo 8 caracteres, incluir mayúscula, minúscula, número y símbolo'),
-    body('telefono').notEmpty.withMessage('El teléfono no puede ir vacío')
+    body('telefono').notEmpty().withMessage('El teléfono no puede ir vacío')
         .matches(telefonoColombiaRegex)
         .withMessage('Teléfono inválido. Solo números. Celular 10 dígitos o fijo con indicativo')
 ];
