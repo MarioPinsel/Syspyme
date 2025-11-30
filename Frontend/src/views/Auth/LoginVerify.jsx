@@ -1,3 +1,4 @@
+
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
@@ -5,7 +6,6 @@ import { toast } from "sonner";
 import "../../styles/Layouts/Verify.css";
 import api from "../../config/axios.js";
 import { jwtDecode } from "jwt-decode";
-import { useAuth } from "../../context/useAuth"; // ✅ AGREGAR ESTE IMPORT
 
 export default function VerificationCode() {
   const [code, setCode] = useState(Array(6).fill(""));
@@ -14,7 +14,6 @@ export default function VerificationCode() {
   const [pendingMessage, setPendingMessage] = useState("");
 
   const navigate = useNavigate();
-  const { login } = useAuth(); // ✅ AGREGAR ESTO
 
   const handleChange = (value, index) => {
     if (value.length > 1) return;
@@ -76,18 +75,19 @@ export default function VerificationCode() {
 
       // Login exitoso
       const newToken = data.token;
-      const decoded = jwtDecode(newToken);
-      const userRole = decoded.isAdmin ? "admin" : "employee"; // ✅ DEFINIR userRole
+      if (newToken) {
+        Cookies.set("token", newToken, { expires: 1, path: "/", secure: true, sameSite: "lax" });
+      }
 
-      // ✅ ACTUALIZAR AUTHCONTEXT EN LUGAR DE HACER RELOAD
-      login(newToken, userRole);
+      const decoded = jwtDecode(newToken);
+      Cookies.set("role", decoded.isAdmin ? "admin" : "employee");
 
       if (decoded.isAdmin) {
         navigate("/dashboard/");
-        // ❌ QUITAR window.location.reload();
+        window.location.reload();
       } else {
         navigate("/employee");
-        // ❌ QUITAR window.location.reload();
+        window.location.reload();
       }
 
     } catch (error) {
@@ -104,15 +104,11 @@ export default function VerificationCode() {
 
         if (newToken) {
           Cookies.set("token", newToken, { expires: 1, path: "/", secure: true, sameSite: "lax" });
-          
-          const decoded = jwtDecode(newToken);
-          const userRole = decoded.isAdmin ? "admin" : "employee";
-          
-          // ✅ ACTUALIZAR AUTHCONTEXT TAMBIÉN AQUÍ
-          login(newToken, userRole);
         }
 
         toast.error(error.response.data.error);
+
+        const decoded = jwtDecode(newToken);
 
         if (decoded.isAdmin) {
           navigate("/auth/digital-certificate");
