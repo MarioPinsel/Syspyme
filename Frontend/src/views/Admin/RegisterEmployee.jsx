@@ -18,6 +18,7 @@ export default function RegisterView() {
         nombre: "",
         correo: "",
         handle: "",
+       telefono:"",
         password: "",
     };
 
@@ -30,7 +31,8 @@ export default function RegisterView() {
            const normalizedData = {
             nombre: formData.nombre.trim().toLowerCase(),             
             correo: formData.correo.trim().toLowerCase(), 
-            handle: formData.handle.trim().toLowerCase(), 
+            handle: formData.handle.trim().toLowerCase(),
+            telefono: formData.telefono.trim(),
             password: formData.password.trim(),
         };
         try {
@@ -98,6 +100,22 @@ export default function RegisterView() {
                         <p className="error-message">{errors.correo.message}</p>
                     )}
 
+                   <label>Teléfono del Empleado</label>
+                    <input
+                        type="tel"
+                        {...register("telefono", {
+                            required: "El teléfono del empleado es obligatorio",
+                            pattern: {
+                                value: /^[0-9]{10}$/,
+                                message: "El teléfono debe tener 10 dígitos"
+                            }
+                        })}
+                        placeholder="Ej: 3001234567"
+                    />
+                        {errors.telefono && (
+                        <p className="error-message">{errors.telefono.message}</p>
+                    )}
+                    
                     <label>Handle o Identificador</label>
                     <input
                         type="text"
