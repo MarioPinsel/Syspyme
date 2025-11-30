@@ -218,7 +218,7 @@ export default function DIANCompanies() {
 
     return (
         <div className="dian-companies-container">
-            <h1>Revisión de Empresas - DIAN</h1>
+            <h1>Revisión de Empresas - DAIN</h1>
 
             <div className="search-bar">
                 <input

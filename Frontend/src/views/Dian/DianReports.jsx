@@ -311,7 +311,7 @@ export default function DianReports() {
     // Vista principal de la tabla
     return (
         <div className="dian-reports-container">
-            <h1>Revisión de Certificados - DIAN</h1>
+            <h1>Revisión de Certificados - DAIN</h1>
             <p>Selecciona una empresa para revisar o validar su certificado</p>
 
             <div className="search-bar">

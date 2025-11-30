@@ -8,11 +8,13 @@ import "../../styles/Layouts/Auth.css";
 import { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { jwtDecode } from "jwt-decode";
+import { useAuth } from "../../context/useAuth"; // ✅ AGREGAR ESTE IMPORT
 
 export default function LoginDIAN() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const { login } = useAuth(); // ✅ AGREGAR ESTO
 
   const initialValues = {
     usuario: "",
@@ -54,17 +56,12 @@ export default function LoginDIAN() {
 
       // VALIDAR ACCESO DIAN
       if (decoded.isDIAN === true) {
-        Cookies.set("role", "dian", {
-          expires: expiration,
-          path: "/",
-          secure: true,
-          sameSite: "lax",
-        });
+        // ✅ ACTUALIZAR AUTHCONTEXT EN LUGAR DE HACER RELOAD
+        login(token, "dian");
 
         toast.success(data.message);
-
         navigate("/dian");
-        window.location.reload();
+        // ❌ QUITAR window.location.reload();
         return;
       }
 
@@ -93,7 +90,7 @@ export default function LoginDIAN() {
   return (
     <div className="auth-container">
       <div className="auth-box">
-        <h2>Iniciar Sesión - DAIN</h2>
+        <h2>Iniciar Sesión - DAIN</h2> 
 
         <form onSubmit={handleSubmit(handleLogin)}>
           <label>Usuario</label>
