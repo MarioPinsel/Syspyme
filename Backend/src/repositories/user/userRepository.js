@@ -40,9 +40,9 @@ export const deleteTempUsuario = async (pool, correo) => {
   return await pool.query('DELETE FROM temp_Usuarios WHERE correo = $1', [correo]);
 };
 
-export const createUsuario = async (pool, nombre, correo, handle, telefono, password) => {
+export const createUsuario = async (pool, { nombre, correo, handle, telefono, password }) => {
   return await pool.query(
-    'INSERT INTO usuarios (nombre, correo, handle,telefono, password) VALUES ($1,$2,$3,$4,$5) RETURNING *',
+    'INSERT INTO usuarios (nombre, correo, handle, telefono, password) VALUES ($1,$2,$3,$4,$5) RETURNING *',
     [nombre, correo, handle, telefono, password]
   );
 };
