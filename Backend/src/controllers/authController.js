@@ -24,8 +24,8 @@ export const createAccount = async (req, res) => {
     try {
         const pool = req.pool;
         const { empresaNombre, userId } = req.user;
-        const { nombre, correo, handle, password } = req.body;
-        const result = await registerUsuario({ pool, userId, empresaNombre, nombre, correo, handle, password });
+        const { nombre, correo, handle, password, telefono } = req.body;
+        const result = await registerUsuario({ pool, userId, empresaNombre, nombre, correo, handle, password, telefono });
         res.status(201).json(result);
     } catch (error) {
         if (error.message === 'USUARIO_ALREADY_EXISTS') return res.status(409).json({ error: 'El correo ya está registrado.' });

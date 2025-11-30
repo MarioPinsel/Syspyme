@@ -49,7 +49,7 @@ export const registerEmpresa = async ({ nombre, nit, correo, password, telefono,
     return { message: 'Código de verificación enviado al correo.', token };
 };
 
-export const registerUsuario = async ({ pool, userId, empresaNombre, nombre, correo, handle, password }) => {
+export const registerUsuario = async ({ pool, userId, empresaNombre, nombre, correo, handle, password, telefono }) => {
 
     if ((await findUsuarioByCorreo(pool, correo)).rowCount)
         throw new Error('USUARIO_ALREADY_EXISTS');
@@ -68,6 +68,7 @@ export const registerUsuario = async ({ pool, userId, empresaNombre, nombre, cor
             nombre,
             correo,
             handle,
+            telefono,
             password: hashed
         });
 

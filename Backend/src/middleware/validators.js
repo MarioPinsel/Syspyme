@@ -109,7 +109,10 @@ export const registerValidation = [
     body('correo').isEmail().withMessage('Email inválido').normalizeEmail(),
     body('password')
         .matches(passwordRegex)
-        .withMessage('La contraseña debe tener mínimo 8 caracteres, incluir mayúscula, minúscula, número y símbolo')
+        .withMessage('La contraseña debe tener mínimo 8 caracteres, incluir mayúscula, minúscula, número y símbolo'),
+    body('telefono').notEmpty.withMessage('El teléfono no puede ir vacío')
+        .matches(telefonoColombiaRegex)
+        .withMessage('Teléfono inválido. Solo números. Celular 10 dígitos o fijo con indicativo')
 ];
 
 export const loginValidation = [
