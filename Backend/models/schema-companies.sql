@@ -1,13 +1,3 @@
-CREATE TABLE IF NOT EXISTS temp_Usuarios (
-  id SERIAL PRIMARY KEY,
-  nombre VARCHAR(50) NOT NULL,
-  correo VARCHAR(50) NOT NULL UNIQUE,
-  handle VARCHAR(30) NOT NULL,
-  password VARCHAR(100) NOT NULL,
-  codigo_verificacion INT NOT NULL,
-  created_at TIMESTAMP DEFAULT NOW()
-);
-
 CREATE TABLE IF NOT EXISTS usuarios (
   id SERIAL PRIMARY KEY,
   nombre VARCHAR(50) NOT NULL,
