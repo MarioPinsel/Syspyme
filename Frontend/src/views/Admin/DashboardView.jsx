@@ -19,11 +19,10 @@ export default function DashboardView() {
     return data;
   };
 
-  const { data: stats, } = useQuery({
+  const { data: stats } = useQuery({
     queryKey: ["dashboard-stats"],
     queryFn: getStats,
   });
-
 
   return (
     <div className="dashboard-container">
@@ -55,16 +54,17 @@ export default function DashboardView() {
               <Users size={28} />
               <p>Crear nuevo empleado</p>
             </Link>
-           <Link to="/sales/register-client" className="action-card">
+
+            <Link to="/sales/register-client" className="action-card">
               <PlusCircle size={28} />
               <p>Registrar cliente</p>
-             </Link>
+            </Link>
 
             <Link to="/sales/BuscarFactura" className="action-card">
               <Receipt size={28} />
               <p>Buscar Factura</p>
-             </Link>
-          
+            </Link>
+
           </div>
 
           <div className="dashboard-stats">
@@ -83,6 +83,24 @@ export default function DashboardView() {
     <h3>{stats?.monthly?.invoices ?? 0}</h3>
   </div>
 </div>
+
+          {/* NUEVA SECCIÓN DE ESTADÍSTICAS POR CLIENTE */}
+          <div className="dashboard-sales-clients">
+            <h2>Ventas por cliente (este mes)</h2>
+
+            {stats?.sales_by_client?.length > 0 ? (
+              <ul className="sales-client-list">
+                {stats.sales_by_client.map((c) => (
+                  <li key={c.nombre} className="sales-client-item">
+                    <span>{c.nombre}</span>
+                    <strong>{c.total_ventas} ventas</strong>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No hay ventas registradas este mes.</p>
+            )}
+          </div>
 
         </section>
       </div>
