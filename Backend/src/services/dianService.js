@@ -64,7 +64,22 @@ export const registerCompanyService = async ({ correo, action, motivo }) => {
         await createEmpresa(te.nombre, te.nit, te.correo, te.password, te.telefono, te.direccion, te.regimen)
         const pool = await getPool(te.nombre);
         const hashed = await hashPassword(process.env.ADMIN_PASS);
-        await createUsuario(pool, te.nombre_admin, te.correo_admin, 'admin', te.telefono_admin, hashed);
+        console.log({
+    nombre: te.nombre_admin,
+    correo: te.correo_admin,
+    handle: 'admin',
+    telefono: te.telefono_admin,
+    password: hashed
+});
+
+        await createUsuario(pool, {
+    nombre: te.nombre_admin,
+    correo: te.correo_admin,
+    handle: 'admin',
+    telefono: te.telefono_admin,
+    password: hashed
+        });
+
         await sendResponseDIANAccepted(te.correo_admin, te.nombre, 'admin', process.env.ADMIN_PASS);
         await deleteTempEmpresa(correo);
         return {
