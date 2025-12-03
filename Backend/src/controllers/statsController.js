@@ -1,6 +1,6 @@
 import { statsService } from '../services/statsService.js'
 import { statsSalesService } from '../services/statsService.js'
-import { getPool } from "../config/db.js";
+
 export const statsController = async (req, res) => {
     try {
         const pool = req.pool;
@@ -15,7 +15,7 @@ export const statsController = async (req, res) => {
 
 export const statsSalesController = async (req, res) => {
   try {
-    const pool = await getPool();
+    const pool = req.pool;
     const stats = await statsSalesService(pool);
 
     res.status(200).json({
