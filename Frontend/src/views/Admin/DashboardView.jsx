@@ -78,6 +78,11 @@ export default function DashboardView() {
               <h3>{stats?.invoices ?? 0}</h3>
             </div>
           </div>
+          <div className="stat-card">
+    <p className="stat-title">Facturas este mes</p>
+    <h3>{stats?.monthly?.invoices ?? 0}</h3>
+  </div>
+</div>
 
         </section>
       </div>
