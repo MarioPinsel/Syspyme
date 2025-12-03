@@ -14,20 +14,19 @@ export const statsController = async (req, res) => {
 };
 
 export const statsSalesController = async (req, res) => {
-  try {
-    const pool = req.pool;
-    const stats = await statsSalesService(pool);
+  const pool = req.pool;
+  const { companyId } = req.params;
 
-    res.status(200).json({
-      ok: true,
-      sales_by_client: stats
-    });
+  try {
+    const data = await statsSalesService(pool, companyId);
+    return res.status(200).json({ ok: true, data });
   } catch (error) {
-    console.error("Error obteniendo estadísticas de ventas:", error);
-    res.status(500).json({ 
-      ok: false, 
-      message: "Error interno del servidor" 
+    return res.status(500).json({
+      ok: false,
+      message: "Error obteniendo estadísticas de ventas",
+      error: error.message
     });
   }
 };
+
 

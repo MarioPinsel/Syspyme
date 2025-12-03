@@ -11,8 +11,15 @@ export const statsService = async (pool) => {
     };
 };
 
-export const statsSalesService = async (pool) => {
-  const result = await getReceiptByCompany(pool);
-  return result.rows; // devuelve [{ cliente: "Doritos", ventas: 30 }, ...]
+
+export const statsSalesService = async (pool, companyId) => {
+  try {
+    const result = await getReceiptByCompany(pool, companyId);
+    return result.rows;
+  } catch (error) {
+    console.error("Error obteniendo estadísticas de ventas:", error);
+    throw error;
+  }
 };
+
 

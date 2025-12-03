@@ -37,11 +37,10 @@ export const getReceiptByCompany = (pool, id) => {
         COUNT(f.id) AS ventas
     FROM facturas f
     JOIN clientes c ON f.cliente_id = c.id
-    WHERE DATE_TRUNC('month', f.created_at) = DATE_TRUNC('month', CURRENT_DATE)
+    WHERE DATE_TRUNC('month', f.fecha_venta) = DATE_TRUNC('month', CURRENT_DATE)
     GROUP BY c.nombre
     ORDER BY ventas DESC;
   `);
-
 }
 
 
