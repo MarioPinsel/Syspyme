@@ -33,6 +33,7 @@ export default function DashboardView() {
 
         <section className="dashboard-main">
 
+          {/* === ACCIONES DEL DASHBOARD === */}
           <div className="dashboard-actions">
 
             <Link to="/inventory" className="action-card">
@@ -67,6 +68,7 @@ export default function DashboardView() {
 
           </div>
 
+          {/* === ESTADÍSTICAS PRINCIPALES === */}
           <div className="dashboard-stats">
             <div className="stat-card">
               <p className="stat-title">Productos registrados</p>
@@ -77,23 +79,23 @@ export default function DashboardView() {
               <p className="stat-title">Facturas totales</p>
               <h3>{stats?.invoices ?? 0}</h3>
             </div>
-          </div>
-          <div className="stat-card">
-    <p className="stat-title">Facturas este mes</p>
-    <h3>{stats?.monthly?.invoices ?? 0}</h3>
-  </div>
-</div>
 
-          {/* NUEVA SECCIÓN DE ESTADÍSTICAS POR CLIENTE */}
+            <div className="stat-card">
+              <p className="stat-title">Facturas este mes</p>
+              <h3>{stats?.monthly?.invoices ?? 0}</h3>
+            </div>
+          </div>
+
+          {/* === NUEVA SECCIÓN: VENTAS POR CLIENTE === */}
           <div className="dashboard-sales-clients">
             <h2>Ventas por cliente (este mes)</h2>
 
             {stats?.sales_by_client?.length > 0 ? (
               <ul className="sales-client-list">
                 {stats.sales_by_client.map((c) => (
-                  <li key={c.nombre} className="sales-client-item">
-                    <span>{c.nombre}</span>
-                    <strong>{c.total_ventas} ventas</strong>
+                  <li key={c.cliente} className="sales-client-item">
+                    <span>{c.cliente}</span>
+                    <strong>{c.ventas} ventas</strong>
                   </li>
                 ))}
               </ul>
