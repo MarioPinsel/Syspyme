@@ -1,5 +1,5 @@
 import { getAllProducts } from '../repositories/inventory/inventoryRepository.js';
-import { getAllReceipts } from '../repositories/sale/salesRepository.js';
+import { getAllReceipts, getReceiptByCompany  } from '../repositories/sale/salesRepository.js';
 
 export const statsService = async (pool) => {
     const products = await getAllProducts(pool);
@@ -11,4 +11,8 @@ export const statsService = async (pool) => {
     };
 };
 
+export const statsSalesService = async (pool) => {
+  const result = await getReceiptByCompany(pool);
+  return result.rows; // devuelve [{ cliente: "Doritos", ventas: 30 }, ...]
+};
 

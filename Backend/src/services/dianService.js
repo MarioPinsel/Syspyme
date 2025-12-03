@@ -65,19 +65,19 @@ export const registerCompanyService = async ({ correo, action, motivo }) => {
         const pool = await getPool(te.nombre);
         const hashed = await hashPassword(process.env.ADMIN_PASS);
         console.log({
-    nombre: te.nombre_admin,
-    correo: te.correo_admin,
-    handle: 'admin',
-    telefono: te.telefono_admin,
-    password: hashed
-});
+            nombre: te.nombre_admin,
+            correo: te.correo_admin,
+            handle: 'admin',
+            telefono: te.telefono_admin,
+            password: hashed
+        });
 
         await createUsuario(pool, {
-    nombre: te.nombre_admin,
-    correo: te.correo_admin,
-    handle: 'admin',
-    telefono: te.telefono_admin,
-    password: hashed
+            nombre: te.nombre_admin,
+            correo: te.correo_admin,
+            handle: 'admin',
+            telefono: te.telefono_admin,
+            password: hashed
         });
 
         await sendResponseDIANAccepted(te.correo_admin, te.nombre, 'admin', process.env.ADMIN_PASS);

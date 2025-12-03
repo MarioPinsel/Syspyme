@@ -30,6 +30,20 @@ export const getReceiptById = (pool, id) => {
   return pool.query(`SELECT * FROM facturas WHERE id = $1`, [id]);
 }
 
+export const getReceiptByCompany = (pool, id) => {
+  return pool.query(`
+    SELECT 
+        c.nombre AS cliente,
+        COUNT(f.id) AS ventas
+    FROM facturas f
+    JOIN clientes c ON f.cliente_id = c.id
+    WHERE DATE_TRUNC('month', f.created_at) = DATE_TRUNC('month', CURRENT_DATE)
+    GROUP BY c.nombre
+    ORDER BY ventas DESC;
+  `);
+
+}
+
 
 
 
