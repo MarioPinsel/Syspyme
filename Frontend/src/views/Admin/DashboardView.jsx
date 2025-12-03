@@ -10,7 +10,7 @@ export default function DashboardView() {
   const getStats = async () => {
     const token = Cookies.get("token");
 
-    const { data } = await api.get("/dashboard/stats", {
+    const { data } = await api.get("/dashboard/statsSales", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
