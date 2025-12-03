@@ -43,7 +43,7 @@ export const verifyAccountController = async (req, res) => {
         const result = await verifyAccount({ pool, empresaNombre, correo, tipo, codigo });
         res.status(200).json(result);
     } catch (error) {
-        if (error.message === 'INVALID_CODE') return res.status(400).json({ error: 'Código inválido.' });
+        if (error.message === 'INVALID_CODE') return res.status(400).json({ error: 'Código invalido, revise el correo nuevamente' });
         console.error(error);
         res.status(500).json({ error: 'Error interno del servidor.' });
     }
